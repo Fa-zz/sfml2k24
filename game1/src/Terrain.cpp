@@ -1,19 +1,20 @@
 #include "Terrain.hpp"
 
-Terrain::Terrain(int x, int y, int tileSize, const sf::Texture& texture)
-    : x_(x), y_(y), tileSize_(tileSize) {
+Terrain::Terrain(int x, int y, int tileSizeX, int tileSizeY, const sf::Texture& texture)
+    : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY) {
     sprite_.setTexture(texture);
-    sprite_.setTextureRect(sf::IntRect(x, y, tileSize, tileSize));
+    sprite_.setTextureRect(sf::IntRect(x, y, tileSizeX, tileSizeY));
 }
 
 Terrain::~Terrain() { }
 
-int Terrain::getTileSize() const { return tileSize_; }
+int Terrain::getTileSizeX() const { return tileSizeX_; }
+int Terrain::getTileSizeY() const { return tileSizeY_; }
 
 const sf::Sprite& Terrain::getSprite() const {
     return sprite_;
 }
 
 void Terrain::setSpritePos(int x, int y) {
-    sprite_.setPosition(x * tileSize_, y * tileSize_);
+    sprite_.setPosition(x * 16, y * 16);
 }

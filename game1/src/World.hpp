@@ -8,13 +8,16 @@ public:
     World();
     ~World();
     void genTiles(int height, int width);
-    Terrain& getTile(int y, int x);
+    Terrain& getGroundTileAtPos(int y, int x);
+    Terrain* getBuildingTileAtPos(int y, int x);
 private:
     vector<Terrain*> allTerrains_;
-    sf::Texture overworldTexture_;
+    sf::Texture groundTexture_;
+    sf::Texture buildingTexture_;
     // vector<Terrain*> tiles_;
     // Terrain* tiles_[30][30];
-    vector<vector<Terrain*>> tiles_;
+    vector<vector<Terrain*>> groundTiles_;
+    vector<vector<Terrain*>> buildingTiles_;
     
     int loadTerrainTextures();
     

@@ -36,6 +36,7 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             view.move(0.5f, 0);
         }
+        cout << view.getCenter().x << " " << view.getCenter().y << endl;
 
         window.clear(sf::Color::Cyan);
 
@@ -43,9 +44,18 @@ int main() {
 
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                Terrain& tile = world.getTile(y, x);
+                Terrain& tile = world.getGroundTileAtPos(y, x);
                 tile.setSpritePos(x, y);
                 window.draw(tile.getSprite());
+            }
+        }
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                Terrain *tile = world.getBuildingTileAtPos(y, x);
+                if (tile != nullptr) {
+                    tile->setSpritePos(x, y);
+                    window.draw(tile->getSprite());
+                }
             }
         }
 
