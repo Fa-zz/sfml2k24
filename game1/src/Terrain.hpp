@@ -7,12 +7,15 @@ public:
     ~Terrain();
 
     const sf::Sprite& getSprite() const;
-    int getTileSizeX() const;
+    int getTileSizeX() const; // Gets the size of the tile in the x direction
     int getTileSizeY() const;
 
     void setSpritePos(int x, int y);
 
 private:
-    int x_, y_, tileSizeX_, tileSizeY_;
+    int x_; // x: x coordinate of sprite on texture png
+    int y_; // y: y coordinate of sprite on texture png
+    int tileSizeX_; // tileSizeX: Size of tile in x direction
+    int tileSizeY_; // tileSizeY: Size of tile in y direction
     sf::Sprite sprite_;
 };
