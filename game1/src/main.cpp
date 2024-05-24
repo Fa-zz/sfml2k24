@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <chrono>
 #include "World.hpp"
 #include "Terrain.hpp"
 
@@ -7,38 +8,55 @@ int main() {
     const int width = 50;
     const int height = 25;
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML game");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML game");
 
     World world;
     world.genTiles(height, width);
 
     sf::View view = window.getView();
-    view.setCenter((5) * 16, (5) * 16);
-    view.setSize(view.getSize().x / 2, view.getSize().y / 2);
+    // view.setCenter((5) * 16, (5) * 16);
+    view.setSize(view.getSize().x / 4, view.getSize().y / 4);
     window.setView(view);
+
+    auto tp = chrono::steady_clock::now();
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+            // // catch the resize events
+            // if (event.type == sf::Event::Resized) {
+            //     // update the view to the new size of the window
+            //     sf::FloatRect visibleArea(0.f, 0.f, event.size.width, event.size.height);
+            //     window.setView(sf::View(visibleArea));
+            // }
         }
 
+        // get dt
+        float dt;
+        const auto new_tp = std::chrono::steady_clock::now();
+        dt = std::chrono::duration<float>( new_tp - tp ).count();
+        tp = new_tp;
+        
+        view.setCenter(world.getMCCenter());
+        sf::Vector2f dir = {0.f, 0.f};
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            view.move(0, -1.f);
+            dir.y -= 1.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            view.move(0, 1.f);
+            dir.y += 1.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            view.move(-1.f, 0);
+            dir.x -= 1.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            view.move(1.f, 0);
+            dir.x += 1.0f;
         }
-        cout << view.getCenter().x << " " << view.getCenter().y << endl;
+        // cout << view.getCenter().x << " " << view.getCenter().y << endl;
+        world.updateCharacters(dir, dt);
 
-        window.clear(sf::Color::Cyan);
+        window.clear(sf::Color (134,192,108));
 
         window.setView(view); // Set the view before drawing
 
@@ -52,7 +70,7 @@ int main() {
         int startY = std::max(0, static_cast<int>((center.y - halfHeight) / 16));
         int endY = std::min(height, static_cast<int>((center.y + halfHeight) / 16) + 1);
 
-        window.clear(sf::Color::Cyan);
+        // window.clear(sf::Color::Cyan);
 
         for (int y = startY; y < endY; ++y) {
             for (int x = startX; x < endX; ++x) {
@@ -73,6 +91,8 @@ int main() {
                 }
             }
         }
+
+        world.drawCharacters(window);
 
         window.display();
     }

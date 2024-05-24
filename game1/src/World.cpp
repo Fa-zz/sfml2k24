@@ -10,11 +10,17 @@ World::World() {
     if (loadTerrainTextures() != 0)
         cerr << "Failed to load terrain textures" << endl;
     loadTerrainMap();
+    if (loadCharacterTextures() != 0)
+        cerr << "Failed to load terrain textures" << endl;
+    loadCharacters();
 }
 
 World::~World() {
     for (Terrain* terrain : allTerrains_) {
         delete terrain;
+    }
+    for (Character* actor : characters_) {
+        delete actor;
     }
 }
 // TODO: At some later point, genTiles should determine which level's tiles are being obtained
@@ -103,7 +109,7 @@ int World::loadTerrainTextures() {
 }
 
 int World::loadCharacterTextures() {
-    if (!groundTexture_.loadFromFile("assets/characters.png")) {
+    if (!characterTexture_.loadFromFile("assets/characters.png")) {
         return -1;
     }
 
@@ -149,6 +155,20 @@ int World::loadTerrainMap() {
 }
 
 int World::loadCharacters() {
-
+    characters_.push_back(new Character(0, 32, 15, 16, characterTexture_, sf::Vector2f{0.f, 0.f}));
     return 0;
+}
+
+void World::drawCharacters(sf::RenderTarget& rt) {
+    for(const Character* actor : characters_) 
+        actor->draw(rt);
+}
+
+sf::Vector2f World::getMCCenter() {
+    return sf::Vector2f(characters_[0]->getSprite().getPosition().x, characters_[0]->getSprite().getPosition().y);
+}
+
+void World::updateCharacters(sf::Vector2f dir, float dt) {
+    characters_[0]->setDirection(dir);
+    characters_[0]->update(dt);
 }
