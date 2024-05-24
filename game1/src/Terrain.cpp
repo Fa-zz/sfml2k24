@@ -11,7 +11,7 @@ Terrain::~Terrain() { }
 int Terrain::getTileSizeX() const { return tileSizeX_; }
 int Terrain::getTileSizeY() const { return tileSizeY_; }
 
-const sf::Sprite& Terrain::getSprite() const {
+sf::Sprite &Terrain::getSprite() {
     return sprite_;
 }
 

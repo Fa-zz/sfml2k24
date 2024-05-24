@@ -57,27 +57,22 @@ int main() {
         for (int y = startY; y < endY; ++y) {
             for (int x = startX; x < endX; ++x) {
                 Terrain* groundTile = world.getGroundTileAtPos(y, x);
-                Terrain* buildingTile = world.getBuildingTileAtPos(y, x);
                 if (groundTile != nullptr) {
                     groundTile->setSpritePos(x, y);
                     window.draw(groundTile->getSprite());
                 }
+            }
+        }
+
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                Terrain* buildingTile = world.getBuildingTileAtPos(y, x);
                 if (buildingTile != nullptr) {
                     buildingTile->setSpritePos(x, y);
                     window.draw(buildingTile->getSprite());
                 }
             }
         }
-
-        // for (int y = 0; y < height; ++y) {
-        //     for (int x = 0; x < width; ++x) {
-        //         Terrain *tile = world.getBuildingTileAtPos(y, x);
-        //         if (tile != nullptr) {
-        //             tile->setSpritePos(x, y);
-        //             window.draw(tile->getSprite());
-        //         }
-        //     }
-        // }
 
         window.display();
     }

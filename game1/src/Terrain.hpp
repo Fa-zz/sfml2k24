@@ -6,7 +6,7 @@ public:
     Terrain(int x, int y, int tileSizeX, int tileSizeY, const sf::Texture& texture);
     ~Terrain();
 
-    const sf::Sprite& getSprite() const;
+    sf::Sprite& getSprite();
     int getTileSizeX() const; // Gets the size of the tile in the x direction
     int getTileSizeY() const;
 
