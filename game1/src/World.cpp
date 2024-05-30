@@ -50,7 +50,7 @@ int World::genTiles(int height, int width) {
         while (getline(ss, tiledID, ',') && x < width) {
             if (groundMap_.find(tiledID) != groundMap_.end()) {
                 groundTiles_[y][x] = groundMap_.at(tiledID);
-                cout << "Ground tile at x: " << x << " y: " << y << " is " << tiledID << " , or " << groundMap_.at(tiledID) << endl;
+                //cout << "Ground tile at x: " << x << " y: " << y << " is " << tiledID << " , or " << groundMap_.at(tiledID) << endl;
             } else {
                 groundTiles_[y][x] = nullptr; // ID is not found, there is nothing at the tile
             }
@@ -73,7 +73,7 @@ int World::genTiles(int height, int width) {
         while (getline(ss, tiledID2, ',') && x2 < width) {
             if (buildingMap_.find(tiledID2) != buildingMap_.end()) {
                 buildingTiles_[y2][x2] = buildingMap_.at(tiledID2);
-                cout << "Building tile at x: " << x2 << " y: " << y2 << " is " << tiledID2 << " , or " << buildingMap_.at(tiledID2) << endl;
+                //cout << "Building tile at x: " << x2 << " y: " << y2 << " is " << tiledID2 << " , or " << buildingMap_.at(tiledID2) << endl;
             } else {
                 buildingTiles_[y2][x2] = nullptr; // ID is not found, there is nothing at the tile
             }

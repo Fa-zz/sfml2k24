@@ -5,6 +5,7 @@
         "vector": "cpp",
         "unordered_map": "cpp",
         "fstream": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "iosfwd": "cpp"
     }
 }
