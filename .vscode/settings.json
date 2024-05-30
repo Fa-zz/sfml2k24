@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "new": "cpp",
+        "vector": "cpp",
+        "unordered_map": "cpp",
+        "fstream": "cpp",
+        "chrono": "cpp"
     }
 }

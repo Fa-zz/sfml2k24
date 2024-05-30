@@ -155,7 +155,7 @@ int World::loadTerrainMap() {
 }
 
 int World::loadCharacters() {
-    characters_.push_back(new Character(0, 32, 15, 16, characterTexture_, sf::Vector2f{0.f, 0.f}));
+    characters_.push_back(new Character(0, 32, 16, 16, characterTexture_, sf::Vector2f{0.f, 0.f}));
     return 0;
 }
 
@@ -164,7 +164,7 @@ void World::drawCharacters(sf::RenderTarget& rt) {
         actor->draw(rt);
 }
 
-sf::Vector2f World::getMCCenter() {
+sf::Vector2f World::getPlayerCenter() {
     return sf::Vector2f(characters_[0]->getSprite().getPosition().x, characters_[0]->getSprite().getPosition().y);
 }
 

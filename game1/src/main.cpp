@@ -39,7 +39,7 @@ int main() {
         dt = std::chrono::duration<float>( new_tp - tp ).count();
         tp = new_tp;
         
-        view.setCenter(world.getMCCenter());
+        view.setCenter(world.getPlayerCenter());
         sf::Vector2f dir = {0.f, 0.f};
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             dir.y -= 1.0f;
@@ -79,11 +79,6 @@ int main() {
                     groundTile->setSpritePos(x, y);
                     window.draw(groundTile->getSprite());
                 }
-            }
-        }
-
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
                 Terrain* buildingTile = world.getBuildingTileAtPos(y, x);
                 if (buildingTile != nullptr) {
                     buildingTile->setSpritePos(x, y);
@@ -91,6 +86,16 @@ int main() {
                 }
             }
         }
+
+        // for (int y = 0; y < height; ++y) {
+        //     for (int x = 0; x < width; ++x) {
+        //         Terrain* buildingTile = world.getBuildingTileAtPos(y, x);
+        //         if (buildingTile != nullptr) {
+        //             buildingTile->setSpritePos(x, y);
+        //             window.draw(buildingTile->getSprite());
+        //         }
+        //     }
+        // }
 
         world.drawCharacters(window);
 

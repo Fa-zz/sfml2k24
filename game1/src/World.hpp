@@ -13,7 +13,7 @@ public:
     Terrain* getGroundTileAtPos(int y, int x);
     Terrain* getBuildingTileAtPos(int y, int x);
     void drawCharacters(sf::RenderTarget& rt);
-    sf::Vector2f getMCCenter();
+    sf::Vector2f getPlayerCenter(); // NOTE: not properly centered
     void updateCharacters(sf::Vector2f dir, float dt);
 private:
     vector<Terrain*> allTerrains_; // allTerrains_: Every vector we create from the loaded textures is added to this vector
