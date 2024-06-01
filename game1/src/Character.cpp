@@ -49,11 +49,22 @@ void Character::setDirection(const sf::Vector2f& dir) {
     }
 }
 
-void Character::update(float dt) {
-    pos_ += vel_ * dt;
+void Character::update(float dt, int width, int height, World* world) {
+    sf::Vector2f newPos = pos_ + vel_ * dt;
+
+    if (newPos.x >= 0 && newPos.x < (width * tileSizeX_) && newPos.y >= 0 && newPos.y < (height * tileSizeY_)) {
+        int tileX = static_cast<int>(newPos.x) / tileSizeX_;
+        int tileY = static_cast<int>(newPos.y) / tileSizeY_;
+        cout << "tileX:" << tileX << " tileY:" << tileY << endl;
+        Terrain* buildingTile = world->getBuildingTileAtPos(tileY, tileX);
+        if (buildingTile == nullptr) {
+            pos_ = newPos;
+            sprite_.setPosition(pos_);
+        }
+    }
+
     animations_[int(curAnimation_)].update(dt);
     animations_[int(curAnimation_)].applyToSprite(sprite_, walkingLeft_);
-    sprite_.setPosition(pos_);
 }
 
 sf::Sprite Character::getSprite() {

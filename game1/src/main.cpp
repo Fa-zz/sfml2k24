@@ -3,10 +3,11 @@
 #include <chrono>
 #include "Terrain.hpp"
 #include "World.hpp"
+#include "CharacterManager.hpp"
 #include "GUI.hpp"
 
-void updateView(sf::View& view, const sf::RenderWindow& window, World& world, int tileWidth, int tileHeight, int worldWidth, int worldHeight) {
-    sf::Vector2f playerCenter = world.getPlayerCenter();
+void updateView(sf::View& view, const sf::RenderWindow& window, CharacterManager& cMgr, int tileWidth, int tileHeight, int worldWidth, int worldHeight) {
+    sf::Vector2f playerCenter = cMgr.getPlayerCenter();
     sf::Vector2f viewSize = view.getSize();
     float halfViewWidth = viewSize.x / 2.0f;
     float halfViewHeight = viewSize.y / 2.0f;
@@ -23,6 +24,7 @@ void updateView(sf::View& view, const sf::RenderWindow& window, World& world, in
 
     // Update the view center
     view.setCenter(clampedCenterX, clampedCenterY);
+    cout << "Player center x: " << playerCenter.x << " player center y: " << playerCenter.y << endl;
 }
 
 int main() {
@@ -35,11 +37,12 @@ int main() {
     int res1y = 900;
     int res2x = 600;
     int res2y = 800;
-    sf::RenderWindow window(sf::VideoMode(res1x, res1y), "SFML game");
+    sf::RenderWindow window(sf::VideoMode(res2x, res2y), "SFML game");
 
-    World world;
+    World* world = new World;
     GUI gui;
-    world.genTiles(height, width);
+    CharacterManager cMgr;
+    world->genTiles(height, width);
 
     sf::View view = window.getView();
     // cout << " view b4 division: " << view.getSize().x << " view y: " << view.getSize().y << endl;
@@ -79,14 +82,14 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             dir.x += 1.0f;
         }
-        world.updateCharacters(dir, dt);
+        cMgr.updateCharacters(dir, dt, width, height, world);
 
         window.clear(sf::Color (134,192,108));
 
         window.setView(view); // Set the view before drawing
 
         sf::Vector2f center = view.getCenter();
-        sf::Vector2f playerCenter = world.getPlayerCenter();
+        sf::Vector2f playerCenter = cMgr.getPlayerCenter();
         sf::Vector2f size = view.getSize();
         float halfWidth = size.x / 2;
         float halfHeight = size.y / 2;
@@ -97,12 +100,12 @@ int main() {
         int endY = std::min(height, static_cast<int>((center.y + halfHeight) / 16) + 1);
         
         // Update the view to center on the player
-        updateView(view, window, world, tileWidth, tileHeight, width, height);
+        updateView(view, window, cMgr, tileWidth, tileHeight, width, height);
 
         // todo: use 1 for loop by increasing endY and endX
         for (int y = startY; y < endY; ++y) {
             for (int x = startX; x < endX; ++x) {
-                Terrain* groundTile = world.getGroundTileAtPos(y, x);
+                Terrain* groundTile = world->getGroundTileAtPos(y, x);
                 if (groundTile != nullptr) {
                     groundTile->setSpritePos(x, y);
                     window.draw(groundTile->getSprite());
@@ -112,7 +115,7 @@ int main() {
 
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                Terrain* buildingTile = world.getBuildingTileAtPos(y, x);
+                Terrain* buildingTile = world->getBuildingTileAtPos(y, x);
                 if (buildingTile != nullptr) {
                     buildingTile->setSpritePos(x, y);
                     window.draw(buildingTile->getSprite());
@@ -120,7 +123,7 @@ int main() {
             }
         }
 
-        world.drawCharacters(window);
+        cMgr.drawCharacters(window);
         if (drawGUI){
             window.setView(window.getDefaultView());
             gui.renderGUIElems(window, window.getSize());
@@ -128,6 +131,6 @@ int main() {
 
         window.display();
     }
-
+    delete world;
     return 0;
 }

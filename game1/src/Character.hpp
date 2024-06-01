@@ -1,12 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include "Animation.hpp"
+#include "World.hpp"
 
 class Character {
 public:
     Character(int x_, int y_, int tileSizeX_, int tileSizeY_, const sf::Texture& texture, const sf::Vector2f& pos);
     void draw(sf::RenderTarget& rt) const;
     void setDirection(const sf::Vector2f& dir);
-    void update(float dt);
+    void update(float dt, int width, int height, World* world);
     sf::Sprite getSprite();
 
 private:

@@ -10,17 +10,11 @@ World::World() {
     if (loadTerrainTextures() != 0)
         cerr << "Failed to load terrain textures" << endl;
     loadTerrainMap();
-    if (loadCharacterTextures() != 0)
-        cerr << "Failed to load terrain textures" << endl;
-    loadCharacters();
 }
 
 World::~World() {
     for (Terrain* terrain : allTerrains_) {
         delete terrain;
-    }
-    for (Character* actor : characters_) {
-        delete actor;
     }
 }
 // TODO: At some later point, genTiles should determine which level's tiles are being obtained
@@ -108,17 +102,8 @@ int World::loadTerrainTextures() {
     return 0;
 }
 
-int World::loadCharacterTextures() {
-    if (!characterTexture_.loadFromFile("assets/characters.png")) {
-        return -1;
-    }
-
-    return 0;
-}
-
 int World::loadTerrainMap() {
-    // TODO: Some terrain is only generated at certain levels
-    // ground tiles
+    // Ground tiles initialization
     groundMap_["-1"] = nullptr;
     groundMap_["4"] = new Terrain(64, 0, 16, 16, groundTexture_);
     groundMap_["46"] = new Terrain(64, 48, 16, 16, groundTexture_);
@@ -129,14 +114,13 @@ int World::loadTerrainMap() {
     groundMap_["130"] = new Terrain(64, 144, 16, 16, groundTexture_);
     groundMap_["297"] = new Terrain(48, 336, 16, 16, groundTexture_);
 
-    // building tiles
+    // Building tiles initialization
     buildingMap_["-1"] = nullptr;
-    buildingMap_["0"] = new Terrain(0, 0, 120, 167, buildingTexture_); // apartment
+    buildingMap_["0"] = new Terrain(0, 0, 120, 168, buildingTexture_); // apartment
     buildingMap_["4"] = new Terrain(392, 0, 48, 48, buildingTexture_); // hot dog stand
     buildingMap_["8"] = new Terrain(864, 0, 64, 56, buildingTexture_); // small house
     buildingMap_["9"] = new Terrain(928, 0, 96, 88, buildingTexture_); // shop
     buildingMap_["10"] = new Terrain(1024, 0, 64, 48, buildingTexture_); // woodcutter house
-    
 
     // Track all dynamically allocated terrains for deletion in the destructor
     for (const auto& pair : groundMap_) {
@@ -144,31 +128,19 @@ int World::loadTerrainMap() {
             allTerrains_.push_back(pair.second);
         }
     }
+
     for (const auto& pair : buildingMap_) {
         if (pair.second != nullptr) {
-            pair.second->getSprite().setOrigin(0.f, (pair.second->getTileSizeY())); 
+            // Set the origin to the bottom-left corner
+            pair.second->getSprite().setOrigin(0.f, pair.second->getTileSizeY());
+
+            // Adjust the y-coordinate by subtracting the height of the sprite
+            float adjustedY = pair.second->getPosition().y - pair.second->getTileSizeY();
+            pair.second->setSpritePos(pair.second->getPosition().x, adjustedY);
+
             allTerrains_.push_back(pair.second);
         }
     }
 
     return 0;
-}
-
-int World::loadCharacters() {
-    characters_.push_back(new Character(0, 32, 16, 16, characterTexture_, sf::Vector2f{0.f, 0.f}));
-    return 0;
-}
-
-void World::drawCharacters(sf::RenderTarget& rt) {
-    for(const Character* actor : characters_) 
-        actor->draw(rt);
-}
-
-sf::Vector2f World::getPlayerCenter() {
-    return sf::Vector2f(characters_[0]->getSprite().getPosition().x, characters_[0]->getSprite().getPosition().y);
-}
-
-void World::updateCharacters(sf::Vector2f dir, float dt) {
-    characters_[0]->setDirection(dir);
-    characters_[0]->update(dt);
 }
