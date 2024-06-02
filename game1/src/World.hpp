@@ -11,6 +11,7 @@ public:
     int genTiles(int height, int width);
     Terrain* getGroundTileAtPos(int y, int x);
     Terrain* getBuildingTileAtPos(int y, int x);
+    vector<vector<Terrain*>> getBuildingTiles();
 private:
     vector<Terrain*> allTerrains_; // allTerrains_: Every vector we create from the loaded textures is added to this vector
     // NOTE: If allTerrains_ is just used for destructor, I think we can just iterate over groundMap_ and delete each, making it obsolete

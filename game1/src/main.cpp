@@ -24,7 +24,7 @@ void updateView(sf::View& view, const sf::RenderWindow& window, CharacterManager
 
     // Update the view center
     view.setCenter(clampedCenterX, clampedCenterY);
-    cout << "Player center x: " << playerCenter.x << " player center y: " << playerCenter.y << endl;
+    // cout << "Player center x: " << playerCenter.x << " player center y: " << playerCenter.y << endl;
 }
 
 int main() {
@@ -35,54 +35,43 @@ int main() {
     bool drawGUI = false;
     int res1x = 1440;
     int res1y = 900;
-    int res2x = 600;
-    int res2y = 800;
+    int res2x = 800;
+    int res2y = 600;
     sf::RenderWindow window(sf::VideoMode(res2x, res2y), "SFML game");
 
     World* world = new World;
     GUI gui;
-    CharacterManager cMgr;
+    CharacterManager cMgr(width, height, tileWidth, tileHeight);
+    InputHandler inputHdlr;
     world->genTiles(height, width);
 
     sf::View view = window.getView();
-    // cout << " view b4 division: " << view.getSize().x << " view y: " << view.getSize().y << endl;
     // view.setCenter((5) * 16, (5) * 16);
     view.setSize(view.getSize().x / 4, view.getSize().y / 4);
-    // cout << " view after division: " << view.getSize().x << " view y: " << view.getSize().y << endl;
     window.setView(view);
 
     auto tp = chrono::steady_clock::now();
 
     // MAIN LOOP
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-                drawGUI = !drawGUI;
-            }
-        }
-
         float dt;
         const auto new_tp = std::chrono::steady_clock::now();
         dt = std::chrono::duration<float>( new_tp - tp ).count();
         tp = new_tp;
-        
+
+        // if new level, share world info with character manager
+
         sf::Vector2f dir = {0.f, 0.f};
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            dir.y -= 1.0f;
+
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            // if (event.type == sf::Event::Closed)
+            //     window.close();
+            // if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+            //     drawGUI = !drawGUI;
+            // }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            dir.y += 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            dir.x -= 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            dir.x += 1.0f;
-        }
-        cMgr.updateCharacters(dir, dt, width, height, world);
+        cMgr.updateCharacters(dt, world->getBuildingTiles());
 
         window.clear(sf::Color (134,192,108));
 

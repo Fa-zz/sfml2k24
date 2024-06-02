@@ -1,14 +1,20 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "Animation.hpp"
-#include "World.hpp"
 
 class Character {
 public:
     Character(int x_, int y_, int tileSizeX_, int tileSizeY_, const sf::Texture& texture, const sf::Vector2f& pos);
     void draw(sf::RenderTarget& rt) const;
-    void setDirection(const sf::Vector2f& dir);
-    void update(float dt, int width, int height, World* world);
+    void setDirection();
+    void update(float dt);
+    void setPos(sf::Vector2f newPos);
     sf::Sprite getSprite();
+    sf::Vector2f getPos();
+    sf::Vector2f getVel();
+    sf::Vector2f getDir();
+    void addDir(sf::Vector2f addDir);
+    void resetDir();
 
 private:
     int x_; // x: x coordinate of sprite on texture png
@@ -27,6 +33,7 @@ private:
     };
 
     static constexpr float speed_ = 100.0f;
+    sf::Vector2f dir_ = {0.f, 0.f};
     sf::Vector2f pos_;
     sf::Vector2f vel_ = {0.0f, 0.0f};
     sf::Sprite sprite_;

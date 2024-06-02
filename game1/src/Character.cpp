@@ -20,9 +20,9 @@ void Character::draw(sf::RenderTarget& rt) const {
     rt.draw(sprite_);
 }
 
-void Character::setDirection(const sf::Vector2f& dir) {
-    vel_ = dir * speed_;
-    if (dir.x == 0.0f && dir.y == 0.0f) {
+void Character::setDirection() {
+    vel_ = dir_ * speed_;
+    if (dir_.x == 0.0f && dir_.y == 0.0f) {
         if (curAnimation_ == AnimationIndex::WalkingHoriz) {
             curAnimation_ = AnimationIndex::StandingStillHoriz;
         } else if (curAnimation_ == AnimationIndex::WalkingUp) {
@@ -33,40 +33,41 @@ void Character::setDirection(const sf::Vector2f& dir) {
         standingStill_ = true;
     } else {
         standingStill_ = false;
-        if (dir.x > 0.0f) {
+        if (dir_.x > 0.0f) {
             curAnimation_ = AnimationIndex::WalkingHoriz;
             walkingLeft_ = false;
-        } else if (dir.x < 0.0f) {
+        } else if (dir_.x < 0.0f) {
             curAnimation_ = AnimationIndex::WalkingHoriz;
             walkingLeft_ = true;
-        } else if (dir.y < 0.0f) {
+        } else if (dir_.y < 0.0f) {
             curAnimation_ = AnimationIndex::WalkingUp;
             walkingLeft_ = false;
-        } else if (dir.y > 0.0f) {
+        } else if (dir_.y > 0.0f) {
             curAnimation_ = AnimationIndex::WalkingDown;
             walkingLeft_ = false;
         }
     }
 }
 
-void Character::update(float dt, int width, int height, World* world) {
-    sf::Vector2f newPos = pos_ + vel_ * dt;
-
-    if (newPos.x >= 0 && newPos.x < (width * tileSizeX_) && newPos.y >= 0 && newPos.y < (height * tileSizeY_)) {
-        int tileX = static_cast<int>(newPos.x) / tileSizeX_;
-        int tileY = static_cast<int>(newPos.y) / tileSizeY_;
-        cout << "tileX:" << tileX << " tileY:" << tileY << endl;
-        Terrain* buildingTile = world->getBuildingTileAtPos(tileY, tileX);
-        if (buildingTile == nullptr) {
-            pos_ = newPos;
-            sprite_.setPosition(pos_);
-        }
-    }
-
+void Character::update(float dt) {
     animations_[int(curAnimation_)].update(dt);
     animations_[int(curAnimation_)].applyToSprite(sprite_, walkingLeft_);
 }
 
-sf::Sprite Character::getSprite() {
-    return sprite_;
+void Character::setPos(sf::Vector2f newPos) {
+    pos_ = newPos;
+    sprite_.setPosition(pos_);
 }
+sf::Sprite Character::getSprite() { return sprite_; }
+
+sf::Vector2f Character::getPos() { return pos_; }
+
+sf::Vector2f Character::getVel() { return vel_; }
+
+sf::Vector2f Character::getDir() { return dir_; }
+
+void Character::addDir(sf::Vector2f newDir) { 
+    dir_ += newDir;
+}
+
+void Character::resetDir() { dir_ = sf::Vector2f{0,0}; }

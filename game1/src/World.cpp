@@ -102,6 +102,10 @@ int World::loadTerrainTextures() {
     return 0;
 }
 
+vector<vector<Terrain*>> World::getBuildingTiles() {
+    return buildingTiles_;
+}
+
 int World::loadTerrainMap() {
     // Ground tiles initialization
     groundMap_["-1"] = nullptr;
