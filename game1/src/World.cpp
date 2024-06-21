@@ -17,16 +17,17 @@ World::~World() {
         delete terrain;
     }
 }
+
 // TODO: At some later point, genTiles should determine which level's tiles are being obtained
 // Instead of having 2 while loops, we should have a helper func that takes as arg map, tiles etc
 int World::genTiles(int height, int width) {
     groundTiles_.resize(height);  // Resize outer vector to the desired height
-    for (int i = 0; i < height; ++i) {
-        groundTiles_[i].resize(width, nullptr);  // Resize inner vector to the desired width, initializing to nullptr
-    }
     buildingTiles_.resize(height);
+    collisionTiles_.resize(height);
     for (int i = 0; i < height; ++i) {
+        groundTiles_[i].resize(width, nullptr);
         buildingTiles_[i].resize(width, nullptr);  // Resize inner vector to the desired width, initializing to nullptr
+        collisionTiles_[i].resize(width, -1);   
     }
 
     // Load ground tiles from CSV
@@ -76,6 +77,28 @@ int World::genTiles(int height, int width) {
         y2++;
     }
 
+    // Load collision tiles from CSV
+    ifstream collCSV("levels/level1_collisions.csv");
+    if (!collCSV.is_open()) {
+        cerr << "Failed to open collision CSV file" << endl;
+        return -1;
+    }
+    int y3 = 0;
+    while (getline(collCSV, line) && y3 < height) {
+        stringstream ss(line);
+        string tiledID3;
+        int x3 = 0;
+        while (getline(ss, tiledID3, ',') && x3 < width) {
+            if (collisionMap_.find(tiledID3) != collisionMap_.end()) {
+                collisionTiles_[y3-1][x3] = collisionMap_.at(tiledID3);
+            } else {
+                collisionTiles_[y3][x3] = 0; // ID is not found, we assume tile is not walkable
+            }
+            x3++;
+        }
+        y3++;
+    }
+
     return 0;
 }
 
@@ -102,9 +125,11 @@ int World::loadTerrainTextures() {
     return 0;
 }
 
-vector<vector<Terrain*>> World::getBuildingTiles() {
-    return buildingTiles_;
-}
+// vector<vector<Terrain*>> World::getBuildingTiles() {
+//     return buildingTiles_;
+// }
+
+vector<vector<int>> World::getCollisionTiles() { return collisionTiles_; }
 
 int World::loadTerrainMap() {
     // Ground tiles initialization
@@ -125,6 +150,12 @@ int World::loadTerrainMap() {
     buildingMap_["8"] = new Terrain(864, 0, 64, 56, buildingTexture_); // small house
     buildingMap_["9"] = new Terrain(928, 0, 96, 88, buildingTexture_); // shop
     buildingMap_["10"] = new Terrain(1024, 0, 64, 48, buildingTexture_); // woodcutter house
+
+    // Collision/entrance tiles initialization
+    collisionMap_["-1"] = -1; // tile is walkable
+    collisionMap_["0"] = 0; // tile is collision
+    collisionMap_["1"] = 1; // tile is entrance
+
 
     // Track all dynamically allocated terrains for deletion in the destructor
     for (const auto& pair : groundMap_) {

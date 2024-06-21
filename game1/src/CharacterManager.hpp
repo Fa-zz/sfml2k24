@@ -13,7 +13,7 @@ public:
     ~CharacterManager();
     void drawCharacters(sf::RenderTarget& rt);
     sf::Vector2f getPlayerCenter(); // NOTE: not properly centered
-    void updateCharacters(float dt, vector<vector<Terrain*>> buildingTiles);
+    void updateCharacters(float dt, vector<vector<int>> colTiles);
 private:
     sf::Texture characterTexture_;
     vector<Character*> characters_;
@@ -21,5 +21,5 @@ private:
     InputHandler *inputHandler_;
     int loadCharacterTextures(); // Loads char textures
     int loadCharacters();
-    sf::Vector2f handleMovementCollision(Character& actor, float dt, vector<vector<Terrain*>> buildingTiles);
+    sf::Vector2f handleMovementCollision(Character& actor, float dt, vector<vector<int>> colTiles);
 };

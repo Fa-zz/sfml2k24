@@ -23,7 +23,8 @@ int CharacterManager::loadCharacterTextures() {
 }
 
 int CharacterManager::loadCharacters() {
-    characters_.push_back(new Character(0, 32, 16, 16, characterTexture_, sf::Vector2f{0.f, 0.f}));
+    characters_.push_back(new Character(0, 32, 16, 16, characterTexture_, sf::Vector2f{3.f * 16, 6.f * 16}));
+    characters_.push_back(new Character(0, 48, 16, 16, characterTexture_, sf::Vector2f{16.f * 16, 10.f * 16}));
     return 0;
 }
 
@@ -36,14 +37,12 @@ sf::Vector2f CharacterManager::getPlayerCenter() {
     return sf::Vector2f(characters_[0]->getSprite().getPosition().x, characters_[0]->getSprite().getPosition().y);
 }
 
-void CharacterManager::updateCharacters(float dt, vector<vector<Terrain*>> buildingTiles) {
+void CharacterManager::updateCharacters(float dt, vector<vector<int>> colTiles) {
+    // cout << "Character pos x: " << characters_[0]->getPos().x << " char pos y: " << characters_[0]->getPos().y << endl;
     Command* command = inputHandler_->handleInput();
     if (command) {
-        if ((command->getCommandsKey() == sf::Keyboard::Right) ||
-        (command->getCommandsKey() == sf::Keyboard::Left) ||
-        (command->getCommandsKey() == sf::Keyboard::Up) ||
-        (command->getCommandsKey() == sf::Keyboard::Down)) {
-            sf::Vector2f result = handleMovementCollision(*characters_[0], dt, buildingTiles);
+        if ((command->getCommandsKey() == sf::Keyboard::Right) || (command->getCommandsKey() == sf::Keyboard::Left) || (command->getCommandsKey() == sf::Keyboard::Up) || (command->getCommandsKey() == sf::Keyboard::Down)) {
+            sf::Vector2f result = handleMovementCollision(*characters_[0], dt, colTiles);
             command->execute(*characters_[0]);
             characters_[0]->setPos(result);
         }
@@ -51,19 +50,26 @@ void CharacterManager::updateCharacters(float dt, vector<vector<Terrain*>> build
     characters_[0]->update(dt);
     characters_[0]->setDirection();
     characters_[0]->resetDir();
+
+    // 
+    // if (inputHandler_->specifiedOutput(AI.overworldNPCMeandering()))
+    //  NPCCommandBuffer.push_back(inputHandler_->specifiedOutput(AI.overworldNPCMeandering()))
 }
 
-sf::Vector2f CharacterManager::handleMovementCollision(Character& actor, float dt, vector<vector<Terrain*>> buildingTiles) {
+sf::Vector2f CharacterManager::handleMovementCollision(Character& actor, float dt, vector<vector<int>> colTiles) {
     sf::Vector2f newPos = actor.getPos() + actor.getVel() * dt;
+    // cout << "New pos: " << newPos.x << " " << newPos.y << endl;
     if (newPos.x >= 0 && newPos.x < (width_ * tileSizeX_) && newPos.y >= 0 && newPos.y < (height_ * tileSizeY_)) {
         int tileX = static_cast<int>(newPos.x) / tileSizeX_;
         int tileY = static_cast<int>(newPos.y) / tileSizeY_;
         cout << "tileX:" << tileX << " tileY:" << tileY << endl;
-        Terrain* buildingTile = buildingTiles[tileY][tileX];
-        if (buildingTile == nullptr) {
+        int colTile = colTiles[tileY][tileX];
+        if (colTile == -1) {
             return newPos;
         } else {
             return actor.getPos();
         }
+    } else {
+        return actor.getPos();
     }
 }

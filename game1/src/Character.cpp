@@ -6,6 +6,7 @@ Character::Character(int x, int y, int tileSizeX, int tileSizeY, const sf::Textu
     : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY), pos_(pos) {
     sprite_.setTexture(texture);
     sprite_.setTextureRect({x, y, tileSizeX, tileSizeY});
+    setPos(pos);
 
     animations_[int(AnimationIndex::StandingStillDown)] = Animation(x, y, tileSizeX, tileSizeY, texture, true);
     animations_[int(AnimationIndex::StandingStillUp)] = Animation(x + tileSizeX, y, tileSizeX, tileSizeY, texture, true);

@@ -26,6 +26,22 @@ Command* InputHandler::handleInput() {
     return nullptr;
 }
 
+// Command* InputHandler::specifiedOutput(int code) {
+//     if (code == 0){
+//         return right_;
+//     }
+//     if (code == 1) {
+//         return left_;
+//     }
+//     if (code == 2) {
+//         return up_;
+//     }
+//     if (code == 3) {
+//         return down_;
+//     }
+//     return nullptr;
+// }
+
 void InputHandler::freeRoamBind() {
     right_ = new moveRight();
     right_->setCommandsKey(sf::Keyboard::Right);

@@ -51,6 +51,7 @@ int main() {
     window.setView(view);
 
     auto tp = chrono::steady_clock::now();
+    float total_t = 0.f;
 
     // MAIN LOOP
     while (window.isOpen()) {
@@ -58,6 +59,7 @@ int main() {
         const auto new_tp = std::chrono::steady_clock::now();
         dt = std::chrono::duration<float>( new_tp - tp ).count();
         tp = new_tp;
+        total_t += dt;
 
         // if new level, share world info with character manager
 
@@ -71,7 +73,7 @@ int main() {
             //     drawGUI = !drawGUI;
             // }
         }
-        cMgr.updateCharacters(dt, world->getBuildingTiles());
+        cMgr.updateCharacters(dt, world->getCollisionTiles());
 
         window.clear(sf::Color (134,192,108));
 
@@ -101,6 +103,7 @@ int main() {
                 }
             }
         }
+        cMgr.drawCharacters(window);
 
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
@@ -112,7 +115,6 @@ int main() {
             }
         }
 
-        cMgr.drawCharacters(window);
         if (drawGUI){
             window.setView(window.getDefaultView());
             gui.renderGUIElems(window, window.getSize());

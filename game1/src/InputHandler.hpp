@@ -10,6 +10,7 @@ public:
     ~InputHandler();
     InputHandler();
     Command* handleInput();
+    // Command* specifiedOutput(int code);
     void freeRoamBind();
 private:
     Command* right_;
