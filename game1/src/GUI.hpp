@@ -6,21 +6,36 @@ using namespace std;
 class GUI {
 public:
     GUI();
+    GUI(sf::Vector2u windowSize, int initChoice);
     ~GUI();
-    void renderGUIElems(sf::RenderTarget& rt, const sf::Vector2u& windowSize);
-
+    void initMainMenuElems();
+    void createTopAndBottomWindow();
+    void setDrawingTopAndBottomWindow(bool drawing);
+    void setDrawingMainMenu(bool drawing);
+    void setWindowSize(sf::Vector2u windowSize);
+    void renderGUIElems(sf::RenderTarget& rt);
 private:
+    sf::Vector2u windowSize_;
     sf::Font font_;
     sf::Text topWindowText_;
     // sf::Texture windowTexture_;
     // sf::Sprite topWindowLeft_;
     // sf::Sprite topWindowRight_;
     sf::RectangleShape* topWindow_;
+    // float topWindowSizeX, topWindowSizeY;
     sf::RectangleShape* topWindowPortrait_;
     sf::RectangleShape* bottomWindow_;
-    vector<sf::RectangleShape*> shapes;
-    // float topWindowSizeX, topWindowSizeY;
+    // vector<sf::RectangleShape*> buttons_;
+    sf::Text mainMenuPlayButtonText_;
+    sf::RectangleShape* mainMenuPlayButton_;
+
+    vector<sf::Text*> textContainer_;
+    vector<sf::RectangleShape*> guiContainer_;
+
+    bool drawTopAndBottomWindow_;
+    bool drawMainMenu_;
 
     void initFont();
-    void initGUIElems();
+    // void initGUIElems();
+    void initTopAndBottomWindow();
 };

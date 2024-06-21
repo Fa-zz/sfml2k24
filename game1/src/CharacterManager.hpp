@@ -7,12 +7,19 @@
 #include "InputHandler.hpp"
 using namespace std;
 
+/*
+    Handles stuff for actors/characters, including PC and NPCs
+    Loads character textures and creates characters. 
+    Takes in dispatched commands.
+    Handles commands, updates characters being mindful of collision
+*/
+
 class CharacterManager {
 public:
-    CharacterManager(int width, int height, int tileSizeX, int tileSizeY);
+    CharacterManager(int width, int height, int tileSizeX, int tileSizeY);  // Loads textures and characters
     ~CharacterManager();
     void drawCharacters(sf::RenderTarget& rt);
-    sf::Vector2f getPlayerCenter(); // NOTE: not properly centered
+    sf::Vector2f getPlayerCenter(); // NOTE: not properly centered on the exact character center
     void updateCharacters(float dt, vector<vector<int>> colTiles);
 private:
     sf::Texture characterTexture_;

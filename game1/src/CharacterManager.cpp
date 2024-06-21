@@ -37,6 +37,9 @@ sf::Vector2f CharacterManager::getPlayerCenter() {
     return sf::Vector2f(characters_[0]->getSprite().getPosition().x, characters_[0]->getSprite().getPosition().y);
 }
 
+// Takes in dispatched commands and handles them, depending on what they are.
+// If movement, uses helper function to determine result of movement, then allows command to execute on desired actor
+// Characters are updated and have direction stuff every cycle.
 void CharacterManager::updateCharacters(float dt, vector<vector<int>> colTiles) {
     // cout << "Character pos x: " << characters_[0]->getPos().x << " char pos y: " << characters_[0]->getPos().y << endl;
     Command* command = inputHandler_->handleInput();
@@ -56,6 +59,8 @@ void CharacterManager::updateCharacters(float dt, vector<vector<int>> colTiles) 
     //  NPCCommandBuffer.push_back(inputHandler_->specifiedOutput(AI.overworldNPCMeandering()))
 }
 
+// Potential position is old position + velocity * dt. Checks if new position violates game boundaries, or a game collision tile
+// Without violation, returns the potential position. With violation returns old character position (character's pos does not change)
 sf::Vector2f CharacterManager::handleMovementCollision(Character& actor, float dt, vector<vector<int>> colTiles) {
     sf::Vector2f newPos = actor.getPos() + actor.getVel() * dt;
     // cout << "New pos: " << newPos.x << " " << newPos.y << endl;
