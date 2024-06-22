@@ -36,6 +36,11 @@ void GUI::initMainMenuElems() {
     cout << "Windowsize x: " << windowSize_.x << " windowSize y: " << windowSize_.y << endl;
     mainMenuPlayButton_->setSize(sf::Vector2f(windowSize_.x * 0.25f, windowSize_.y * 0.09f));
     mainMenuPlayButton_->setPosition(windowSize_.x * 0.375f, windowSize_.y * 0.59f);
+    mainMenuPlayButtonText_.setCharacterSize(24);
+
+    mainMenuPlayButtonText_.setOrigin(mainMenuPlayButtonText_.getGlobalBounds().getSize() / 2.f + mainMenuPlayButtonText_.getLocalBounds().getPosition());
+    mainMenuPlayButtonText_.setPosition(mainMenuPlayButton_->getPosition() + (mainMenuPlayButton_->getSize() / 2.f));
+    
     guiContainer_.push_back(mainMenuPlayButton_);
     // cout << windowSize_.x << " " << windowSize_.y << endl;
     // cout << mainMenuPlayButton_->getPosition().x << " " << mainMenuPlayButton_->getPosition().y << endl;
@@ -83,10 +88,18 @@ void GUI::createTopAndBottomWindow() {
 void GUI::setDrawingTopAndBottomWindow(bool drawing) { drawTopAndBottomWindow_ = drawing; }
 void GUI::setDrawingMainMenu(bool drawing) { drawMainMenu_ = drawing; }
 void GUI::setWindowSize(sf::Vector2u windowSize) { 
-    cout << "setWindowSize to x: " << windowSize.x << " setWindowSize to y: " << windowSize.y << endl;
+    // cout << "setWindowSize to x: " << windowSize.x << " setWindowSize to y: " << windowSize.y << endl;
     windowSize_ = sf::Vector2u{windowSize.x, windowSize.y}; 
-    cout << "setWindowSize_ is x: " << windowSize_.x << " setWindowSize_ is y: " << windowSize_.y << endl;
-
+    // cout << "setWindowSize_ is x: " << windowSize_.x << " setWindowSize_ is y: " << windowSize_.y << endl;
+}
+bool GUI::hoveringOverMMPlayB(sf::Vector2f mouseCords) {
+    if (mainMenuPlayButton_->getGlobalBounds().contains(mouseCords)) {
+        mainMenuPlayButton_->setFillColor(sf::Color(75, 0, 110));
+        return true;
+    } else {
+        mainMenuPlayButton_->setFillColor(sf::Color(255,223,0));
+        return false;
+    }
 }
 
 void GUI::renderGUIElems(sf::RenderTarget& rt) {

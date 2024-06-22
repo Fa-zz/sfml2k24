@@ -13,6 +13,7 @@ public:
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);
     void setWindowSize(sf::Vector2u windowSize);
+    bool hoveringOverMMPlayB(sf::Vector2f mouseCords);
     void renderGUIElems(sf::RenderTarget& rt);
 private:
     sf::Vector2u windowSize_;
@@ -34,6 +35,7 @@ private:
 
     bool drawTopAndBottomWindow_;
     bool drawMainMenu_;
+    bool hoveringMMStartB_;
 
     void initFont();
     // void initGUIElems();

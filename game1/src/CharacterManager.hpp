@@ -25,7 +25,7 @@ private:
     sf::Texture characterTexture_;
     vector<Character*> characters_;
     int width_, height_, tileSizeX_, tileSizeY_; // used for collision checking
-    InputHandler *inputHandler_;
+    // InputHandler *inputHandler_;
     int loadCharacterTextures(); // Loads char textures
     int loadCharacters();
     sf::Vector2f handleMovementCollision(Character& actor, float dt, vector<vector<int>> colTiles);

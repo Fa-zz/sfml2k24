@@ -43,7 +43,7 @@ void Engine::StateMachine::ProcessStateChange()
 
         if (!m_stateStack.empty())
         {
-            m_stateStack.top()->Start();
+            m_stateStack.top()->start();
         }
 
         m_remove = false;
@@ -59,12 +59,12 @@ void Engine::StateMachine::ProcessStateChange()
 
         if (!m_stateStack.empty())
         {
-            m_stateStack.top()->Pause();
+            m_stateStack.top()->pause();
         }
 
         m_stateStack.push(std::move(m_newState));
-        m_stateStack.top()->Init();
-        m_stateStack.top()->Start();
+        m_stateStack.top()->init();
+        // m_stateStack.top()->Start();
         m_add = false;
     }
 }

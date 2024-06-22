@@ -5,14 +5,14 @@ CharacterManager::CharacterManager(int width, int height, int tileSizeX, int til
     if (loadCharacterTextures() != 0)
         cerr << "Failed to load character textures" << endl;
     loadCharacters();
-    inputHandler_ = new InputHandler();
+    // inputHandler_ = new InputHandler();
 }
 
 CharacterManager::~CharacterManager() {
     for (Character* actor : characters_) {
         delete actor;
     }
-    delete inputHandler_;
+    // delete inputHandler_;
 }
 
 int CharacterManager::loadCharacterTextures() {
@@ -42,17 +42,17 @@ sf::Vector2f CharacterManager::getPlayerCenter() {
 // Characters are updated and have direction stuff every cycle.
 void CharacterManager::updateCharacters(float dt, vector<vector<int>> colTiles) {
     // cout << "Character pos x: " << characters_[0]->getPos().x << " char pos y: " << characters_[0]->getPos().y << endl;
-    Command* command = inputHandler_->handleInput();
-    if (command) {
-        if ((command->getCommandsKey() == sf::Keyboard::Right) || (command->getCommandsKey() == sf::Keyboard::Left) || (command->getCommandsKey() == sf::Keyboard::Up) || (command->getCommandsKey() == sf::Keyboard::Down)) {
-            sf::Vector2f result = handleMovementCollision(*characters_[0], dt, colTiles);
-            command->execute(*characters_[0]);
-            characters_[0]->setPos(result);
-        }
-    }
-    characters_[0]->update(dt);
-    characters_[0]->setDirection();
-    characters_[0]->resetDir();
+    // Command* command = inputHandler_->handleInput();
+    // if (command) {
+    //     if ((command->getCommandsKey() == sf::Keyboard::Right) || (command->getCommandsKey() == sf::Keyboard::Left) || (command->getCommandsKey() == sf::Keyboard::Up) || (command->getCommandsKey() == sf::Keyboard::Down)) {
+    //         sf::Vector2f result = handleMovementCollision(*characters_[0], dt, colTiles);
+    //         command->execute(*characters_[0]);
+    //         characters_[0]->setPos(result);
+    //     }
+    // }
+    // characters_[0]->update(dt);
+    // characters_[0]->setDirection();
+    // characters_[0]->resetDir();
 
     // 
     // if (inputHandler_->specifiedOutput(AI.overworldNPCMeandering()))
