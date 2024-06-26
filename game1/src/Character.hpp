@@ -5,6 +5,7 @@
 class Character {
 public:
     Character(int x_, int y_, int tileSizeX_, int tileSizeY_, const sf::Texture& texture, const sf::Vector2f& pos);
+    Character(int x_, int y_, int tileSizeX_, int tileSizeY_, const sf::Vector2f& pos);
     void draw(sf::RenderTarget& rt) const;
     void setDirection();
     void update(float dt);
@@ -17,10 +18,10 @@ public:
     void resetDir();
 
 private:
-    int x_; // x: x coordinate of sprite on texture png
-    int y_; // y: y coordinate of sprite on texture png
-    int tileSizeX_; // tileSizeX: Size of tile in x direction
-    int tileSizeY_; // tileSizeY: Size of tile in y direction
+    // int x_; // x: x coordinate of sprite on texture png
+    // int y_; // y: y coordinate of sprite on texture png
+    // int tileSizeX_; // tileSizeX: Size of tile in x direction
+    // int tileSizeY_; // tileSizeY: Size of tile in y direction
 
     enum class AnimationIndex {
         StandingStillUp,

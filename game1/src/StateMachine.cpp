@@ -64,7 +64,7 @@ void Engine::StateMachine::ProcessStateChange()
 
         m_stateStack.push(std::move(m_newState));
         m_stateStack.top()->init();
-        // m_stateStack.top()->Start();
+        m_stateStack.top()->start();
         m_add = false;
     }
 }

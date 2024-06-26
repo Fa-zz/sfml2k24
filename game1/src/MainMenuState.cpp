@@ -1,6 +1,5 @@
 #include "MainMenuState.hpp"
-//#include "GamePlay.hpp"
-
+#include "GameScreen1.hpp"
 #include <SFML/Window/Event.hpp>
 
 MainMenuState::MainMenuState(std::shared_ptr<Context> &context)
@@ -8,7 +7,15 @@ MainMenuState::MainMenuState(std::shared_ptr<Context> &context)
         m_context->m_gui->setWindowSize(m_context->m_window->getSize());
         m_context->m_gui->initMainMenuElems();
         m_context->m_gui->setDrawingMainMenu(true);
-    }
+}
+
+void MainMenuState::pause() {
+    isPaused_ = true;
+}
+
+void MainMenuState::start() {
+    isPaused_ = false;
+}
 
 MainMenuState::~MainMenuState() { }
 
@@ -25,7 +32,14 @@ void MainMenuState::processInput() {
             sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
             m_context->m_gui->hoveringOverMMPlayB(mousePosF);
         }
-    }
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+            sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
+            if (m_context->m_gui->hoveringOverMMPlayB(mousePosF)) {
+                m_context->m_states->Add(std::make_unique<GameScreen1>(m_context), true);
+            }
+        }
+      }
     //     else if (event.type == sf::Event::KeyPressed)
     //     {
     //         switch (event.key.code)

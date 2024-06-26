@@ -16,10 +16,14 @@ using namespace std;
 
 class CharacterManager {
 public:
+    // todo: load characters is public and setters for private member vars
+    CharacterManager();
     CharacterManager(int width, int height, int tileSizeX, int tileSizeY);  // Loads textures and characters
     ~CharacterManager();
     void drawCharacters(sf::RenderTarget& rt);
     sf::Vector2f getPlayerCenter(); // NOTE: not properly centered on the exact character center
+    sf::Vector2f getCenter(Character& actor);
+    void setPosWithoutCollision(Character& actor, float dt);
     void updateCharacters(float dt, vector<vector<int>> colTiles);
 private:
     sf::Texture characterTexture_;

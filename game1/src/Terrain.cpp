@@ -1,7 +1,8 @@
 #include "Terrain.hpp"
 
 Terrain::Terrain(int x, int y, float tileSizeX, float tileSizeY, const sf::Texture& texture)
-    : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY) {
+    // : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY) {
+    : tileSizeX_(tileSizeX), tileSizeY_(tileSizeY) {
     sprite_.setTexture(texture);
     sprite_.setTextureRect(sf::IntRect(x, y, tileSizeX, tileSizeY));
     // Set origin for building tiles to bottom-left

@@ -3,7 +3,8 @@
 using namespace std;
 
 Character::Character(int x, int y, int tileSizeX, int tileSizeY, const sf::Texture& texture, const sf::Vector2f& pos) 
-    : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY), pos_(pos) {
+    // : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY), pos_(pos) {
+        : pos_(pos) {
     sprite_.setTexture(texture);
     sprite_.setTextureRect({x, y, tileSizeX, tileSizeY});
     setPos(pos);
@@ -15,6 +16,23 @@ Character::Character(int x, int y, int tileSizeX, int tileSizeY, const sf::Textu
     animations_[int(AnimationIndex::WalkingDown)] = Animation(64, y, tileSizeX, tileSizeY, texture, false);
     animations_[int(AnimationIndex::WalkingUp)] = Animation(96, y, tileSizeX, tileSizeY, texture, false);
     animations_[int(AnimationIndex::WalkingHoriz)] = Animation(128, y, tileSizeX, tileSizeY, texture, false);
+}
+
+
+Character::Character(int x, int y, int tileSizeX, int tileSizeY, const sf::Vector2f& pos) 
+    // : x_(x), y_(y), tileSizeX_(tileSizeX), tileSizeY_(tileSizeY), pos_(pos) {
+        : pos_(pos) {
+    // sprite_.setTexture(texture);
+    sprite_.setTextureRect({x, y, tileSizeX, tileSizeY});
+    setPos(pos);
+
+    // animations_[int(AnimationIndex::StandingStillDown)] = Animation(x, y, tileSizeX, tileSizeY, texture, true);
+    // animations_[int(AnimationIndex::StandingStillUp)] = Animation(x + tileSizeX, y, tileSizeX, tileSizeY, texture, true);
+    // animations_[int(AnimationIndex::StandingStillHoriz)] = Animation(x + tileSizeX * 2, y, tileSizeX, tileSizeY, texture, true);
+
+    // animations_[int(AnimationIndex::WalkingDown)] = Animation(64, y, tileSizeX, tileSizeY, texture, false);
+    // animations_[int(AnimationIndex::WalkingUp)] = Animation(96, y, tileSizeX, tileSizeY, texture, false);
+    // animations_[int(AnimationIndex::WalkingHoriz)] = Animation(128, y, tileSizeX, tileSizeY, texture, false);
 }
 
 void Character::draw(sf::RenderTarget& rt) const {

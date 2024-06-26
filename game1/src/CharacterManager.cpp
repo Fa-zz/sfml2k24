@@ -8,6 +8,8 @@ CharacterManager::CharacterManager(int width, int height, int tileSizeX, int til
     // inputHandler_ = new InputHandler();
 }
 
+CharacterManager::CharacterManager() { }
+
 CharacterManager::~CharacterManager() {
     for (Character* actor : characters_) {
         delete actor;
@@ -37,6 +39,10 @@ sf::Vector2f CharacterManager::getPlayerCenter() {
     return sf::Vector2f(characters_[0]->getSprite().getPosition().x, characters_[0]->getSprite().getPosition().y);
 }
 
+sf::Vector2f CharacterManager::getCenter(Character& actor) {
+    return sf::Vector2f(actor.getSprite().getPosition().x, actor.getSprite().getPosition().y);
+}
+
 // Takes in dispatched commands and handles them, depending on what they are.
 // If movement, uses helper function to determine result of movement, then allows command to execute on desired actor
 // Characters are updated and have direction stuff every cycle.
@@ -61,6 +67,10 @@ void CharacterManager::updateCharacters(float dt, vector<vector<int>> colTiles) 
 
 // Potential position is old position + velocity * dt. Checks if new position violates game boundaries, or a game collision tile
 // Without violation, returns the potential position. With violation returns old character position (character's pos does not change)
+void CharacterManager::setPosWithoutCollision(Character& actor, float dt) {
+    actor.setPos(actor.getPos() + actor.getVel() * dt);
+}
+
 sf::Vector2f CharacterManager::handleMovementCollision(Character& actor, float dt, vector<vector<int>> colTiles) {
     sf::Vector2f newPos = actor.getPos() + actor.getVel() * dt;
     // cout << "New pos: " << newPos.x << " " << newPos.y << endl;

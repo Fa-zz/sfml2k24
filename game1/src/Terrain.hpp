@@ -14,8 +14,8 @@ public:
     void setSpritePos(int x, int y);
 
 private:
-    int x_; // x: x coordinate of sprite on texture png
-    int y_; // y: y coordinate of sprite on texture png
+    // int x_; // x: x coordinate of sprite on texture png
+    // int y_; // y: y coordinate of sprite on texture png
     float tileSizeX_; // tileSizeX: Size of tile in x direction
     float tileSizeY_; // tileSizeY: Size of tile in y direction
     sf::Sprite sprite_;

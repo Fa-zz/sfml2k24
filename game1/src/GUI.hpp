@@ -35,7 +35,7 @@ private:
 
     bool drawTopAndBottomWindow_;
     bool drawMainMenu_;
-    bool hoveringMMStartB_;
+    // bool hoveringMMStartB_;
 
     void initFont();
     // void initGUIElems();
