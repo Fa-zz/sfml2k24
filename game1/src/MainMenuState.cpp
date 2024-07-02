@@ -4,9 +4,10 @@
 
 MainMenuState::MainMenuState(std::shared_ptr<Context> &context)
     : m_context(context), window_(*(m_context->m_window)) { 
+        // m_context->m_window->setView(m_context->m_window->getDefaultView());
         m_context->m_gui->setWindowSize(m_context->m_window->getSize());
-        m_context->m_gui->initMainMenuElems();
         m_context->m_gui->setDrawingMainMenu(true);
+        // m_context->m_gui->initMainMenuElems();
 }
 
 void MainMenuState::pause() {
@@ -20,6 +21,12 @@ void MainMenuState::start() {
 MainMenuState::~MainMenuState() { }
 
 void MainMenuState::init() { }
+
+void MainMenuState::loop(const sf::Time &deltaTime) {
+    render();
+    processInput();
+    update(deltaTime);
+}
 
 void MainMenuState::processInput() {
     sf::Event event;
@@ -36,10 +43,16 @@ void MainMenuState::processInput() {
             sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
             sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
             if (m_context->m_gui->hoveringOverMMPlayB(mousePosF)) {
+                m_context->m_gui->setDrawingMainMenu(false);
                 m_context->m_states->Add(std::make_unique<GameScreen1>(m_context), true);
             }
         }
-      }
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Enter) {
+                m_context->m_states->PopCurrent();
+            }
+        }
+    }
     //     else if (event.type == sf::Event::KeyPressed)
     //     {
     //         switch (event.key.code)

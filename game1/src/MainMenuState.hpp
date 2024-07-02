@@ -14,6 +14,7 @@ public:
     ~MainMenuState();
 
     void init() override;
+    void loop(const sf::Time &deltaTime) override;
     void pause() override;
     void start() override;
     void processInput() override;

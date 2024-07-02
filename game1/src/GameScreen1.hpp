@@ -8,6 +8,7 @@
 #include "Game.hpp"
 #include "GUI.hpp"
 #include "Character.hpp"
+#include "Terrain.hpp"
 #include "Data.hpp"
 
 class GameScreen1 : public Engine::State {
@@ -16,6 +17,7 @@ public:
     ~GameScreen1();
 
     void init() override;
+    void loop(const sf::Time& deltaTime) override;
     void pause() override;
     void start() override;
     void processInput() override;
@@ -28,4 +30,8 @@ private:
     sf::View view_;
     int width_, height_;
     bool isPaused_;
+    sf::Vector2f mousePosF_;
+    Terrain* currTerrain_;
+    int highlightX_, highlightY_;
+    void reset();
 };

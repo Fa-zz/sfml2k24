@@ -67,8 +67,11 @@ void CharacterManager::updateCharacters(float dt, vector<vector<int>> colTiles) 
 
 // Potential position is old position + velocity * dt. Checks if new position violates game boundaries, or a game collision tile
 // Without violation, returns the potential position. With violation returns old character position (character's pos does not change)
-void CharacterManager::setPosWithoutCollision(Character& actor, float dt) {
-    actor.setPos(actor.getPos() + actor.getVel() * dt);
+void CharacterManager::setPosWithoutCollisionTiles(Character& actor, float dt, int width, int height) {
+    sf::Vector2f newPos = actor.getPos() + actor.getVel() * dt;
+    if (newPos.x >= 0 && newPos.x < (width * 16) && newPos.y >= 0 && newPos.y < (height * 16)) {
+        actor.setPos(newPos);
+    }
 }
 
 sf::Vector2f CharacterManager::handleMovementCollision(Character& actor, float dt, vector<vector<int>> colTiles) {

@@ -2,7 +2,15 @@
 #include <iostream>
 using namespace std;
 namespace DataSettings {
-    inline const float playerSpeed = 50.f;
+    //    sf::Vector2i res1 = {1440, 900};
+    //    sf::Vector2i res2 = {800, 600};
+
+    inline const float res1x = 1440.f;
+    inline const float res1y = 900.f;
+    inline const float res2x = 800.f;
+    inline const float res2y = 600.f;
+
+    inline const float playerSpeed = 100.f;
 
     inline const void updateView(float playerCenterX, float playerCenterY, int viewWidth, int viewHeight, int tileWidth, int tileHeight, int worldWidth, int worldHeight, float* clampedCenterX, float* clampedCenterY) {
         // sf::Vector2f playerCenter = cMgr.getPlayerCenter();

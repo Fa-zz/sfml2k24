@@ -4,14 +4,15 @@
 
 GameScreen1::GameScreen1(std::shared_ptr<Context> &context)
     : m_context(context), window_(*(m_context->m_window)), player_(*(m_context->m_player)) {
+        cout << "GameScreen1 constructor called" << endl;
+        // m_context->m_gui->initHighlight();
         width_ = 50;
         height_ = 25;
-        m_context->m_gui->setDrawingMainMenu(false);
         m_context->m_world->genTiles(height_, width_);
-        view_ = window_.getView();
         // view.setCenter((5) * 16, (5) * 16);
-        view_.setSize(view_.getSize().x / 4, view_.getSize().y / 4);
-        window_.setView(view_);
+        view_ = m_context->m_window->getView();
+        view_.setSize(view_.getSize().x / 8, view_.getSize().y / 8);
+        // window_.setView(view_);
         // m_context->m_gui->setWindowSize(m_context->m_window->getSize());
         // m_context->m_gui->initMainMenuElems();
         // m_context->m_gui->setDrawingMainMenu(true);
@@ -23,11 +24,21 @@ void GameScreen1::pause() {
 
 void GameScreen1::start() {
     isPaused_ = false;
+    view_ = m_context->m_window->getView();
+    view_.setSize(view_.getSize().x / 8, view_.getSize().y / 8);
 }
 
 GameScreen1::~GameScreen1() { }
 
 void GameScreen1::init() { }
+
+void GameScreen1::loop(const sf::Time& deltaTime) {
+    if (!isPaused_) {
+        render();
+        processInput();
+        update(deltaTime);
+    }
+}
 
 void GameScreen1::processInput() {
     sf::Event event;
@@ -50,86 +61,40 @@ void GameScreen1::processInput() {
                     m_context->m_player->addDir(sf::Vector2f{0.f,DataSettings::playerSpeed});
                     break;
                 case sf::Keyboard::Enter:
-                    // DataSettings::myFunct();
+                    reset();
+                    m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
                     break;
+                // case sf::Keyboard::P:
+                //     break;
             }
         }
 
-    //     if (event.type == sf::Event::MouseMoved) {
-    //         sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-    //         sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-    //         m_context->m_gui->hoveringOverMMPlayB(mousePosF);
-    //     }
-    //     if (event.type == sf::Event::MouseButtonPressed) {
-    //         sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-    //         sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-    //         if (m_context->m_gui->hoveringOverMMPlayB(mousePosF)) {
-    //             m_context->m_states->Add(std::make_unique<GameScreen1>(m_context), true);
-    //         }
-    //     }
-    // }
-//     else if (event.type == sf::Event::KeyPressed)
-    //     {
-    //         switch (event.key.code)
-    //         {
-    //         case sf::Keyboard::Up:
-    //         {
-    //             if (!m_isPlayButtonSelected)
-    //             {
-    //                 m_isPlayButtonSelected = true;
-    //                 m_isExitButtonSelected = false;
-    //             }
-    //             break;
-    //         }
-    //         case sf::Keyboard::Down:
-    //         {
-    //             if (!m_isExitButtonSelected)
-    //             {
-    //                 m_isPlayButtonSelected = false;
-    //                 m_isExitButtonSelected = true;
-    //             }
-    //             break;
-    //         }
-    //         case sf::Keyboard::Return:
-    //         {
-    //             m_isPlayButtonPressed = false;
-    //             m_isExitButtonPressed = false;
+        if (event.type == sf::Event::MouseMoved) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+            // mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
+            sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
+            // m_context->m_gui->hoveringOverObject(sf::Vector2f(mousePosF.x / 16, mousePosF.x / 16));
+            // cout << "World pos x: " << worldPos.x << " world pos y: " << worldPos.y << endl;
+            highlightX_ = worldPos.x / 16;
+            highlightY_ = worldPos.y / 16;
+            // cout << "high x: " << highlightX_ << " high y: " << highlightY_ << endl;
+            m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
 
-    //             if (m_isPlayButtonSelected)
-    //             {
-    //                 m_isPlayButtonPressed = true;
-    //             }
-    //             else
-    //             {
-    //                 m_isExitButtonPressed = true;
-    //             }
 
-    //             break;
-    //         }
-    //         default:
-    //         {
-    //             break;
-    //         }
-    //         }
-    //     }
-    // }
+        }
     }
 }
 
 void GameScreen1::update(const sf::Time &deltaTime) {
-    if (!isPaused_) {
         float dt = deltaTime.asSeconds();
-        m_context->m_cManager->setPosWithoutCollision(player_, dt);
+        m_context->m_cManager->setPosWithoutCollisionTiles(player_, dt, width_, height_);
         m_context->m_player->setDirection();
         m_context->m_player->resetDir();
-
-    }
 }
 
 void GameScreen1::render() {
-    // m_context->m_window->clear(sf::Color::Cyan);
-    // m_context->m_gui->renderGUIElems(window_);
-    // m_context->m_window->display();
+    cout << "In game screen1 render" << endl;
+    m_context->m_gui->setDrawingHighlight(true);
     window_.clear(sf::Color (134,192,108));
     float clampedCenterX;
     float clampedCenterY;
@@ -151,13 +116,24 @@ void GameScreen1::render() {
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
             Terrain* groundTile = m_context->m_world->getGroundTileAtPos(y, x);
+            // currX_ = x;
+            // currY_ = y;
             if (groundTile != nullptr) {
                 groundTile->setSpritePos(x, y);
                 window_.draw(groundTile->getSprite());
+                // if (groundTile->getSprite().getGlobalBounds().contains( mousePosF_ )) {
+                //     m_context->m_gui->setHighlightPos(currX_, currY_);
+                // }
             }
         }
     }
-    cout << "Player center x: " << m_context->m_player->getPos().x << " " << m_context->m_player->getPos().y << endl;
+    m_context->m_gui->renderGUIElems(window_);
     window_.display();
 
+}
+
+void GameScreen1::reset() {
+    view_ = m_context->m_window->getDefaultView();
+    m_context->m_window->setView(view_);
+    m_context->m_gui->setDrawingHighlight(false);
 }

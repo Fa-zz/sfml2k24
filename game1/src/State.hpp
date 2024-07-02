@@ -9,8 +9,9 @@ namespace Engine {
         virtual ~State(){};
 
         virtual void init() = 0;
+        virtual void loop(const sf::Time& deltaTime) = 0;
         virtual void processInput() = 0;
-        virtual void update(const sf::Time& deltaTime) = 0;
+        virtual void update(const sf::Time &deltaTime) = 0;
         virtual void render() = 0;
 
         virtual void pause(){};

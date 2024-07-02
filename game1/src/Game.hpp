@@ -7,6 +7,7 @@
 #include "World.hpp"
 #include "Character.hpp"
 #include "CharacterManager.hpp"
+#include "Data.hpp"
 #include <iostream>
 using namespace std;
 

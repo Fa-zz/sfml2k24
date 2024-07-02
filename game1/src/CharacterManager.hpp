@@ -23,7 +23,7 @@ public:
     void drawCharacters(sf::RenderTarget& rt);
     sf::Vector2f getPlayerCenter(); // NOTE: not properly centered on the exact character center
     sf::Vector2f getCenter(Character& actor);
-    void setPosWithoutCollision(Character& actor, float dt);
+    void setPosWithoutCollisionTiles(Character& actor, float dt, int width, int height);
     void updateCharacters(float dt, vector<vector<int>> colTiles);
 private:
     sf::Texture characterTexture_;
