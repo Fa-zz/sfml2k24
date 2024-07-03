@@ -31,7 +31,7 @@ private:
     int width_, height_;
     bool isPaused_;
     sf::Vector2f mousePosF_;
-    Terrain* currTerrain_;
+    // Terrain* currTerrain_;
     int highlightX_, highlightY_;
     void reset();
 };

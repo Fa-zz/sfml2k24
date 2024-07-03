@@ -5,17 +5,13 @@
 GameScreen1::GameScreen1(std::shared_ptr<Context> &context)
     : m_context(context), window_(*(m_context->m_window)), player_(*(m_context->m_player)) {
         cout << "GameScreen1 constructor called" << endl;
-        // m_context->m_gui->initHighlight();
         width_ = 50;
         height_ = 25;
         m_context->m_world->genTiles(height_, width_);
-        // view.setCenter((5) * 16, (5) * 16);
         view_ = m_context->m_window->getView();
-        view_.setSize(view_.getSize().x / 8, view_.getSize().y / 8);
-        // window_.setView(view_);
-        // m_context->m_gui->setWindowSize(m_context->m_window->getSize());
-        // m_context->m_gui->initMainMenuElems();
-        // m_context->m_gui->setDrawingMainMenu(true);
+        view_.setSize(view_.getSize().x / 6, view_.getSize().y / 6);
+        m_context->m_gui->setDrawingHighlight(true);
+        m_context->m_gui->setDrawingTopBar(true);
 }
 
 void GameScreen1::pause() {
@@ -25,7 +21,9 @@ void GameScreen1::pause() {
 void GameScreen1::start() {
     isPaused_ = false;
     view_ = m_context->m_window->getView();
-    view_.setSize(view_.getSize().x / 8, view_.getSize().y / 8);
+    view_.setSize(view_.getSize().x / 6, view_.getSize().y / 6);
+    m_context->m_gui->setDrawingHighlight(true);
+    m_context->m_gui->setDrawingTopBar(true);
 }
 
 GameScreen1::~GameScreen1() { }
@@ -64,8 +62,9 @@ void GameScreen1::processInput() {
                     reset();
                     m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
                     break;
-                // case sf::Keyboard::P:
-                //     break;
+                case sf::Keyboard::P:
+                    view_ = m_context->m_window->getDefaultView();
+                    break;
             }
         }
 
@@ -93,17 +92,17 @@ void GameScreen1::update(const sf::Time &deltaTime) {
 }
 
 void GameScreen1::render() {
-    cout << "In game screen1 render" << endl;
-    m_context->m_gui->setDrawingHighlight(true);
-    window_.clear(sf::Color (134,192,108));
+    window_.clear(sf::Color(134, 192, 108));
     float clampedCenterX;
     float clampedCenterY;
     DataSettings::updateView(player_.getPos().x, player_.getPos().y, view_.getSize().x, view_.getSize().y, 16, 16, width_, height_, &clampedCenterX, &clampedCenterY);
     view_.setCenter(sf::Vector2f(clampedCenterX, clampedCenterY));
+    
+    // Set the view for the game objects (zoomed-in view)
     window_.setView(view_);
 
+    // Render game objects
     sf::Vector2f center = view_.getCenter();
-    // sf::Vector2f playerCenter = cMgr.getPlayerCenter();
     sf::Vector2f size = view_.getSize();
     float halfWidth = size.x / 2;
     float halfHeight = size.y / 2;
@@ -112,28 +111,29 @@ void GameScreen1::render() {
     int endX = std::min(width_, static_cast<int>((center.x + halfWidth) / 16) + 1);
     int startY = std::max(0, static_cast<int>((center.y - halfHeight) / 16));
     int endY = std::min(height_, static_cast<int>((center.y + halfHeight) / 16) + 1);
-    
+
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
             Terrain* groundTile = m_context->m_world->getGroundTileAtPos(y, x);
-            // currX_ = x;
-            // currY_ = y;
             if (groundTile != nullptr) {
                 groundTile->setSpritePos(x, y);
                 window_.draw(groundTile->getSprite());
-                // if (groundTile->getSprite().getGlobalBounds().contains( mousePosF_ )) {
-                //     m_context->m_gui->setHighlightPos(currX_, currY_);
-                // }
             }
         }
     }
     m_context->m_gui->renderGUIElems(window_);
-    window_.display();
 
+    // Set the view for HUD elements (default view)
+    window_.setView(window_.getDefaultView());
+    m_context->m_gui->renderHUDElems(window_);
+    window_.setView(view_);
+    
+    window_.display();
 }
 
 void GameScreen1::reset() {
     view_ = m_context->m_window->getDefaultView();
     m_context->m_window->setView(view_);
     m_context->m_gui->setDrawingHighlight(false);
+    m_context->m_gui->setDrawingTopBar(false);
 }

@@ -7,6 +7,7 @@ void GUI::initFont() {
     } else {
         topWindowText_.setFont(font_);
         mainMenuPlayButtonText_.setFont(font_);
+        topBarText_.setFont(font_);
     }
 }
 
@@ -36,33 +37,47 @@ void GUI::initHighlight() {
     highlightedObject_->setFillColor(sf::Color(0,0,0,0));
     highlightedObject_->setOutlineColor(sf::Color(255,255,0));
 
-    guiContainer_.push_back(highlightedObject_);
+    // guiContainer_.push_back(highlightedObject_);
     guiMap_["highlightedObject"] = highlightedObject_;
 }
 
 void GUI::initMainMenuElems() {
     mainMenuPlayButton_ = new sf::RectangleShape();
+    
     mainMenuPlayButton_->setFillColor(sf::Color(255,223,0));
-    mainMenuPlayButtonText_.setString("Play!");
-    cout << "Windowsize x: " << windowSize_.x << " windowSize y: " << windowSize_.y << endl;
     mainMenuPlayButton_->setSize(sf::Vector2f(windowSize_.x * 0.25f, windowSize_.y * 0.09f));
     mainMenuPlayButton_->setPosition(windowSize_.x * 0.375f, windowSize_.y * 0.59f);
-    mainMenuPlayButtonText_.setCharacterSize(24);
 
+    mainMenuPlayButtonText_.setString("Play!");
+    mainMenuPlayButtonText_.setCharacterSize(24);
     mainMenuPlayButtonText_.setOrigin(mainMenuPlayButtonText_.getGlobalBounds().getSize() / 2.f + mainMenuPlayButtonText_.getLocalBounds().getPosition());
     mainMenuPlayButtonText_.setPosition(mainMenuPlayButton_->getPosition() + (mainMenuPlayButton_->getSize() / 2.f));
     
-    guiContainer_.push_back(mainMenuPlayButton_);
+    // guiContainer_.push_back(mainMenuPlayButton_);
     guiMap_["mainMenuPlayButton"] = mainMenuPlayButton_;
     // cout << windowSize_.x << " " << windowSize_.y << endl;
     // cout << mainMenuPlayButton_->getPosition().x << " " << mainMenuPlayButton_->getPosition().y << endl;
+}
 
+void GUI::initTopBar() {
+    topBar_ = new sf::RectangleShape();
+    topBar_->setFillColor(sf::Color(0,0,0));
+    topBar_->setPosition(sf::Vector2f(0.f,0.f));
+    topBar_->setSize(sf::Vector2f( static_cast<float>(windowSize_.x) , static_cast<float>(windowSize_.y * 0.111f) )); // On 1440x900, this is 1440x100
+    
+    topBarText_.setString("Population: 0\tFood: 100\tHappiness: 100\tDay: 0");
+    topBarText_.setCharacterSize(12);
+    topBarText_.setOrigin(topBarText_.getGlobalBounds().getSize() / 2.f + topBarText_.getLocalBounds().getPosition());
+    topBarText_.setPosition(topBar_->getPosition() + (topBar_->getSize() / 2.f));
+
+    guiMap_["topBar"] = topBar_;
 }
 
 void GUI::initAll() {
     initFont();
     initHighlight();
     initMainMenuElems();
+    initTopBar();
 }
 
 GUI::GUI() {
@@ -77,19 +92,6 @@ GUI::GUI(sf::Vector2u windowSize, int initChoice): windowSize_(windowSize) {
 }
 
 GUI::~GUI() {
-    cout << " GUI destructor called " << endl;
-    // if (topWindow_)
-    //     delete topWindow_;
-    // if (topWindowPortrait_)
-    //     delete topWindowPortrait_;
-    // if (bottomWindow_)
-    //     delete bottomWindow_;
-    // for (sf::Text* text : textContainer_) {
-    //     delete text;
-    // }
-    // for (sf::RectangleShape* rectangle : guiContainer_) {
-    //     delete rectangle;
-    // }
     for (auto& pair : guiMap_) {
         delete pair.second;
     }
@@ -109,10 +111,7 @@ void GUI::createTopAndBottomWindow() {
 
 void GUI::setDrawingTopAndBottomWindow(bool drawing) { drawTopAndBottomWindow_ = drawing; }
 void GUI::setDrawingMainMenu(bool drawing) { drawMainMenu_ = drawing; }
-void GUI::setDrawingHighlight(bool drawing) { 
-    cout << "Highlight has been set to " << drawing << endl;
-    drawHighlight_ = drawing; 
-}
+void GUI::setDrawingHighlight(bool drawing) { drawHighlight_ = drawing; }
 void GUI::setWindowSize(sf::Vector2u windowSize) { windowSize_ = sf::Vector2u{windowSize.x, windowSize.y}; }
 void GUI::setHighlightPos(int x, int y) {
     // highlightedObject_->setPosition(x, y);
@@ -128,29 +127,28 @@ bool GUI::hoveringOverMMPlayB(sf::Vector2f mouseCords) {
         return false;
     }
 }
-
-// void GUI::hoveringOverObject(sf::Vector2i drawCords) {
-//     // cout << mouseCords.x << mouseCords.y << endl;
-//     highlightedObject_->
-// }
+void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
 
 void GUI::renderGUIElems(sf::RenderTarget& rt) {
     if (drawMainMenu_) {
-        // cout << "GUI.cpp: Drawing main menu" << endl;
-        // cout << "button pos x: " << mainMenuPlayButton_->getPosition().x << endl;
         rt.draw(*guiMap_["mainMenuPlayButton"]);
-        // rt.draw(*guiContainer_[0]);
         rt.draw(mainMenuPlayButtonText_);
     }
     if (drawHighlight_) {
-        // cout << "GUI.cpp: drawing highlight" << endl;
-        // rt.draw(*guiContainer_[1]);
         rt.draw(*guiMap_["highlightedObject"]);
     }
-    if (drawTopAndBottomWindow_) {
-        rt.draw(*topWindow_);
-        //rt.draw(*topWindowPortrait_);
-        rt.draw(*bottomWindow_);
+    // view changes hered
+    // if (drawTopAndBottomWindow_) {
+    //     rt.draw(*topWindow_);
+    //     //rt.draw(*topWindowPortrait_);
+    //     rt.draw(*bottomWindow_);
+    // }
+}
+
+void GUI::renderHUDElems(sf::RenderTarget& rt) {
+    if (drawTopBar_) {
+        rt.draw(*guiMap_["topBar"]);
+        rt.draw(topBarText_);
     }
 }
 

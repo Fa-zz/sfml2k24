@@ -12,19 +12,23 @@ public:
     void initAll();
     void initMainMenuElems();
     void initHighlight();
+    void initTopBar();
     void setWindowSize(sf::Vector2u windowSize);
     void createTopAndBottomWindow();
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
+    void setDrawingTopBar(bool drawing);
     bool hoveringOverMMPlayB(sf::Vector2f mouseCords);
     void hoveringOverObject(sf::Vector2i drawCords);
     void renderGUIElems(sf::RenderTarget& rt);
+    void renderHUDElems(sf::RenderTarget& rt);
 private:
     sf::Vector2u windowSize_;
     sf::Font font_;
     sf::Text topWindowText_;
+    sf::Text topBarText_;
     // sf::Texture windowTexture_;
     // sf::Sprite topWindowLeft_;
     // sf::Sprite topWindowRight_;
@@ -36,15 +40,19 @@ private:
     sf::Text mainMenuPlayButtonText_;
     sf::RectangleShape* mainMenuPlayButton_;
     sf::RectangleShape* highlightedObject_;
+    sf::RectangleShape* topBar_;
 
-    vector<sf::Text*> textContainer_;
-    vector<sf::RectangleShape*> guiContainer_;
+    // vector<sf::Text*> textContainer_;
+    // vector<sf::RectangleShape*> guiContainer_;
     unordered_map<string, sf::RectangleShape*> guiMap_;
+    // unordered_map<string, sf::Text*> textMap_;
+
 
     bool drawTopAndBottomWindow_;
     bool drawMainMenu_;
     // bool hoveringMMStartB_;
     bool drawHighlight_;
+    bool drawTopBar_;
 
     void initFont();
     // void initGUIElems();
