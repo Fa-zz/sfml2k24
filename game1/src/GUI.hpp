@@ -2,10 +2,16 @@
 #include "SFML/Graphics.hpp"
 #include "StateMachine.hpp"
 #include "State.hpp"
-#include "TileInfobox.hpp"
 #include <vector>
 #include <unordered_map>
 using namespace std;
+
+struct GUIContext {
+    std::unique_ptr<Engine::StateMachine> stateMachine_;
+    GUIContext() {
+        stateMachine_ = std::make_unique<Engine::StateMachine>();
+    }
+};
 
 class GUI {
 public:
@@ -18,7 +24,6 @@ public:
     void initTopBar();
     void initInfobox(int data);
     void setWindowSize(sf::Vector2u windowSize);
-    void createTopAndBottomWindow();
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);
     void setDrawingHighlight(bool drawing);
@@ -29,6 +34,7 @@ public:
     void renderGUIElems(sf::RenderTarget& rt);
     void renderHUDElems(sf::RenderTarget& rt);
 private:
+    std::shared_ptr<GUIContext> gui_context_;
     // std::shared_ptr<Engine::StateMachine> stateMachine_;
     std::unique_ptr<Engine::StateMachine> stateMachine_;
     sf::Vector2u windowSize_;
@@ -47,7 +53,7 @@ private:
     sf::RectangleShape* topBar_;
     unordered_map<string, sf::RectangleShape*> guiMap_;
 
-    bool drawTopAndBottomWindow_;
+    // bool drawTopAndBottomWindow_;
     bool drawMainMenu_;
     // bool hoveringMMStartB_;
     bool drawHighlight_;
@@ -55,5 +61,5 @@ private:
 
     void initFont();
     // void initGUIElems();
-    void initTopAndBottomWindow();
+    // void initTopAndBottomWindow();
 };
