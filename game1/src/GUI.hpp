@@ -1,5 +1,8 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "StateMachine.hpp"
+#include "State.hpp"
+#include "TileInfobox.hpp"
 #include <vector>
 #include <unordered_map>
 using namespace std;
@@ -13,6 +16,7 @@ public:
     void initMainMenuElems();
     void initHighlight();
     void initTopBar();
+    void initInfobox(int data);
     void setWindowSize(sf::Vector2u windowSize);
     void createTopAndBottomWindow();
     void setDrawingTopAndBottomWindow(bool drawing);
@@ -25,6 +29,8 @@ public:
     void renderGUIElems(sf::RenderTarget& rt);
     void renderHUDElems(sf::RenderTarget& rt);
 private:
+    // std::shared_ptr<Engine::StateMachine> stateMachine_;
+    std::unique_ptr<Engine::StateMachine> stateMachine_;
     sf::Vector2u windowSize_;
     sf::Font font_;
     sf::Text topWindowText_;
@@ -33,20 +39,13 @@ private:
     // sf::Sprite topWindowLeft_;
     // sf::Sprite topWindowRight_;
     sf::RectangleShape* topWindow_;
-    // float topWindowSizeX, topWindowSizeY;
     sf::RectangleShape* topWindowPortrait_;
     sf::RectangleShape* bottomWindow_;
-    // vector<sf::RectangleShape*> buttons_;
     sf::Text mainMenuPlayButtonText_;
     sf::RectangleShape* mainMenuPlayButton_;
     sf::RectangleShape* highlightedObject_;
     sf::RectangleShape* topBar_;
-
-    // vector<sf::Text*> textContainer_;
-    // vector<sf::RectangleShape*> guiContainer_;
     unordered_map<string, sf::RectangleShape*> guiMap_;
-    // unordered_map<string, sf::Text*> textMap_;
-
 
     bool drawTopAndBottomWindow_;
     bool drawMainMenu_;

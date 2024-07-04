@@ -19,6 +19,7 @@ void GameScreen1::pause() {
 }
 
 void GameScreen1::start() {
+    cout << " Game screen 1 start called " << endl;
     isPaused_ = false;
     view_ = m_context->m_window->getView();
     view_.setSize(view_.getSize().x / 6, view_.getSize().y / 6);
@@ -72,14 +73,24 @@ void GameScreen1::processInput() {
             sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
             // mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
             sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
+            cout << "WorldPos.x " << worldPos.x << " worldPos.y " << worldPos.y << endl;
             // m_context->m_gui->hoveringOverObject(sf::Vector2f(mousePosF.x / 16, mousePosF.x / 16));
             // cout << "World pos x: " << worldPos.x << " world pos y: " << worldPos.y << endl;
             highlightX_ = worldPos.x / 16;
             highlightY_ = worldPos.y / 16;
             // cout << "high x: " << highlightX_ << " high y: " << highlightY_ << endl;
             m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
-
-
+        }
+        if (event.type == sf::Event::MouseButtonPressed) {
+            // if (m_context->m_gui->hoveringOverMMPlayB(mousePosF)) {
+                // m_context->m_gui->setDrawingMainMenu(false);
+                // m_context->m_states->Add(std::make_unique<GameScreen1>(m_context), true);
+            // }
+            // m_context->m_gui->setDrawingTopAndBottomWindow(true);
+            // cout << "You clicked at pos " << highlightX_ << " " << highlightY_ << endl;
+            Terrain* groundTile = m_context->m_world->getGroundTileAtPos(highlightY_, highlightX_);
+            cout << "You clicked on a groundTile with info " << groundTile->getDummyInfo() << endl;
+            m_context->m_gui->initInfobox(groundTile->getDummyInfo());
         }
     }
 }
@@ -127,7 +138,7 @@ void GameScreen1::render() {
     window_.setView(window_.getDefaultView());
     m_context->m_gui->renderHUDElems(window_);
     window_.setView(view_);
-    
+
     window_.display();
 }
 

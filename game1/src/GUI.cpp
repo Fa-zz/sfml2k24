@@ -17,13 +17,23 @@ void GUI::initTopAndBottomWindow() {
     topWindow_->setFillColor(sf::Color(32, 178, 170, 225));
     topWindow_->setOutlineColor(sf::Color(70, 90, 70));
 
-    topWindowPortrait_ = new sf::RectangleShape();
-    topWindowPortrait_->setFillColor(sf::Color(255, 255, 255));
+    // topWindowPortrait_ = new sf::RectangleShape();
+    // topWindowPortrait_->setFillColor(sf::Color(255, 255, 255));
 
     bottomWindow_ = new sf::RectangleShape();
     bottomWindow_->setOutlineThickness(10);
     bottomWindow_->setFillColor(sf::Color(32, 178, 170, 225));
     bottomWindow_->setOutlineColor(sf::Color(143, 188, 143));
+
+    float windowWidth = windowSize_.x;
+    float windowHeight = windowSize_.y;
+    topWindow_->setSize(sf::Vector2f(windowWidth * 0.8f, windowHeight * 0.4f));
+    topWindow_->setPosition(windowWidth * 0.1f, windowHeight * 0.05f);
+    bottomWindow_->setSize(sf::Vector2f(topWindow_->getSize().x, topWindow_->getSize().y));
+    bottomWindow_->setPosition(windowWidth * 0.1f, windowHeight * 0.55f);
+
+    guiMap_["topWindow"] = topWindow_;
+    guiMap_["bottomWindow"] = bottomWindow_;
 }
 
 // void GUI::initGUIElems() {
@@ -65,7 +75,7 @@ void GUI::initTopBar() {
     topBar_->setPosition(sf::Vector2f(0.f,0.f));
     topBar_->setSize(sf::Vector2f( static_cast<float>(windowSize_.x) , static_cast<float>(windowSize_.y * 0.111f) )); // On 1440x900, this is 1440x100
     
-    topBarText_.setString("Population: 0\tFood: 100\tHappiness: 100\tDay: 0");
+    topBarText_.setString("Baltimore   Pop:0   Fd:100   Mood:100   Day:0");
     topBarText_.setCharacterSize(12);
     topBarText_.setOrigin(topBarText_.getGlobalBounds().getSize() / 2.f + topBarText_.getLocalBounds().getPosition());
     topBarText_.setPosition(topBar_->getPosition() + (topBar_->getSize() / 2.f));
@@ -73,13 +83,20 @@ void GUI::initTopBar() {
     guiMap_["topBar"] = topBar_;
 }
 
+void GUI::initInfobox(int data) {
+    stateMachine_->Add(std::make_unique<TileInfobox>(font_, windowSize_.x, windowSize_.y, data));
+}
+
 void GUI::initAll() {
     initFont();
+    initTopAndBottomWindow();
     initHighlight();
     initMainMenuElems();
     initTopBar();
-}
+    stateMachine_ = std::make_unique<Engine::StateMachine>();
 
+}
+// CONSTRUCTOR AND DESTRUCTOR
 GUI::GUI() {
     initAll();
 }
@@ -99,14 +116,15 @@ GUI::~GUI() {
 }
 
 void GUI::createTopAndBottomWindow() {
-    float windowWidth = windowSize_.x;
-    float windowHeight = windowSize_.y;
-    topWindow_->setSize(sf::Vector2f(windowWidth * 0.8f, windowHeight * 0.4f));
-    topWindow_->setPosition(windowWidth * 0.1f, windowHeight * 0.05f);
-    bottomWindow_->setSize(sf::Vector2f(topWindow_->getSize().x, topWindow_->getSize().y));
-    bottomWindow_->setPosition(windowWidth * 0.1f, windowHeight * 0.55f);
+    // float windowWidth = windowSize_.x;
+    // float windowHeight = windowSize_.y;
+    // topWindow_->setSize(sf::Vector2f(windowWidth * 0.8f, windowHeight * 0.4f));
+    // topWindow_->setPosition(windowWidth * 0.1f, windowHeight * 0.05f);
+    // bottomWindow_->setSize(sf::Vector2f(topWindow_->getSize().x, topWindow_->getSize().y));
+    // bottomWindow_->setPosition(windowWidth * 0.1f, windowHeight * 0.55f);
     // topWindowPortrait_->setSize(sf::Vector2f(windowWidth * 0.15f, windowHeight * 0.3f));
     // topWindowPortrait_->setPosition(windowWidth * 0.9f - topWindowPortrait_->getSize().x, windowHeight * 0.05f);
+    return;
 }
 
 void GUI::setDrawingTopAndBottomWindow(bool drawing) { drawTopAndBottomWindow_ = drawing; }
@@ -137,18 +155,23 @@ void GUI::renderGUIElems(sf::RenderTarget& rt) {
     if (drawHighlight_) {
         rt.draw(*guiMap_["highlightedObject"]);
     }
-    // view changes hered
-    // if (drawTopAndBottomWindow_) {
-    //     rt.draw(*topWindow_);
-    //     //rt.draw(*topWindowPortrait_);
-    //     rt.draw(*bottomWindow_);
-    // }
 }
 
 void GUI::renderHUDElems(sf::RenderTarget& rt) {
     if (drawTopBar_) {
         rt.draw(*guiMap_["topBar"]);
         rt.draw(topBarText_);
+    }
+    if (drawTopAndBottomWindow_) {
+        rt.draw(*topWindow_);
+        //rt.draw(*topWindowPortrait_);
+        rt.draw(*bottomWindow_);
+    }
+
+    stateMachine_->ProcessStateChange();
+
+    if (!stateMachine_->IsEmpty()) {
+        stateMachine_->GetCurrent()->loop(rt);
     }
 }
 

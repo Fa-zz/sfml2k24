@@ -31,3 +31,6 @@ void Terrain::setSpritePos(int x, int y) {
         sprite_.setPosition(x * 16.f, y * 16.f);
     }
 }
+
+void Terrain::setDummyInfo(int x) { dummyInfo_ = x; }
+int Terrain::getDummyInfo() { return dummyInfo_; };

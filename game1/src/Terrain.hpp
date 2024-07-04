@@ -12,6 +12,8 @@ public:
     sf::Vector2f getPosition() const;
 
     void setSpritePos(int x, int y);
+    void setDummyInfo(int x);
+    int getDummyInfo();
 
 private:
     // int x_; // x: x coordinate of sprite on texture png
@@ -19,4 +21,5 @@ private:
     float tileSizeX_; // tileSizeX: Size of tile in x direction
     float tileSizeY_; // tileSizeY: Size of tile in y direction
     sf::Sprite sprite_;
+    int dummyInfo_;
 };

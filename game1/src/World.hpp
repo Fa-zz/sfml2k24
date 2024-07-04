@@ -2,6 +2,8 @@
 #include "Terrain.hpp"
 #include <vector>
 #include <unordered_map>
+#include <iostream>  
+#include <ctime>  
 using namespace std;
 
 class World {
