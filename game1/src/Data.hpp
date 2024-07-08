@@ -1,6 +1,9 @@
 #pragma once
-#include <iostream>
-using namespace std;
+#include <iostream> 
+#include <sstream> 
+#include <string> 
+using namespace std; 
+
 namespace DataSettings {
     //    sf::Vector2i res1 = {1440, 900};
     //    sf::Vector2i res2 = {800, 600};
@@ -32,4 +35,23 @@ namespace DataSettings {
         // view.setCenter(clampedCenterX, clampedCenterY);
         // cout << "Player center x: " << playerCenter.x << " player center y: " << playerCenter.y << endl;
     }
+
+    inline const void splitString(string& input, char delimiter, 
+                    string arr[]) 
+    {
+        // Creating an input string stream from the input string 
+        istringstream stream(input); 
+    
+        // Temporary string to store each token 
+        string token; 
+
+        int index = 0; 
+
+        // Read tokens from the string stream separated by the 
+        // delimiter 
+        while (getline(stream, token, delimiter)) { 
+            // Add the token to the array 
+            arr[index++] = token; 
+        } 
+    } 
 }

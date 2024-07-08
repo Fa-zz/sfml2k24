@@ -9,6 +9,7 @@
 #include "GUI.hpp"
 #include "Character.hpp"
 #include "Terrain.hpp"
+#include "GameMaster.hpp"
 #include "Data.hpp"
 
 class GameScreen1 : public Engine::State {

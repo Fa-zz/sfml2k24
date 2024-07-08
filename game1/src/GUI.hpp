@@ -29,6 +29,9 @@ public:
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
+    void setMouseInfo(float x, float y, bool clicked, string linkData[]);
+    bool getGUIStackEmpty();
+    void popCurrentState();
     bool hoveringOverMMPlayB(sf::Vector2f mouseCords);
     void hoveringOverObject(sf::Vector2i drawCords);
     void renderGUIElems(sf::RenderTarget& rt);

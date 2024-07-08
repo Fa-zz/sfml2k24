@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
+#include "string"
+using namespace std;
 
 namespace Engine {
     class State {
@@ -19,6 +21,10 @@ namespace Engine {
         virtual void update() {}
         virtual void render() = 0;
         virtual void render(sf::RenderTarget& rt) {}
+
+        virtual void mouseInfo(float x, float y, bool clicked, string data[]) {}
+        virtual void getData(string data[]) {}
+
 
         virtual void pause() {};
         virtual void start() {};

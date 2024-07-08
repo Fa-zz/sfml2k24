@@ -45,52 +45,74 @@ void GameScreen1::processInput() {
         if (event.type == sf::Event::Closed) {
             m_context->m_states->PopAll();
         }
-        if (event.type == sf::Event::KeyPressed) {
-            switch (event.key.code) {
-                case sf::Keyboard::D:
-                    m_context->m_player->addDir(sf::Vector2f{DataSettings::playerSpeed,0.f});
-                    break;
-                case sf::Keyboard::A:
-                    m_context->m_player->addDir(sf::Vector2f{-DataSettings::playerSpeed,0.f});
-                    break;
-                case sf::Keyboard::W:
-                    m_context->m_player->addDir(sf::Vector2f{0.f,-DataSettings::playerSpeed});
-                    break;
-                case sf::Keyboard::S:
-                    m_context->m_player->addDir(sf::Vector2f{0.f,DataSettings::playerSpeed});
-                    break;
-                case sf::Keyboard::Enter:
-                    reset();
-                    m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
-                    break;
-                case sf::Keyboard::P:
-                    view_ = m_context->m_window->getDefaultView();
-                    break;
+        if (m_context->m_gui->getGUIStackEmpty()) {
+            if (event.type == sf::Event::KeyPressed) {
+                switch (event.key.code) {
+                    case sf::Keyboard::D:
+                        m_context->m_player->addDir(sf::Vector2f{DataSettings::playerSpeed,0.f});
+                        break;
+                    case sf::Keyboard::A:
+                        m_context->m_player->addDir(sf::Vector2f{-DataSettings::playerSpeed,0.f});
+                        break;
+                    case sf::Keyboard::W:
+                        m_context->m_player->addDir(sf::Vector2f{0.f,-DataSettings::playerSpeed});
+                        break;
+                    case sf::Keyboard::S:
+                        m_context->m_player->addDir(sf::Vector2f{0.f,DataSettings::playerSpeed});
+                        break;
+                    case sf::Keyboard::Enter:
+                        reset();
+                        m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
+                        break;
+                    case sf::Keyboard::P:
+                        view_ = m_context->m_window->getDefaultView();
+                        break;
+                }
             }
-        }
+            if (event.type == sf::Event::MouseMoved) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+                // mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
+                sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
+                // cout << "WorldPos.x " << worldPos.x << " worldPos.y " << worldPos.y << endl;
+                // m_context->m_gui->hoveringOverObject(sf::Vector2f(mousePosF.x / 16, mousePosF.x / 16));
+                // cout << "World pos x: " << worldPos.x << " world pos y: " << worldPos.y << endl;
+                highlightX_ = worldPos.x / 16;
+                highlightY_ = worldPos.y / 16;
+                // cout << "high x: " << highlightX_ << " high y: " << highlightY_ << endl;
+                m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                // if (m_context->m_gui->hoveringOverMMPlayB(mousePosF)) {
+                    // m_context->m_gui->setDrawingMainMenu(false);
+                    // m_context->m_states->Add(std::make_unique<GameScreen1>(m_context), true);
+                // }
+                // m_context->m_gui->setDrawingTopAndBottomWindow(true);
+                // cout << "You clicked at pos " << highlightX_ << " " << highlightY_ << endl;
+                // Terrain* groundTile = m_context->m_world->getGroundTileAtPos(highlightY_, highlightX_);
+                // cout << "You clicked on a groundTile with info " << groundTile->getDummyInfo() << endl;
+                // m_context->m_gui->initInfobox(groundTile->getDummyInfo());
+                m_context->m_gameMaster->infoboxMaster(highlightX_, highlightY_, true);
+                // m_context->m_gameMaster->infoboxMaster(highlightX_, highlightY_);
+            }
+        } else if (!(m_context->m_gui->getGUIStackEmpty())) {
+            if (event.type == sf::Event::MouseMoved) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+                mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
+                // sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
+                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
+                // cout << "WorldPos.x " << worldPos.x << " worldPos.y " << worldPos.y << endl;
+                // m_context->m_gui->hoveringOverObject(sf::Vector2f(mousePosF.x / 16, mousePosF.x / 16));
+                // cout << "World pos x: " << worldPos.x << " world pos y: " << worldPos.y << endl;
+                // highlightX_ = worldPos.x / 16;
+                // highlightY_ = worldPos.y / 16;
+                // // cout << "high x: " << highlightX_ << " high y: " << highlightY_ << endl;
+                // m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true);
+            }
 
-        if (event.type == sf::Event::MouseMoved) {
-            sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-            // mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-            sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
-            cout << "WorldPos.x " << worldPos.x << " worldPos.y " << worldPos.y << endl;
-            // m_context->m_gui->hoveringOverObject(sf::Vector2f(mousePosF.x / 16, mousePosF.x / 16));
-            // cout << "World pos x: " << worldPos.x << " world pos y: " << worldPos.y << endl;
-            highlightX_ = worldPos.x / 16;
-            highlightY_ = worldPos.y / 16;
-            // cout << "high x: " << highlightX_ << " high y: " << highlightY_ << endl;
-            m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
-        }
-        if (event.type == sf::Event::MouseButtonPressed) {
-            // if (m_context->m_gui->hoveringOverMMPlayB(mousePosF)) {
-                // m_context->m_gui->setDrawingMainMenu(false);
-                // m_context->m_states->Add(std::make_unique<GameScreen1>(m_context), true);
-            // }
-            // m_context->m_gui->setDrawingTopAndBottomWindow(true);
-            // cout << "You clicked at pos " << highlightX_ << " " << highlightY_ << endl;
-            Terrain* groundTile = m_context->m_world->getGroundTileAtPos(highlightY_, highlightX_);
-            cout << "You clicked on a groundTile with info " << groundTile->getDummyInfo() << endl;
-            m_context->m_gui->initInfobox(groundTile->getDummyInfo());
+
         }
     }
 }

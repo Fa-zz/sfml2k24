@@ -1,5 +1,5 @@
 #include "GUI.hpp"
-#include "TileInfobox.hpp"
+#include "Infobox.hpp"
 #include <iostream>
 
 void GUI::initFont() {
@@ -85,7 +85,7 @@ void GUI::initTopBar() {
 }
 
 void GUI::initInfobox(int data) {
-    gui_context_->stateMachine_->Add(std::make_unique<TileInfobox>(font_, windowSize_.x, windowSize_.y, data, gui_context_));
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, data, gui_context_));
 }
 
 void GUI::initAll() {
@@ -135,6 +135,21 @@ bool GUI::hoveringOverMMPlayB(sf::Vector2f mouseCords) {
     }
 }
 void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
+void GUI::setMouseInfo(float x, float y, bool clicked, string linkData[]) {
+    gui_context_->stateMachine_->GetCurrent()->mouseInfo(x, y, clicked, linkData);
+    // if (clicked) {
+    //     gui_context_->stateMachine_->GetCurrent()->getData(linkData);
+    //     cout << "Data has been trans"
+    // }
+}
+
+bool GUI::getGUIStackEmpty() {
+    return gui_context_->stateMachine_->IsEmpty();
+}
+
+void GUI::popCurrentState() {
+    gui_context_->stateMachine_->PopCurrent();
+}
 
 void GUI::renderGUIElems(sf::RenderTarget& rt) {
     if (drawMainMenu_) {

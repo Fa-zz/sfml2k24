@@ -5,6 +5,7 @@
 #include "StateMachine.hpp"
 #include "GUI.hpp"
 #include "World.hpp"
+#include "GameMaster.hpp"
 #include "Character.hpp"
 #include "CharacterManager.hpp"
 #include "Data.hpp"
@@ -18,6 +19,7 @@ struct Context {
     std::unique_ptr<World> m_world;
     std::unique_ptr<Character> m_player;
     std::unique_ptr<CharacterManager> m_cManager;
+    std::unique_ptr<GameMaster> m_gameMaster;
 
     Context() {
         m_states = std::make_unique<Engine::StateMachine>();
@@ -26,6 +28,8 @@ struct Context {
         m_world = std::make_unique<World>();
         m_player = std::make_unique<Character>(0,0,16,16,sf::Vector2f(20,20));
         m_cManager = std::make_unique<CharacterManager>();
+        m_gameMaster = std::make_unique<GameMaster>(*m_gui);
+
     }
 };
 
