@@ -84,8 +84,8 @@ void GUI::initTopBar() {
     guiMap_["topBar"] = topBar_;
 }
 
-void GUI::initInfobox(int data) {
-    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, data, gui_context_));
+void GUI::initInfobox(string tileStatus) {
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, tileStatus));
 }
 
 void GUI::initAll() {

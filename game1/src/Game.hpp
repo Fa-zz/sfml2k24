@@ -28,7 +28,7 @@ struct Context {
         m_world = std::make_unique<World>();
         m_player = std::make_unique<Character>(0,0,16,16,sf::Vector2f(20,20));
         m_cManager = std::make_unique<CharacterManager>();
-        m_gameMaster = std::make_unique<GameMaster>(*m_gui);
+        m_gameMaster = std::make_unique<GameMaster>(*m_gui, *m_world);
 
     }
 };

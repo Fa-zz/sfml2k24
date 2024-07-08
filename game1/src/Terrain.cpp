@@ -32,5 +32,7 @@ void Terrain::setSpritePos(int x, int y) {
     }
 }
 
-void Terrain::setDummyInfo(int x) { dummyInfo_ = x; }
-int Terrain::getDummyInfo() { return dummyInfo_; };
+// void Terrain::setDummyInfo(int x) { dummyInfo_ = x; }
+// int Terrain::getDummyInfo() { return dummyInfo_; };
+void Terrain::setTileStatus(string x) { tileStatus_ = x; }
+string Terrain::getTileStatus() { return tileStatus_; };

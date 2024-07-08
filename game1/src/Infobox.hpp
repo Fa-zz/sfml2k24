@@ -13,7 +13,8 @@ using namespace std;
 
 class Infobox : public Engine::State {
 public:
-    Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context);
+    // Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context);
+    Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxType);
 
     void init() override;
     void loop(const sf::Time& deltaTime);
@@ -31,12 +32,12 @@ public:
     ~Infobox();
 
 private:
-    string infoboxType;
-    std::shared_ptr<GUIContext> gui_context_;
+    // std::shared_ptr<GUIContext> gui_context_;
+    string infoboxType_;
     sf::Font font_;
     float windowSizeX_;
     float windowSizeY_;
-    int data_;
+    // int data_;
     float mousePosX_;
     float mousePosY_;
     bool clicked_ = false;

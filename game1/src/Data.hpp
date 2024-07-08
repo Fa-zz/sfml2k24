@@ -4,7 +4,7 @@
 #include <string> 
 using namespace std; 
 
-namespace DataSettings {
+namespace Data {
     //    sf::Vector2i res1 = {1440, 900};
     //    sf::Vector2i res2 = {800, 600};
 
@@ -14,6 +14,21 @@ namespace DataSettings {
     inline const float res2y = 600.f;
 
     inline const float playerSpeed = 100.f;
+
+    inline const string reclaimedTile = "reclaimedTile";
+    inline const string wildTile = "wildTile";
+    inline const string missionChoice = "missionChoice";
+    inline const string personChoice = "personChoice";
+    inline const string activeTile = "activeTile";
+
+    inline const string onClickClose = "close stack";
+    inline const string onClickAccept = "accept stack";
+    inline const string onClickSelect = "select";
+    inline const string onClickCreateReclaimedTile = "create " + reclaimedTile;
+    inline const string onClickCreateWildTile = "create " + wildTile;
+    inline const string onClickCreateMissionChoice = "create " + missionChoice;
+    inline const string onClickCreatePersonChoice = "create " + personChoice;
+    inline const string onClickCreateActiveTile = "create " + activeTile;
 
     inline const void updateView(float playerCenterX, float playerCenterY, int viewWidth, int viewHeight, int tileWidth, int tileHeight, int worldWidth, int worldHeight, float* clampedCenterX, float* clampedCenterY) {
         // sf::Vector2f playerCenter = cMgr.getPlayerCenter();
@@ -36,9 +51,7 @@ namespace DataSettings {
         // cout << "Player center x: " << playerCenter.x << " player center y: " << playerCenter.y << endl;
     }
 
-    inline const void splitString(string& input, char delimiter, 
-                    string arr[]) 
-    {
+    inline const void splitString(string& input, char delimiter, string arr[]) {
         // Creating an input string stream from the input string 
         istringstream stream(input); 
     

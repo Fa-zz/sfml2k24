@@ -3,7 +3,7 @@
 #include "MainMenuState.hpp"
 
 Game::Game():m_context(std::make_shared<Context>()) {
-    m_context->m_window->create(sf::VideoMode(DataSettings::res2x,DataSettings::res2y), "game", sf::Style::Close);
+    m_context->m_window->create(sf::VideoMode(Data::res2x,Data::res2y), "game", sf::Style::Close);
     m_context->m_states->Add(std::make_unique<MainMenuState>(m_context));
     m_context->m_gui->initAll();
     // m_context->m_gui->setWindowSize(m_context->m_window->getSize());

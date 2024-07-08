@@ -7,7 +7,7 @@
 using namespace std;
 
 World::World() {
-    srand(static_cast<unsigned int>(time(0)));
+    // srand(static_cast<unsigned int>(time(0)));
     if (loadTerrainTextures() != 0)
         cerr << "Failed to load terrain textures" << endl;
     loadTerrainMap();
@@ -41,7 +41,8 @@ int World::genTiles(int height, int width) {
             if (groundMap_.find(tiledID) != groundMap_.end()) {
                 groundTiles_[y][x] = groundMap_.at(tiledID);
                 if (groundTiles_[y][x] != nullptr) {
-                    groundTiles_[y][x]->setDummyInfo(rand() % 100 + 1);
+                    // groundTiles_[y][x]->setDummyInfo(rand() % 100 + 1);
+                    groundTiles_[y][x]->setTileStatus(Data::wildTile);
                 }
                 //cout << "Ground tile at x: " << x << " y: " << y << " is " << tiledID << " , or " << groundMap_.at(tiledID) << endl;
             } else {

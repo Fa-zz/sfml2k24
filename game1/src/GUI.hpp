@@ -4,6 +4,7 @@
 #include "State.hpp"
 #include <vector>
 #include <unordered_map>
+#include <string>
 using namespace std;
 
 struct GUIContext {
@@ -22,7 +23,7 @@ public:
     void initMainMenuElems();
     void initHighlight();
     void initTopBar();
-    void initInfobox(int data);
+    void initInfobox(string tileStatus);
     void setWindowSize(sf::Vector2u windowSize);
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);

@@ -1,5 +1,7 @@
-#include <SFML/Graphics.hpp>
 #pragma once
+#include <SFML/Graphics.hpp>
+#include "string"
+using namespace std;
 
 class Terrain {
 public:
@@ -12,8 +14,10 @@ public:
     sf::Vector2f getPosition() const;
 
     void setSpritePos(int x, int y);
-    void setDummyInfo(int x);
-    int getDummyInfo();
+    // void setDummyInfo(int x);
+    // int getDummyInfo();
+    void setTileStatus(string x);
+    string getTileStatus();
 
 private:
     // int x_; // x: x coordinate of sprite on texture png
@@ -21,5 +25,6 @@ private:
     float tileSizeX_; // tileSizeX: Size of tile in x direction
     float tileSizeY_; // tileSizeY: Size of tile in y direction
     sf::Sprite sprite_;
-    int dummyInfo_;
+    // int dummyInfo_;
+    string tileStatus_;
 };
