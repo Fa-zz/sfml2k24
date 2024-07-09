@@ -135,12 +135,16 @@ bool GUI::hoveringOverMMPlayB(sf::Vector2f mouseCords) {
     }
 }
 void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
-void GUI::setMouseInfo(float x, float y, bool clicked, string linkData[]) {
-    gui_context_->stateMachine_->GetCurrent()->mouseInfo(x, y, clicked, linkData);
+// void GUI::setMouseInfo(float x, float y, bool clicked, string* linkData) {
+void GUI::setMouseInfo(float x, float y, bool clicked) {
+    gui_context_->stateMachine_->GetCurrent()->mouseInfo(x, y, clicked);
     // if (clicked) {
     //     gui_context_->stateMachine_->GetCurrent()->getData(linkData);
     //     cout << "Data has been trans"
     // }
+}
+string GUI::getClickData() {
+    return gui_context_->stateMachine_->GetCurrent()->getData();
 }
 
 bool GUI::getGUIStackEmpty() {

@@ -1,25 +1,24 @@
 #include "GameMaster.hpp"
 
-GameMaster::GameMaster(GUI& gui, World& world) : gui_(gui), world_(world) { }
+GameMaster::GameMaster(GUI& gui, World& world) : gui_(gui), world_(world) { 
+    // *linkData_ = "";
+}
 
 GameMaster::~GameMaster() { }
 
-void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked) {
+void GameMaster::initInfobox(float mouseX, float mouseY) {
     if (gui_.getGUIStackEmpty()) {
-        gui_.initInfobox(world_.getGroundTileAtPos(mouseX, mouseY)->getTileStatus());
-    } else {
-        gui_.setMouseInfo(mouseX, mouseY, clicked, linkData_);
+        gui_.initInfobox(world_.getGroundTileAtPos(mouseY, mouseX)->getTileStatus());
     }
-    string linkDataString = linkData_[0] + " " + linkData_[1];
-    cout << linkDataString << endl;
-    if (linkDataString == Data::onClickClose) {
+}
+
+void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked) {
+    gui_.setMouseInfo(mouseX, mouseY, clicked);
+    linkData_ = gui_.getClickData();
+    cout << "Link data in GMaster.cpp" << " " << linkData_ << endl;
+    if (linkData_ == Data::onClickClose) {
         gui_.popCurrentState();
     }
-    linkData_[0] = "";
-    linkData_[1] = "";
-    // for (int i = 0; i < 2; i++) {
-    //     linkData_
-    // }
-    // }
+    linkData_ = "";
 
 }

@@ -71,20 +71,23 @@ void GameScreen1::processInput() {
             }
             if (event.type == sf::Event::MouseMoved) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+                mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
                 sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
                 highlightX_ = worldPos.x / 16;
                 highlightY_ = worldPos.y / 16;
                 m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
             }
             if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->infoboxMaster(highlightX_, highlightY_, true);
+                m_context->m_gameMaster->initInfobox(highlightX_, highlightY_);
             }
         } else if (!(m_context->m_gui->getGUIStackEmpty())) {
-            if (event.type == sf::Event::MouseMoved) {
-                sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-                mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
-            }
+            // if (event.type == sf::Event::MouseMoved) {
+            //     sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+            //     mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
+            // }
+            sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
+            mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
+            m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
             if (event.type == sf::Event::MouseButtonPressed) {
                 m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true);
             }

@@ -70,27 +70,11 @@ void Infobox::processInput() {
             selectedIndex_ = -1;
         }
     }
-    // for (auto& link : links_) {
-    //     // cout << " Global bounds pos: " << link->getText().getGlobalBounds().getPosition().x << " " << link->getText().getGlobalBounds().getPosition().y << endl;
-    //     if (link->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {
-    //         link->setColor(1);
-    //         // if (clicked_ == true) {
-    //         //     clickedLink_ = link->getText().getString();
-    //         //     clickedOnClick_ = link->getOnClick();                
-    //         //     char delimiter = ' ';
-    //         //     Data::splitString(clickedOnClick_, delimiter, linkData_);
-
-    //         //     clicked_ = false;
-    //         // }
-    //     } else {
-    //         link->setColor(0);
-    //     }
-    // }
     if (clicked_ == true && !(selectedIndex_ == -1)) {
-        clickedLink_ = links_[selectedIndex_]->getText().getString();
-        clickedOnClick_ = links_[selectedIndex_]->getOnClick();
-        char delimiter = ' ';
-        Data::splitString(clickedOnClick_, delimiter, linkData_);
+        // clickedLink_ = links_[selectedIndex_]->getText().getString();
+        linkData_ = links_[selectedIndex_]->getOnClick();
+        // char delimiter = ' ';
+        // Data::splitString(clickedOnClick_, delimiter, linkData_);
     }
 
 }
@@ -108,21 +92,22 @@ void Infobox::render(sf::RenderTarget& rt) {
     // rt.draw(optionText_);
 }
 
-void Infobox::mouseInfo(float x, float y, bool clicked, string data[]) {
+void Infobox::mouseInfo(float x, float y, bool clicked) {
     mousePosX_ = x;
     mousePosY_ = y;
     clicked_ = clicked;
-    for (int i = 0; i < 2; i++) {
-        // cout << "Data: " << data[i] << endl;
-        data[i] = linkData_[i];
-        linkData_[i] = "";
-    }
+    // for (int i = 0; i < 2; i++) {
+    //     // cout << "Data: " << data[i] << endl;
+    //     data[i] = linkData_[i];
+    //     linkData_[i] = "";
+    // }
 }
 
-void Infobox::getData(string data[]) {
-    for (int i = 0; i < 2; i++) {
-        data[i] = linkData_[i];
-    }
+string Infobox::getData() {
+    string data;
+    data = linkData_;
+    linkData_ = "";
+    return data;
 }
 
 void Infobox::loop(const sf::Time& deltaTime) { }

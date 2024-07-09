@@ -22,8 +22,8 @@ namespace Engine {
         virtual void render() = 0;
         virtual void render(sf::RenderTarget& rt) {}
 
-        virtual void mouseInfo(float x, float y, bool clicked, string data[]) {}
-        virtual void getData(string data[]) {}
+        virtual void mouseInfo(float x, float y, bool clicked) {}
+        virtual string getData() {}
 
 
         virtual void pause() {};

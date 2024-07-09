@@ -26,8 +26,8 @@ public:
     void render(sf::RenderTarget& rt);
     void pause() override;
     void start() override;
-    void mouseInfo(float x, float y, bool clicked, string data[]);
-    void getData(string data[]);
+    void mouseInfo(float x, float y, bool clicked);
+    string getData();
 
     ~Infobox();
 
@@ -53,7 +53,7 @@ private:
     string clickedOnClick_;
     // int clickedIndex_;
     int selectedIndex_;
-    string linkData_[2];
+    string linkData_;
 
     void initClose();
 };

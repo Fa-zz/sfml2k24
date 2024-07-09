@@ -51,6 +51,12 @@ namespace Data {
         // cout << "Player center x: " << playerCenter.x << " player center y: " << playerCenter.y << endl;
     }
 
+    inline const pair<float, float> calculateLiterals(float desiredSizeX, float desiredSizeY) {
+        float factorX = desiredSizeX / 1440.f;
+        float factorY = desiredSizeY / 900.f;
+        return make_pair(factorX, factorY);
+    }
+
     inline const void splitString(string& input, char delimiter, string arr[]) {
         // Creating an input string stream from the input string 
         istringstream stream(input); 

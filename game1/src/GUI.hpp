@@ -30,7 +30,9 @@ public:
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
-    void setMouseInfo(float x, float y, bool clicked, string linkData[]);
+    // void setMouseInfo(float x, float y, bool clicked, string linkData);
+    void setMouseInfo(float x, float y, bool clicked);
+    string getClickData();
     bool getGUIStackEmpty();
     void popCurrentState();
     bool hoveringOverMMPlayB(sf::Vector2f mouseCords);
