@@ -11,7 +11,7 @@ public:
 	~Textlink();
 	// void setText();
 	// void setOnClick();
-	sf::Text getText();
+	sf::Text& getText();
 	string getOnClick();
 	void setPosition(float x, float y);
 	void setUnderline();

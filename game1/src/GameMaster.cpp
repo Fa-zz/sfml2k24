@@ -12,13 +12,18 @@ void GameMaster::initInfobox(float mouseX, float mouseY) {
     }
 }
 
+void GameMaster::addMissionInfobox() {
+    gui_.addMissionInfobox();
+}
+
 void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked) {
     gui_.setMouseInfo(mouseX, mouseY, clicked);
     linkData_ = gui_.getClickData();
-    cout << " Link data: " << linkData_ << endl;
+    cout << "infoboxMaster Link data: " << linkData_ << endl;
     if (linkData_ == Data::onClickClose) {
         gui_.popCurrentState();
+    } else if (linkData_ == Data::onClickCreateMissionChoice) {
+        addMissionInfobox();
     }
     linkData_ = "";
-
 }

@@ -45,20 +45,28 @@ void GameScreen1::processInput() {
         if (event.type == sf::Event::Closed) {
             m_context->m_states->PopAll();
         }
+
+        // Update mouse position for both GUI and game states
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window_);
+        mousePosF_ = sf::Vector2f(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+        sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
+        highlightX_ = worldPos.x / 16;
+        highlightY_ = worldPos.y / 16;
+
         if (m_context->m_gui->getGUIStackEmpty()) {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
                     case sf::Keyboard::D:
-                        m_context->m_player->addDir(sf::Vector2f{Data::playerSpeed,0.f});
+                        m_context->m_player->addDir(sf::Vector2f{Data::playerSpeed, 0.f});
                         break;
                     case sf::Keyboard::A:
-                        m_context->m_player->addDir(sf::Vector2f{-Data::playerSpeed,0.f});
+                        m_context->m_player->addDir(sf::Vector2f{-Data::playerSpeed, 0.f});
                         break;
                     case sf::Keyboard::W:
-                        m_context->m_player->addDir(sf::Vector2f{0.f,-Data::playerSpeed});
+                        m_context->m_player->addDir(sf::Vector2f{0.f, -Data::playerSpeed});
                         break;
                     case sf::Keyboard::S:
-                        m_context->m_player->addDir(sf::Vector2f{0.f,Data::playerSpeed});
+                        m_context->m_player->addDir(sf::Vector2f{0.f, Data::playerSpeed});
                         break;
                     case sf::Keyboard::Enter:
                         reset();
@@ -70,29 +78,18 @@ void GameScreen1::processInput() {
                 }
             }
             if (event.type == sf::Event::MouseMoved) {
-                sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-                mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-                sf::Vector2f worldPos = window_.mapPixelToCoords(mousePos);
-                highlightX_ = worldPos.x / 16;
-                highlightY_ = worldPos.y / 16;
                 m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 m_context->m_gameMaster->initInfobox(highlightX_, highlightY_);
             }
-        } else if (!(m_context->m_gui->getGUIStackEmpty())) {
-            // if (event.type == sf::Event::MouseMoved) {
-            //     sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-            //     mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-            // }
-            sf::Vector2i mousePos = sf::Mouse::getPosition( window_ );
-            mousePosF_ = sf::Vector2f( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
-            m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
-            if (event.type == sf::Event::MouseButtonPressed) {
+        } else {
+            if (event.type == sf::Event::MouseMoved) {
+                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
+            } else if (event.type == sf::Event::MouseButtonPressed) {
+                // Ensure mouse position is updated before processing click
                 m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true);
             }
-
-
         }
     }
 }

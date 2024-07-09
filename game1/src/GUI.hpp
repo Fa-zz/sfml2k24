@@ -24,13 +24,13 @@ public:
     void initHighlight();
     void initTopBar();
     void initInfobox(string tileStatus);
+    void addMissionInfobox();
     void setWindowSize(sf::Vector2u windowSize);
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
-    // void setMouseInfo(float x, float y, bool clicked, string linkData);
     void setMouseInfo(float x, float y, bool clicked);
     string getClickData();
     bool getGUIStackEmpty();

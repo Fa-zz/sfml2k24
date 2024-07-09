@@ -15,32 +15,36 @@ void Infobox::start() {
 }
 
 void Infobox::init() {
+    infoBox_ = new sf::RectangleShape();
+    infoBox_->setOutlineThickness(10);
+    infoBox_->setFillColor(sf::Color(32, 178, 170));
+    infoBox_->setOutlineColor(sf::Color(70, 90, 70));
+
+    auto infoboxSizeLiterals = Data::calculateLiterals(1000, 600);
+    infoBox_->setSize(sf::Vector2f(windowSizeX_ * infoboxSizeLiterals.first, windowSizeY_ * infoboxSizeLiterals.second));
+    auto infoboxPosLiterals = Data::calculateLiterals(200, 200);
+    infoBox_->setPosition(windowSizeX_ * infoboxPosLiterals.first, windowSizeY_ * infoboxPosLiterals.second);
+
+    infoText_.setFont(font_);
+    infoText_.setCharacterSize(15);
     Textlink *closeLink = new Textlink("Close", font_, 15, Data::onClickClose);
-    closeLink->setPosition(windowSizeX_ * .1597f, windowSizeY_ * .2444f);
+    auto closeLiterals = Data::calculateLiterals(230, 220);
+    closeLink->setPosition(windowSizeX_ * closeLiterals.first, windowSizeY_ * closeLiterals.second);
     links_.push_back(closeLink);
 
     if (infoboxType_ == Data::wildTile) {
         Textlink *missionsLink = new Textlink("See missions", font_, 20, Data::onClickCreateMissionChoice);
-        missionsLink->setPosition(windowSizeX_ * .309027f, windowSizeY_ * .7055f);
+        auto missionLiterals = Data::calculateLiterals(445, 635);
+        missionsLink->setPosition(windowSizeX_ * missionLiterals.first, windowSizeY_ * missionLiterals.second);
         links_.push_back(missionsLink);
 
-        infoText_.setFont(font_);
-        infoBox_ = new sf::RectangleShape();
-        infoBox_->setOutlineThickness(10);
-        infoBox_->setFillColor(sf::Color(32, 178, 170));
-        infoBox_->setOutlineColor(sf::Color(70, 90, 70));
-
-        infoBox_->setSize(sf::Vector2f(windowSizeX_ * .6944f, windowSizeY_ * .6667f)); // size x = 1000, size y = 600
-        infoBox_->setPosition(windowSizeX_ * .1388f, windowSizeY_ * 0.2222f); // pos x = 200, pos y = 200
-
-        infoText_.setCharacterSize(20);
         infoText_.setString("This is a Church.\nFood: Low\nSurvivors: Medium\nZombies: High\n");
-        infoText_.setPosition(windowSizeX_ * .277, windowSizeY_ * 0.40555);
-        // optionText_.setFont(font_);
-        // optionText_.setCharacterSize(20);
-        // optionText_.setString("See missions");
-        // optionText_.setPosition(windowSizeX_ * .309027f, windowSizeY_ * .7055f);
-        // pos x = 230, 220
+        auto infoTextLiterals = Data::calculateLiterals(398, 365);
+        infoText_.setPosition(windowSizeX_ * infoTextLiterals.first, windowSizeY_ * infoTextLiterals.second);
+    } else if (infoboxType_ == Data::missionChoice) {
+        infoText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
+        auto infoTextLiterals = Data::calculateLiterals(205, 365-50);
+        infoText_.setPosition(windowSizeX_ * infoTextLiterals.first, windowSizeY_ * infoTextLiterals.second);
     }
 }
 
@@ -64,24 +68,13 @@ Infobox::~Infobox() {
 }
 
 void Infobox::processInput() {
-    std::cout << "Processing Input... Mouse Position: (" << mousePosX_ << ", " << mousePosY_ << ")" << std::endl;
-    selectedIndex_ = -1; // Reset selectedIndex_ before processing
+    selectedIndex_ = -1;
 
     for (int i = 0; i < links_.size(); ++i) {
         auto& link = links_[i];
-        std::cout << "Checking link " << i << " at position (" 
-                  << link->getText().getPosition().x << ", " 
-                  << link->getText().getPosition().y << ") with bounds: "
-                  << link->getText().getGlobalBounds().left << ", "
-                  << link->getText().getGlobalBounds().top << ", "
-                  << link->getText().getGlobalBounds().width << ", "
-                  << link->getText().getGlobalBounds().height << std::endl;
-
         if (link->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {
             link->setColor(1);
             selectedIndex_ = i;
-            std::cout << "Link " << i << " selected with data: " 
-                      << link->getOnClick() << std::endl;
         } else {
             link->setColor(0);
         }
@@ -89,7 +82,7 @@ void Infobox::processInput() {
 
     if (clicked_ && selectedIndex_ != -1) {
         linkData_ = links_[selectedIndex_]->getOnClick();
-        std::cout << "Link clicked: " << linkData_ << std::endl;
+        clicked_ = false;
     }
 }
 
@@ -110,6 +103,7 @@ void Infobox::mouseInfo(float x, float y, bool clicked) {
     mousePosX_ = x;
     mousePosY_ = y;
     clicked_ = clicked;
+    processInput();
     // for (int i = 0; i < 2; i++) {
     //     // cout << "Data: " << data[i] << endl;
     //     data[i] = linkData_[i];
@@ -122,6 +116,7 @@ string Infobox::getData() {
     data = linkData_;
     linkData_ = "";
     return data;
+    // return linkData_;
 }
 
 void Infobox::loop(const sf::Time& deltaTime) { }

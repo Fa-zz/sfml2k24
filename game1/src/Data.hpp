@@ -57,20 +57,20 @@ namespace Data {
         return make_pair(factorX, factorY);
     }
 
-    inline const void splitString(string& input, char delimiter, string arr[]) {
-        // Creating an input string stream from the input string 
-        istringstream stream(input); 
+    // inline const void splitString(string& input, char delimiter, string arr[]) {
+    //     // Creating an input string stream from the input string 
+    //     istringstream stream(input); 
     
-        // Temporary string to store each token 
-        string token; 
+    //     // Temporary string to store each token 
+    //     string token; 
 
-        int index = 0; 
+    //     int index = 0; 
 
-        // Read tokens from the string stream separated by the 
-        // delimiter 
-        while (getline(stream, token, delimiter)) { 
-            // Add the token to the array 
-            arr[index++] = token; 
-        } 
-    } 
+    //     // Read tokens from the string stream separated by the 
+    //     // delimiter 
+    //     while (getline(stream, token, delimiter)) { 
+    //         // Add the token to the array 
+    //         arr[index++] = token; 
+    //     } 
+    // } 
 }

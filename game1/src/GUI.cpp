@@ -85,7 +85,18 @@ void GUI::initTopBar() {
 }
 
 void GUI::initInfobox(string tileStatus) {
+    // Ensure that gui_context_ and stateMachine_ are not null
+    if (!gui_context_ || !gui_context_->stateMachine_) {
+        throw std::runtime_error("GUI context or state machine not initialized");
+    }
     gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, tileStatus));
+}
+
+void GUI::addMissionInfobox() {
+    if (!gui_context_ || !gui_context_->stateMachine_) {
+        throw std::runtime_error("GUI context or state machine not initialized");
+    }
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, Data::missionChoice), false);
 }
 
 void GUI::initAll() {
@@ -137,6 +148,7 @@ bool GUI::hoveringOverMMPlayB(sf::Vector2f mouseCords) {
 void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
 // void GUI::setMouseInfo(float x, float y, bool clicked, string* linkData) {
 void GUI::setMouseInfo(float x, float y, bool clicked) {
+    // cout << "GUI.cpp: in setMouseinfo " << endl;
     gui_context_->stateMachine_->GetCurrent()->mouseInfo(x, y, clicked);
     // if (clicked) {
     //     gui_context_->stateMachine_->GetCurrent()->getData(linkData);

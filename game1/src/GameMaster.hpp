@@ -19,4 +19,5 @@ private:
 	World& world_;
 	// string linkData_[2];
 	string linkData_;
+	void addMissionInfobox();
 };

@@ -4,7 +4,7 @@ Textlink::Textlink(string stringText, sf::Font font, int size, string onClick): 
     text_.setFont(font_);
     text_.setCharacterSize(size);
     text_.setString(stringText);
-    // text_.setFillColor(sf::Color::Red);
+    text_.setFillColor(sf::Color::Cyan);
     text_.setStyle(sf::Text::Underlined);
 }
 
@@ -12,7 +12,7 @@ Textlink::~Textlink() {
 
 }
 
-sf::Text Textlink::getText() {
+sf::Text& Textlink::getText() {
     return text_;
 }
 
@@ -30,7 +30,7 @@ void Textlink::setColor(int i) {
         text_.setFillColor(sf::Color::Blue); 
         selected_ = true;
     } else if (i == 0) {
-        text_.setFillColor(sf::Color::White);
+        text_.setFillColor(sf::Color::Cyan);
         selected_ = false;
     }
     }
