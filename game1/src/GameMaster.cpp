@@ -15,7 +15,7 @@ void GameMaster::initInfobox(float mouseX, float mouseY) {
 void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked) {
     gui_.setMouseInfo(mouseX, mouseY, clicked);
     linkData_ = gui_.getClickData();
-    cout << "Link data in GMaster.cpp" << " " << linkData_ << endl;
+    cout << " Link data: " << linkData_ << endl;
     if (linkData_ == Data::onClickClose) {
         gui_.popCurrentState();
     }

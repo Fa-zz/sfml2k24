@@ -15,10 +15,14 @@ void Infobox::start() {
 }
 
 void Infobox::init() {
+    Textlink *closeLink = new Textlink("Close", font_, 15, Data::onClickClose);
+    closeLink->setPosition(windowSizeX_ * .1597f, windowSizeY_ * .2444f);
+    links_.push_back(closeLink);
+
     if (infoboxType_ == Data::wildTile) {
-        Textlink *closeLink = new Textlink("Close", font_, 15, Data::onClickClose);
-        closeLink->setPosition(windowSizeX_ * .1597f, windowSizeY_ * .2444f);
-        links_.push_back(closeLink);
+        Textlink *missionsLink = new Textlink("See missions", font_, 20, Data::onClickCreateMissionChoice);
+        missionsLink->setPosition(windowSizeX_ * .309027f, windowSizeY_ * .7055f);
+        links_.push_back(missionsLink);
 
         infoText_.setFont(font_);
         infoBox_ = new sf::RectangleShape();
@@ -60,23 +64,33 @@ Infobox::~Infobox() {
 }
 
 void Infobox::processInput() {
-    // cout << "Mouse pos x: " << mousePosX_ << " " << " mouse pos y: " << mousePosY_ << endl;
+    std::cout << "Processing Input... Mouse Position: (" << mousePosX_ << ", " << mousePosY_ << ")" << std::endl;
+    selectedIndex_ = -1; // Reset selectedIndex_ before processing
+
     for (int i = 0; i < links_.size(); ++i) {
-        if (links_[i]->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {
-            links_[i]->setColor(1);
+        auto& link = links_[i];
+        std::cout << "Checking link " << i << " at position (" 
+                  << link->getText().getPosition().x << ", " 
+                  << link->getText().getPosition().y << ") with bounds: "
+                  << link->getText().getGlobalBounds().left << ", "
+                  << link->getText().getGlobalBounds().top << ", "
+                  << link->getText().getGlobalBounds().width << ", "
+                  << link->getText().getGlobalBounds().height << std::endl;
+
+        if (link->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {
+            link->setColor(1);
             selectedIndex_ = i;
+            std::cout << "Link " << i << " selected with data: " 
+                      << link->getOnClick() << std::endl;
         } else {
-            links_[i]->setColor(0);
-            selectedIndex_ = -1;
+            link->setColor(0);
         }
     }
-    if (clicked_ == true && !(selectedIndex_ == -1)) {
-        // clickedLink_ = links_[selectedIndex_]->getText().getString();
-        linkData_ = links_[selectedIndex_]->getOnClick();
-        // char delimiter = ' ';
-        // Data::splitString(clickedOnClick_, delimiter, linkData_);
-    }
 
+    if (clicked_ && selectedIndex_ != -1) {
+        linkData_ = links_[selectedIndex_]->getOnClick();
+        std::cout << "Link clicked: " << linkData_ << std::endl;
+    }
 }
 
 void Infobox::update() {
