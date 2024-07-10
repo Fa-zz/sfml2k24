@@ -2,7 +2,14 @@
 
 // TileInfobox::TileInfobox(sf::Font font, float windowSizeX, float windowSizeY, unordered_map<string,int> data) : font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), data_(data) {
 // Infobox::Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context_) : font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), data_(data), gui_context_(gui_context_) {
-Infobox::Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxType) : font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxType_(infoboxType) {
+
+Infobox::Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus)
+: font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus) {
+
+}
+
+Infobox::Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string infoboxType, int* tileStats, int* tileMissions) 
+: font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus), infoboxType_(infoboxType), tileStats_(tileStats), tileMissions_(tileMissions)  {
 
 }
 
@@ -15,15 +22,14 @@ void Infobox::start() {
 }
 
 void Infobox::init() {
-    infoBox_ = new sf::RectangleShape();
-    infoBox_->setOutlineThickness(10);
-    infoBox_->setFillColor(sf::Color(32, 178, 170));
-    infoBox_->setOutlineColor(sf::Color(70, 90, 70));
-
+    infoboxRect_ = new sf::RectangleShape();
+    infoboxRect_->setOutlineThickness(10);
+    infoboxRect_->setFillColor(sf::Color(32, 178, 170));
+    infoboxRect_->setOutlineColor(sf::Color(70, 90, 70));
     auto infoboxSizeLiterals = Data::calculateLiterals(1000, 600);
-    infoBox_->setSize(sf::Vector2f(windowSizeX_ * infoboxSizeLiterals.first, windowSizeY_ * infoboxSizeLiterals.second));
+    infoboxRect_->setSize(sf::Vector2f(windowSizeX_ * infoboxSizeLiterals.first, windowSizeY_ * infoboxSizeLiterals.second));
     auto infoboxPosLiterals = Data::calculateLiterals(200, 200);
-    infoBox_->setPosition(windowSizeX_ * infoboxPosLiterals.first, windowSizeY_ * infoboxPosLiterals.second);
+    infoboxRect_->setPosition(windowSizeX_ * infoboxPosLiterals.first, windowSizeY_ * infoboxPosLiterals.second);
 
     infoText_.setFont(font_);
     infoText_.setCharacterSize(15);
@@ -32,16 +38,18 @@ void Infobox::init() {
     closeLink->setPosition(windowSizeX_ * closeLiterals.first, windowSizeY_ * closeLiterals.second);
     links_.push_back(closeLink);
 
-    if (infoboxType_ == Data::wildTile) {
+    if (infoboxStatus_ == Data::wildTile) {
         Textlink *missionsLink = new Textlink("See missions", font_, 20, Data::onClickCreateMissionChoice);
         auto missionLiterals = Data::calculateLiterals(445, 635);
         missionsLink->setPosition(windowSizeX_ * missionLiterals.first, windowSizeY_ * missionLiterals.second);
         links_.push_back(missionsLink);
 
-        infoText_.setString("This is a Church.\nFood: Low\nSurvivors: Medium\nZombies: High\n");
+        string wildTileInfoTextUpdated = replaceInfoText(infoboxType_,Data::tileStatDescs[tileStats_[0]], Data::tileStatDescs[tileStats_[1]], Data::tileStatDescs[tileStats_[2]] );
+        infoText_.setString(wildTileInfoTextUpdated);
         auto infoTextLiterals = Data::calculateLiterals(398, 365);
         infoText_.setPosition(windowSizeX_ * infoTextLiterals.first, windowSizeY_ * infoTextLiterals.second);
-    } else if (infoboxType_ == Data::missionChoice) {
+    
+    } else if (infoboxStatus_ == Data::missionChoice) {
         infoText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
         auto infoTextLiterals = Data::calculateLiterals(205, 365-50);
         infoText_.setPosition(windowSizeX_ * infoTextLiterals.first, windowSizeY_ * infoTextLiterals.second);
@@ -57,8 +65,8 @@ void Infobox::loop(sf::RenderTarget& rt) {
 }
 
 Infobox::~Infobox() {
-    if (infoBox_)
-        delete infoBox_;
+    if (infoboxRect_)
+        delete infoboxRect_;
     // for (auto & element : optionsText_) {
     //     delete element;
     // }
@@ -91,7 +99,7 @@ void Infobox::update() {
 }
 
 void Infobox::render(sf::RenderTarget& rt) {
-    rt.draw(*infoBox_);
+    rt.draw(*infoboxRect_);
     rt.draw(infoText_);
     for (auto& link : links_) {
         rt.draw(link->getText());
@@ -117,6 +125,21 @@ string Infobox::getData() {
     linkData_ = "";
     return data;
     // return linkData_;
+}
+
+string Infobox::replaceInfoText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies) {
+    string wildTileInfoTextUpdated = Data::wildTileInfoText;
+    string loc = "LOCPLACEHOLDER";
+    string food = "FOODPLACEHOLDER";
+    string surv = "SURVIVORSPLACEHOLDER";
+    string zomb = "ZOMBIESPLACEHOLDER";
+
+    wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(loc), loc.length(), replaceLoc);
+    wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(food), food.length(), replaceFood);
+    wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(surv), surv.length(), replaceSurvivors);
+    wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(zomb), zomb.length(), replaceZombies);
+
+    return wildTileInfoTextUpdated;
 }
 
 void Infobox::loop(const sf::Time& deltaTime) { }

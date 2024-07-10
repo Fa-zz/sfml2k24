@@ -84,12 +84,12 @@ void GUI::initTopBar() {
     guiMap_["topBar"] = topBar_;
 }
 
-void GUI::initInfobox(string tileStatus) {
+void GUI::initInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions) {
     // Ensure that gui_context_ and stateMachine_ are not null
     if (!gui_context_ || !gui_context_->stateMachine_) {
         throw std::runtime_error("GUI context or state machine not initialized");
     }
-    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, tileStatus));
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, tileStatus, tileType, tileStats, tileMissions));
 }
 
 void GUI::addMissionInfobox() {

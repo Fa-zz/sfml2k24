@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream> 
 #include <sstream> 
-#include <string> 
+#include <string>
+
 using namespace std; 
 
 namespace Data {
@@ -13,13 +14,28 @@ namespace Data {
     inline const float res2x = 800.f;
     inline const float res2y = 600.f;
 
+    inline const int worldWidth = 50;
+    inline const int worldHeight = 25;
+
     inline const float playerSpeed = 100.f;
 
-    inline const string reclaimedTile = "reclaimedTile";
     inline const string wildTile = "wildTile";
+    inline const string reclaimedTile = "reclaimedTile";
+    inline const string undiscoveredTile = "undiscoveredTile";
     inline const string missionChoice = "missionChoice";
     inline const string personChoice = "personChoice";
     inline const string activeTile = "activeTile";
+
+    inline const int numTileType = 8;
+    inline const int numTileStatus = 3;
+    inline const int numTileStats = 3;
+    inline const int numTileMissions = 5;
+    inline const string tileStatus[numTileStatus] = {wildTile, reclaimedTile, undiscoveredTile};
+    inline const string tileStatDescs[6] = {"none", "few", "low", "medium", "high", "a lot"};
+    inline const string tileTypes[numTileType] = {"apartment", "church", "park", "school", "restaurant", "gas station", "office", "police HQ"};
+    inline const string tileStats[numTileStats] = {"Food", "Zombies", "Survivors"};
+    inline const string tileMissions[numTileMissions] = {"Scout area", "Scavenge for food", "Kill zombies", "Recruit survivors", "Reclaim"};
+    inline const string wildTileInfoText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\n";
 
     inline const string onClickClose = "close stack";
     inline const string onClickAccept = "accept stack";

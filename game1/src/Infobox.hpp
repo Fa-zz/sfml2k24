@@ -14,7 +14,8 @@ using namespace std;
 class Infobox : public Engine::State {
 public:
     // Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context);
-    Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxType);
+    Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus);
+    Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string infoboxType, int* tileStats, int* tileMissions);
 
     void init() override;
     void loop(const sf::Time& deltaTime);
@@ -33,7 +34,9 @@ public:
 
 private:
     // std::shared_ptr<GUIContext> gui_context_;
-    string infoboxType_;
+    string infoboxStatus_, infoboxType_;
+    int* tileStats_;
+    int* tileMissions_;
     sf::Font font_;
     float windowSizeX_;
     float windowSizeY_;
@@ -43,7 +46,7 @@ private:
     bool clicked_ = false;
     bool isPaused_ = false;
 
-    sf::RectangleShape* infoBox_;
+    sf::RectangleShape* infoboxRect_;
     sf::Text closeText_;
     sf::Text infoText_;
     // sf::Text optionText_;
@@ -55,5 +58,7 @@ private:
     int selectedIndex_;
     string linkData_;
 
-    void initClose();
+    void initClose(); 
+    // wildTileInfoText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\n";
+    string replaceInfoText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies);
 };

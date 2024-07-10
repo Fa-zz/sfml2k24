@@ -4,14 +4,14 @@
 
 GameScreen1::GameScreen1(std::shared_ptr<Context> &context)
     : m_context(context), window_(*(m_context->m_window)), player_(*(m_context->m_player)) {
-        cout << "GameScreen1 constructor called" << endl;
-        width_ = 50;
-        height_ = 25;
-        m_context->m_world->genTiles(height_, width_);
-        view_ = m_context->m_window->getView();
-        view_.setSize(view_.getSize().x / 6, view_.getSize().y / 6);
-        m_context->m_gui->setDrawingHighlight(true);
-        m_context->m_gui->setDrawingTopBar(true);
+    m_context->m_gameMaster->initGame();
+    width_ = Data::worldWidth;
+    height_ = Data::worldHeight;
+    // m_context->m_world->genTiles(height_, width_);
+    view_ = m_context->m_window->getView();
+    view_.setSize(view_.getSize().x / 6, view_.getSize().y / 6);
+    m_context->m_gui->setDrawingHighlight(true);
+    m_context->m_gui->setDrawingTopBar(true);
 }
 
 void GameScreen1::pause() {
@@ -124,11 +124,13 @@ void GameScreen1::render() {
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
-            Terrain* groundTile = m_context->m_world->getGroundTileAtPos(y, x);
-            if (groundTile != nullptr) {
-                groundTile->setSpritePos(x, y);
-                window_.draw(groundTile->getSprite());
-            }
+            Terrain& groundTile = m_context->m_gameMaster->getGroundTileAtPos(y, x);
+            // if (groundTile != nullptr) {
+            //     groundTile->setSpritePos(x, y);
+            //     window_.draw(groundTile->getSprite());
+            // }
+            groundTile.setSpritePos(x, y);
+            window_.draw(groundTile.getSprite());
         }
     }
     m_context->m_gui->renderGUIElems(window_);

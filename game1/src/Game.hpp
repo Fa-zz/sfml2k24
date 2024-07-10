@@ -16,7 +16,7 @@ struct Context {
     std::unique_ptr<Engine::StateMachine> m_states;
     std::unique_ptr<sf::RenderWindow> m_window;
     std::unique_ptr<GUI> m_gui;
-    std::unique_ptr<World> m_world;
+    // std::unique_ptr<World> m_world;
     std::unique_ptr<Character> m_player;
     std::unique_ptr<CharacterManager> m_cManager;
     std::unique_ptr<GameMaster> m_gameMaster;
@@ -25,10 +25,10 @@ struct Context {
         m_states = std::make_unique<Engine::StateMachine>();
         m_window = std::make_unique<sf::RenderWindow>();
         m_gui = std::make_unique<GUI>();
-        m_world = std::make_unique<World>();
+        // m_world = std::make_unique<World>();
         m_player = std::make_unique<Character>(0,0,16,16,sf::Vector2f(20,20));
         m_cManager = std::make_unique<CharacterManager>();
-        m_gameMaster = std::make_unique<GameMaster>(*m_gui, *m_world);
+        m_gameMaster = std::make_unique<GameMaster>(*m_gui);
 
     }
 };
