@@ -29,7 +29,9 @@ void GameScreen1::start() {
 
 GameScreen1::~GameScreen1() { }
 
-void GameScreen1::init() { }
+void GameScreen1::init() { 
+    m_context->m_gameMaster->addIntroInfobox();
+}
 
 void GameScreen1::loop(const sf::Time& deltaTime) {
     if (!isPaused_) {
@@ -82,7 +84,7 @@ void GameScreen1::processInput() {
                 m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
             }
             if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->initInfobox(highlightX_, highlightY_);
+                m_context->m_gameMaster->addTileInfobox(highlightX_, highlightY_);
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {
@@ -91,11 +93,15 @@ void GameScreen1::processInput() {
                         m_context->m_gameMaster->popCurrentInfobox();
                         break;
                 }
+                if (event.key.code == sf::Keyboard::S)
+                    m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false, true, false);
+                if (event.key.code == sf::Keyboard::W)
+                    m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false, false, true);
             }
-            if (event.type == sf::Event::MouseMoved) {
-                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
-            } else if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true);
+
+            m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false, false, false);
+            if (event.type == sf::Event::MouseButtonPressed) {
+                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true, false, false);
             }
         }
     }

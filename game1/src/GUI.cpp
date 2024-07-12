@@ -90,7 +90,11 @@ void GUI::initTopBar() {
     guiMap_["topBar"] = topBar_;
 }
 
-void GUI::initInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions) {
+void GUI::addIntroInfobox() {
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, Data::intro), false);
+}
+
+void GUI::addTileInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions) {
     // Ensure that gui_context_ and stateMachine_ are not null
     if (!gui_context_ || !gui_context_->stateMachine_) {
         throw std::runtime_error("GUI context or state machine not initialized");
@@ -152,14 +156,9 @@ bool GUI::hoveringOverMMPlayB(sf::Vector2f mouseCords) {
     }
 }
 void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
-// void GUI::setMouseInfo(float x, float y, bool clicked, string* linkData) {
-void GUI::setMouseInfo(float x, float y, bool clicked) {
-    // cout << "GUI.cpp: in setMouseinfo " << endl;
-    gui_context_->stateMachine_->GetCurrent()->mouseInfo(x, y, clicked);
-    // if (clicked) {
-    //     gui_context_->stateMachine_->GetCurrent()->getData(linkData);
-    //     cout << "Data has been trans"
-    // }
+void GUI::passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
+    gui_context_->stateMachine_->GetCurrent()->handleInput(x, y, clicked, scrollDown, scrollUp);
+
 }
 string GUI::getClickData() {
     return gui_context_->stateMachine_->GetCurrent()->getData();

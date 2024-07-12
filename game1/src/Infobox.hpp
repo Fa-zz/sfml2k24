@@ -28,7 +28,7 @@ public:
     void render(sf::RenderTarget& rt);
     void pause() override;
     void start() override;
-    void mouseInfo(float x, float y, bool clicked);
+    void handleInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
     string getData();
 
     ~Infobox();
@@ -47,10 +47,14 @@ private:
     float mousePosY_;
     bool clicked_ = false;
     bool isPaused_ = false;
+    bool scrollable_ = false;
+    bool scrollDown_ = false;
+    bool scrollUp_ = false;
 
     sf::RectangleShape* infoboxRect_;
     sf::Text closeText_;
     sf::Text bodyText_;
+    sf::Text scrollText_;
     // sf::Text optionText_;
     // std::vector<sf::Text*> optionsText_;
     vector<Textlink*> links_;
@@ -59,14 +63,18 @@ private:
     // int clickedIndex_;
     int selectedIndex_;
     string linkData_;
-    vector<string> addBodyBackend_;
+    vector<string> bodyTextBackend_;
+    int startingLine_ = 0;
+    int endingLine_ = 9;
 
     void initClose(); 
     void createInfobox();
     void createCloseLink();
-    void createBodyText();
-    // wildTileBodyText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\n";
+    void createMissionsLink();
+    void initBodyText();
+    void createScrollText();
     string replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies);
     sf::String wrapText(sf::String string);
-    string makeScrollable(string scrollMe);
+    void makeScrollable(string scrollMe);
+    string getBoundedString(int upd);
 };

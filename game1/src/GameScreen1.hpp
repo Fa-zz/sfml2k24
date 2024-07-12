@@ -34,5 +34,8 @@ private:
     sf::Vector2f mousePosF_;
     // Terrain* currTerrain_;
     int highlightX_, highlightY_;
+    bool scrollDownPressed_ = false;
+    bool scrollUpPressed_ = false;
+
     void reset();
 };

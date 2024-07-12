@@ -19,8 +19,9 @@ public:
 	GameMaster(GUI& gui);
 	~GameMaster();
 	void initGame();
-	void initInfobox(float mouseX, float mouseY);
-    void infoboxMaster(float mouseX, float mouseY, bool clicked);
+	void addIntroInfobox();
+	void addTileInfobox(float mouseX, float mouseY);
+    void infoboxMaster(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp);
 	void popCurrentInfobox();
 	void setGUI(GUI& gui);
 	Terrain& getGroundTileAtPos(int y, int x);

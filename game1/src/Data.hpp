@@ -23,6 +23,7 @@ namespace Data {
 
     inline const float playerSpeed = 100.f;
 
+    inline const string intro = "intro";
     inline const string wildTile = "wildTile";
     inline const string reclaimedTile = "reclaimedTile";
     inline const string undiscoveredTile = "undiscoveredTile";
@@ -40,7 +41,7 @@ namespace Data {
     inline const string tileStats[numTileStats] = {"Food", "Zombies", "Survivors"};
     inline const string tileMissions[numTileMissions] = {"Scout area", "Scavenge for food", "Kill zombies", "Recruit survivors", "Reclaim"};
     // inline const string wildTileBodyText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\n";
-    inline const string wildTileBodyText = "This is a LOCPLACEHOLDER that we've scouted. Here's what we know is here.\n\nFood: FOODPLACEHOLDER.\nZombies: ZOMBIESPLACEHOLDER.\nSurvivors: SURVIVORSPLACEHOLDER";
+    inline const string wildTileBodyText = "This is a LOCPLACEHOLDER that we've scouted. Here's what we know is here.\n\nFood: FOODPLACEHOLDER.\nZombies: ZOMBIESPLACEHOLDER.\nSurvivors: SURVIVORSPLACEHOLDER.";
     inline const string dummyText = "One thousand pounds of cheese for one flower! That may sound like an unfair trade, but it happened once. Tulips were first grown in Holland in the 1600s. Many rich people enjoyed planting them in their gardens. They were willing to pay a lot of money for the tulip bulbs, which looked like small onions. Traders drove up the prices. They began to buy up the tulips to sell them later for more money. Other people enjoyed collecting rare types of tulips.\n\nSoon, tulip bulbs were worth thousands of silver coins. People sold everything they had to buy them. The prices went up so quickly that people thought they would be able to get rich by selling the tulips later.";
 
     inline const string onClickClose = "close stack";

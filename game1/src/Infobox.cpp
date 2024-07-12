@@ -23,31 +23,75 @@ void Infobox::start() {
 // INIT TEXTBOX
 void Infobox::init() {
     createInfobox();
-
     createCloseLink();
+    initBodyText();
 
-    createBodyText();
+    if (infoboxStatus_ == Data::intro) {
+        scrollable_ = true;
+        makeScrollable(wrapText(Data::dummyText));
+        bodyText_.setString(getBoundedString(0));
+        createScrollText();
 
-    if (infoboxStatus_ == Data::wildTile) {
-        Textlink *missionsLink = new Textlink("See missions", font_, charSize_, Data::onClickCreateMissionChoice);
-        auto missionLiterals = Data::calculateLiterals(445, 635);
-        missionsLink->setPosition(windowSizeX_ * missionLiterals.first, windowSizeY_ * missionLiterals.second);
-        links_.push_back(missionsLink);
+    } else if (infoboxStatus_ == Data::wildTile) {
+        createMissionsLink();
 
-        string wildTileInfoTextUpdated = replaceBodyText(infoboxType_,Data::tileStatDescs[tileStats_[0]], Data::tileStatDescs[tileStats_[1]], Data::tileStatDescs[tileStats_[2]] );
+        string wildTileInfoTextUpdated = replaceBodyText(infoboxType_, Data::tileStatDescs[tileStats_[0]], Data::tileStatDescs[tileStats_[1]], Data::tileStatDescs[tileStats_[2]] );
         string wildTileInfoTextUpdWrap = wrapText(wildTileInfoTextUpdated);
         bodyText_.setString(wildTileInfoTextUpdWrap);
-        // auto bodyTextLiterals = Data::calculateLiterals(398, 365-50);
 
     } else if (infoboxStatus_ == Data::missionChoice) {
-        // bodyText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
-        string bodyTextWrapped = wrapText(Data::dummyText);
-        string bodyTextWrappedScrollable = makeScrollable(bodyTextWrapped);
+        bodyText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
+        // string bodyTextWrapped = wrapText(Data::dummyText);
+        // string bodyTextWrappedScrollable = makeScrollable(bodyTextWrapped);
 
-        bodyText_.setString(bodyTextWrapped);
-        // auto bodyTextLiterals = Data::calculateLiterals(102, 265-50);
-        // bodyText_.setPosition(windowSizeX_ * bodyTextLiterals.first, windowSizeY_ * bodyTextLiterals.second);
+        // bodyText_.setString(bodyTextWrapped);
     }
+}
+
+// CREATE INFOBOX
+void Infobox::createInfobox() {
+    infoboxRect_ = new sf::RectangleShape();
+    infoboxRect_->setOutlineThickness(10);
+    infoboxRect_->setFillColor(sf::Color(32, 178, 170));
+    infoboxRect_->setOutlineColor(sf::Color(70, 90, 70));
+    // auto infoboxSizeLiterals = Data::calculateLiterals(1010, 600);
+    auto infoboxSizeLiterals = Data::calculateLiterals(1250, 600);
+    infoboxRect_->setSize(sf::Vector2f(windowSizeX_ * infoboxSizeLiterals.first, windowSizeY_ * infoboxSizeLiterals.second));
+    auto infoboxPosLiterals = Data::calculateLiterals(100, 150);
+    infoboxRect_->setPosition(windowSizeX_ * infoboxPosLiterals.first, windowSizeY_ * infoboxPosLiterals.second);
+}
+
+void Infobox::createCloseLink() {
+    Textlink *closeLink = new Textlink("Close (Esc)", font_, charSize_, Data::onClickClose);
+    auto closeLiterals = Data::calculateLiterals(105, 155);
+    closeLink->setPosition(windowSizeX_ * closeLiterals.first, windowSizeY_ * closeLiterals.second);
+    links_.push_back(closeLink);
+}
+
+void Infobox::createScrollText() {
+    scrollText_.setString("Scroll with W/S");
+    scrollText_.setFont(font_);
+    scrollText_.setCharacterSize(charSize_);
+    scrollText_.setFillColor(sf::Color::Black);
+    scrollText_.setLineSpacing(2.f);
+    auto bodyTextLiterals = Data::calculateLiterals(510, 155);
+    scrollText_.setPosition(windowSizeX_ * bodyTextLiterals.first, windowSizeY_ * bodyTextLiterals.second);
+}
+
+void Infobox::createMissionsLink() {
+    Textlink *missionsLink = new Textlink("See missions", font_, charSize_, Data::onClickCreateMissionChoice);
+    auto missionLiterals = Data::calculateLiterals(445, 635);
+    missionsLink->setPosition(windowSizeX_ * missionLiterals.first, windowSizeY_ * missionLiterals.second);
+    links_.push_back(missionsLink);
+}
+
+void Infobox::initBodyText() {
+    bodyText_.setFont(font_);
+    bodyText_.setCharacterSize(charSize_);
+    bodyText_.setFillColor(sf::Color::Black);
+    bodyText_.setLineSpacing(2.f);
+    auto bodyTextLiterals = Data::calculateLiterals(102, 300-50);
+    bodyText_.setPosition(windowSizeX_ * bodyTextLiterals.first, windowSizeY_ * bodyTextLiterals.second);
 }
 
 void Infobox::loop(sf::RenderTarget& rt) {
@@ -86,6 +130,15 @@ void Infobox::processInput() {
         clicked_ = false;
     }
     // Handle input for scrollable text and options.
+    if (scrollable_) {
+        if (scrollDown_) {
+            bodyText_.setString(getBoundedString(1));
+        } else if (scrollUp_) {
+            bodyText_.setString(getBoundedString(-1));
+        }
+        scrollDown_ = false;
+        scrollUp_ = false;
+    }
 }
 
 void Infobox::update() {
@@ -95,16 +148,20 @@ void Infobox::update() {
 void Infobox::render(sf::RenderTarget& rt) {
     rt.draw(*infoboxRect_);
     rt.draw(bodyText_);
+    if (scrollable_)
+        rt.draw(scrollText_);
     for (auto& link : links_) {
         rt.draw(link->getText());
     }
     // rt.draw(optionText_);
 }
 
-void Infobox::mouseInfo(float x, float y, bool clicked) {
+void Infobox::handleInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
     mousePosX_ = x;
     mousePosY_ = y;
     clicked_ = clicked;
+    scrollDown_ = scrollDown;
+    scrollUp_ = scrollUp;
     processInput();
 }
 
@@ -114,34 +171,6 @@ string Infobox::getData() {
     linkData_ = "";
     return data;
     // return linkData_;
-}
-// CREATE INFOBOX
-void Infobox::createInfobox() {
-    infoboxRect_ = new sf::RectangleShape();
-    infoboxRect_->setOutlineThickness(10);
-    infoboxRect_->setFillColor(sf::Color(32, 178, 170));
-    infoboxRect_->setOutlineColor(sf::Color(70, 90, 70));
-    // auto infoboxSizeLiterals = Data::calculateLiterals(1010, 600);
-    auto infoboxSizeLiterals = Data::calculateLiterals(1250, 600);
-    infoboxRect_->setSize(sf::Vector2f(windowSizeX_ * infoboxSizeLiterals.first, windowSizeY_ * infoboxSizeLiterals.second));
-    auto infoboxPosLiterals = Data::calculateLiterals(100, 150);
-    infoboxRect_->setPosition(windowSizeX_ * infoboxPosLiterals.first, windowSizeY_ * infoboxPosLiterals.second);
-}
-
-void Infobox::createCloseLink() {
-    Textlink *closeLink = new Textlink("Close", font_, charSize_, Data::onClickClose);
-    auto closeLiterals = Data::calculateLiterals(105, 155);
-    closeLink->setPosition(windowSizeX_ * closeLiterals.first, windowSizeY_ * closeLiterals.second);
-    links_.push_back(closeLink);
-}
-
-void Infobox::createBodyText() {
-    bodyText_.setFont(font_);
-    bodyText_.setCharacterSize(charSize_);
-    bodyText_.setFillColor(sf::Color::Black);
-    bodyText_.setLineSpacing(2.f);
-    auto bodyTextLiterals = Data::calculateLiterals(102, 265-50);
-    bodyText_.setPosition(windowSizeX_ * bodyTextLiterals.first, windowSizeY_ * bodyTextLiterals.second);
 }
 
 string Infobox::replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies) {
@@ -189,7 +218,8 @@ sf::String Infobox::wrapText(sf::String string){
         return string;
 }
 
-string Infobox::makeScrollable(string scrollMe) {
+void Infobox::makeScrollable(string scrollMe) {
+    // Create and populate the addBodyBackend_ object
     string line;
     for (int i = 0; i < scrollMe.length(); i++) {
         if (scrollMe[i] != '\n') {
@@ -200,16 +230,44 @@ string Infobox::makeScrollable(string scrollMe) {
                 line += scrollMe[i + 1];
                 i += 1;
             }
-            addBodyBackend_.push_back(line);
+            bodyTextBackend_.push_back(line);
             line = "";
         }
     }
-
     if (!line.empty()) {
-        addBodyBackend_.push_back(line);
+        bodyTextBackend_.push_back(line);
+    }
+}
+
+string Infobox::getBoundedString(int upd) {
+    string result = "";
+
+    // Update starting and ending lines with bounds checking
+    if ((startingLine_ + upd >= 0) && (endingLine_ + upd < bodyTextBackend_.size())) {
+        startingLine_ += upd;
+        endingLine_ += upd;
+    } else {
+        // Prevent updating if it goes out of bounds
+        if (startingLine_ + upd < 0) {
+            startingLine_ = 0;
+            endingLine_ = min((int)bodyTextBackend_.size() - 1, endingLine_ - startingLine_);
+        } else if (endingLine_ + upd >= bodyTextBackend_.size()) {
+            endingLine_ = bodyTextBackend_.size() - 1;
+            startingLine_ = max(0, endingLine_ - (endingLine_ - startingLine_));
+        }
     }
 
-    return scrollMe;
+    // Ensure starting and ending lines are within bounds
+    startingLine_ = max(0, min(startingLine_, (int)bodyTextBackend_.size() - 1));
+    endingLine_ = max(0, min(endingLine_, (int)bodyTextBackend_.size() - 1));
+
+    // Append lines within the visible range
+    for (int i = startingLine_; i <= endingLine_; ++i) {
+        result += bodyTextBackend_[i];
+    }
+
+    // cout << "String shown: " << result << endl;
+    return result;
 }
 
 void Infobox::loop(const sf::Time& deltaTime) { }

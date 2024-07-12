@@ -24,7 +24,8 @@ public:
     void initMainMenuElems();
     void initHighlight();
     void initTopBar();
-    void initInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions);
+    void addIntroInfobox();
+    void addTileInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions);
     void addMissionInfobox();
     void setWindowSize(sf::Vector2u windowSize);
     void setDrawingTopAndBottomWindow(bool drawing);
@@ -32,7 +33,7 @@ public:
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
-    void setMouseInfo(float x, float y, bool clicked);
+    void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
     string getClickData();
     bool getGUIStackEmpty();
     void popCurrentState();
