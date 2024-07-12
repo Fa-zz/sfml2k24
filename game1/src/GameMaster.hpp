@@ -1,3 +1,9 @@
+/*
+	GameMaster handles the backend game logic and sends it to the front end
+
+	Also serves as an interface for some of the game States to interface with inner States and other GUI elements
+*/
+
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "GUI.hpp"
@@ -15,6 +21,7 @@ public:
 	void initGame();
 	void initInfobox(float mouseX, float mouseY);
     void infoboxMaster(float mouseX, float mouseY, bool clicked);
+	void popCurrentInfobox();
 	void setGUI(GUI& gui);
 	Terrain& getGroundTileAtPos(int y, int x);
 private:

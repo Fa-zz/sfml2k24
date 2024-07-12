@@ -1,7 +1,15 @@
+/*
+    Game class creates and populates the Context structure which is a shared ptr to a series of unique ptrs
+    that contain "modules" that can be accessed in each of the game's states
+
+    Seeds random, contains the main game loop, calculates game time
+
+    Creates the landing state, calls process state change and loop functions for each state
+*/
+
 #pragma once
 #include <memory>
 #include <SFML/Graphics/RenderWindow.hpp>
-// #include "AssetMachine.hpp"
 #include "StateMachine.hpp"
 #include "GUI.hpp"
 #include "World.hpp"
@@ -10,6 +18,8 @@
 #include "CharacterManager.hpp"
 #include "Data.hpp"
 #include <iostream>
+#include <cstdlib> 
+#include <time.h> 
 using namespace std;
 
 struct Context {

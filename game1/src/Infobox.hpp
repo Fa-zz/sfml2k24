@@ -8,14 +8,15 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <string>
+#include <vector>
 #include <iostream>
 using namespace std;
 
 class Infobox : public Engine::State {
 public:
     // Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context);
-    Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus);
-    Infobox(sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string infoboxType, int* tileStats, int* tileMissions);
+    Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus);
+    Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string infoboxType, int* tileStats, int* tileMissions);
 
     void init() override;
     void loop(const sf::Time& deltaTime);
@@ -37,6 +38,7 @@ private:
     string infoboxStatus_, infoboxType_;
     int* tileStats_;
     int* tileMissions_;
+    int charSize_;
     sf::Font font_;
     float windowSizeX_;
     float windowSizeY_;
@@ -48,7 +50,7 @@ private:
 
     sf::RectangleShape* infoboxRect_;
     sf::Text closeText_;
-    sf::Text infoText_;
+    sf::Text bodyText_;
     // sf::Text optionText_;
     // std::vector<sf::Text*> optionsText_;
     vector<Textlink*> links_;
@@ -57,8 +59,14 @@ private:
     // int clickedIndex_;
     int selectedIndex_;
     string linkData_;
+    vector<string> addBodyBackend_;
 
     void initClose(); 
-    // wildTileInfoText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\n";
-    string replaceInfoText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies);
+    void createInfobox();
+    void createCloseLink();
+    void createBodyText();
+    // wildTileBodyText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\n";
+    string replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies);
+    sf::String wrapText(sf::String string);
+    string makeScrollable(string scrollMe);
 };

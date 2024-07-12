@@ -1,3 +1,12 @@
+/*
+    State objects represent different "screens" of the game that the player can switch between. Examples include
+    the main menu, different states of the game
+
+    State objects can also be used within states, such as pop up windows within a state.
+
+    States loop among input, update, and render functions
+*/
+
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>

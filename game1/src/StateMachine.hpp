@@ -1,8 +1,11 @@
-#pragma once
+/*
+    State machine is the main structure used to navigate different game "screens", represented as state objects, as well
+    as internal states such as pop up screens. It is a stack that pops, pops all, pushes, or replaces State objects
+*/
 
+#pragma once
 #include <stack>
 #include <memory>
-
 #include "State.hpp"
 
 namespace Engine

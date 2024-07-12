@@ -73,7 +73,8 @@ void GameScreen1::processInput() {
                         m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
                         break;
                     case sf::Keyboard::P:
-                        view_ = m_context->m_window->getDefaultView();
+                        m_context->m_window->setSize(sf::Vector2u(Data::res2x, Data::res2y));
+                        // view_ = m_context->m_window->getDefaultView();
                         break;
                 }
             }
@@ -84,10 +85,16 @@ void GameScreen1::processInput() {
                 m_context->m_gameMaster->initInfobox(highlightX_, highlightY_);
             }
         } else {
+            if (event.type == sf::Event::KeyPressed) {
+                switch (event.key.code) {
+                    case sf::Keyboard::Escape:
+                        m_context->m_gameMaster->popCurrentInfobox();
+                        break;
+                }
+            }
             if (event.type == sf::Event::MouseMoved) {
                 m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false);
             } else if (event.type == sf::Event::MouseButtonPressed) {
-                // Ensure mouse position is updated before processing click
                 m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true);
             }
         }

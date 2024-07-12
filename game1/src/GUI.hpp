@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Data.hpp"
 #include "StateMachine.hpp"
 #include "State.hpp"
 #include <vector>
@@ -17,7 +18,7 @@ struct GUIContext {
 class GUI {
 public:
     GUI();
-    GUI(sf::Vector2u windowSize, int initChoice);
+    // GUI(sf::Vector2u windowSize, int initChoice);
     ~GUI();
     void initAll();
     void initMainMenuElems();
@@ -45,6 +46,7 @@ private:
     std::unique_ptr<Engine::StateMachine> stateMachine_;
     sf::Vector2u windowSize_;
     sf::Font font_;
+    int charSize_;
     sf::Text topWindowText_;
     sf::Text topBarText_;
     // sf::Texture windowTexture_;

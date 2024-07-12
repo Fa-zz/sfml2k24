@@ -1,6 +1,7 @@
 #include "GameMaster.hpp"
 
 void GameMaster::initGame() {
+    
     world_ = new World();
     width_ = Data::worldWidth;
     height_ = Data::worldHeight;
@@ -50,3 +51,5 @@ void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked) {
     }
     linkData_ = "";
 }
+
+void GameMaster::popCurrentInfobox() { gui_.popCurrentState(); }

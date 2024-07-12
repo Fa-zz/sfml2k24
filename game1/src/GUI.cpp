@@ -10,6 +10,11 @@ void GUI::initFont() {
         mainMenuPlayButtonText_.setFont(font_);
         topBarText_.setFont(font_);
     }
+    if (Data::useResX == Data::res1x && Data::useResY == Data::res1y) {
+        charSize_ = 20;
+    } else {
+        charSize_ = 15;
+    }
 }
 
 // void GUI::initTopAndBottomWindow() {
@@ -77,9 +82,10 @@ void GUI::initTopBar() {
     topBar_->setSize(sf::Vector2f( static_cast<float>(windowSize_.x) , static_cast<float>(windowSize_.y * 0.111f) )); // On 1440x900, this is 1440x100
     
     topBarText_.setString("Baltimore   Pop:0   Fd:100   Mood:100   Day:0");
-    topBarText_.setCharacterSize(12);
+    topBarText_.setCharacterSize(charSize_);
     topBarText_.setOrigin(topBarText_.getGlobalBounds().getSize() / 2.f + topBarText_.getLocalBounds().getPosition());
     topBarText_.setPosition(topBar_->getPosition() + (topBar_->getSize() / 2.f));
+    // topBarText_.setPosition()
 
     guiMap_["topBar"] = topBar_;
 }
@@ -89,14 +95,14 @@ void GUI::initInfobox(string tileStatus, string tileType, int* tileStats, int* t
     if (!gui_context_ || !gui_context_->stateMachine_) {
         throw std::runtime_error("GUI context or state machine not initialized");
     }
-    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, tileStatus, tileType, tileStats, tileMissions));
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, tileStatus, tileType, tileStats, tileMissions));
 }
 
 void GUI::addMissionInfobox() {
     if (!gui_context_ || !gui_context_->stateMachine_) {
         throw std::runtime_error("GUI context or state machine not initialized");
     }
-    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(font_, windowSize_.x, windowSize_.y, Data::missionChoice), false);
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, Data::missionChoice), false);
 }
 
 void GUI::initAll() {
@@ -113,12 +119,12 @@ GUI::GUI():gui_context_(std::make_shared<GUIContext>()) {
     initAll();
 }
 
-GUI::GUI(sf::Vector2u windowSize, int initChoice): windowSize_(windowSize) {
-    initFont();
-    if (initChoice == 0)
-        initMainMenuElems();
-    // initGUIElems();
-}
+// GUI::GUI(sf::Vector2u windowSize, int initChoice): windowSize_(windowSize) {
+//     initFont();
+//     if (initChoice == 0)
+//         initMainMenuElems();
+//     // initGUIElems();
+// }
 
 GUI::~GUI() {
     for (auto& pair : guiMap_) {
