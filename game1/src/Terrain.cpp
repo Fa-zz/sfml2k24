@@ -1,23 +1,13 @@
 #include "Terrain.hpp"
 
 // Terrain::Terrain(int x, int y, float tileSizeX, float tileSizeY, const sf::Texture& texture, string tileStatus, string tileType, int* tileStats, int* tileMissions)
-Terrain::Terrain(int x, int y, float tileSizeX, float tileSizeY, const sf::Texture& texture)
-    : tileSizeX_(tileSizeX), tileSizeY_(tileSizeY) {
-    // : tileSizeX_(tileSizeX), tileSizeY_(tileSizeY), tileStatus_(tileStatus), tileType_(tileType), tileStats_(tileStats), tileMissions_(tileMissions) {
+Terrain::Terrain(int x, int y, float tileSizeX, float tileSizeY, int tileMapX_, int tileMapY_, const sf::Texture& texture)
+    : tileSizeX_(tileSizeX), tileSizeY_(tileSizeY), tileMapX_(tileSizeX), tileMapY_(tileSizeY) {
     sprite_.setTexture(texture);
     sprite_.setTextureRect(sf::IntRect(x, y, tileSizeX, tileSizeY));
-    // Set origin for building tiles to bottom-left
     if (tileSizeX > 16 || tileSizeY > 16) {
         sprite_.setOrigin(0.f, tileSizeY);
     }
-
-    // for (int i = 0; i < sizeof(tileStats)/sizeof(tileStats[Data::numTileStats]); i++) {
-    //     tileStats_[i] = tileStats[i];
-    // }
-    // for (int i = 0; i < sizeof(tileMissions)/sizeof(tileMissions[Data::numTileMissions]); i++) {
-    //     tileMissions_[i] = tileMissions[i];
-    // }
-
 }
 
 Terrain::~Terrain() { }
@@ -41,9 +31,20 @@ void Terrain::setSpritePos(int x, int y) {
     }
 }
 
-// void Terrain::setDummyInfo(int x) { dummyInfo_ = x; }
-// int Terrain::getDummyInfo() { return dummyInfo_; };
-void Terrain::setTileStatus(string x) { tileStatus_ = x; }
+void Terrain::setTileStatus(string x) { 
+    tileStatus_ = x; 
+    // sf::Color(180,0,0) bloody red color
+    // sf::Color(0,0,0,255) is black (undiscovered)
+    // sf::Color(155,155,255,50) is a murky, foggy color (wild)
+    // sf::Color(255,255,255) regular (reclaimed)
+    if (tileStatus_ == Data::undiscoveredTile) {
+        sprite_.setColor(sf::Color(0,0,0,255));
+    } else if (tileStatus_ == Data::wildTile) {
+        sprite_.setColor(sf::Color(155,155,255,50));
+    } else if (tileStatus_ == Data::reclaimedTile) {
+        sprite_.setColor(sf::Color(255,255,255));
+    }
+}
 void Terrain::setTileType(string x) { tileType_ = x; }
 
 void Terrain::setTileStats(int* tileStats) {

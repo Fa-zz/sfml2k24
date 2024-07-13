@@ -8,8 +8,13 @@ Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSiz
 
 }
 
-Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string infoboxType, int* tileStats, int* tileMissions) 
-: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus), infoboxType_(infoboxType), tileStats_(tileStats), tileMissions_(tileMissions)  {
+Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string locType)
+: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus), locType_(locType) {
+
+}
+
+Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string locType, int* tileStats, int* tileMissions) 
+: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus), locType_(locType), tileStats_(tileStats), tileMissions_(tileMissions)  {
 
 }
 
@@ -28,14 +33,18 @@ void Infobox::init() {
 
     if (infoboxStatus_ == Data::intro) {
         scrollable_ = true;
-        makeScrollable(wrapText(Data::dummyText));
+        string updatedIntro = replaceText(Data::introText, Data::locPh, locType_);
+        makeScrollable(wrapText(replaceText(updatedIntro, Data::cityPh, "Baltimore")));
         bodyText_.setString(getBoundedString(0));
         createScrollText();
 
+    } else if (infoboxStatus_ == Data::reclaimedTile) {
+        bodyText_.setString(wrapText(replaceText(Data::reclaimedBody, Data::locPh, locType_)));
+    
     } else if (infoboxStatus_ == Data::wildTile) {
         createMissionsLink();
 
-        string wildTileInfoTextUpdated = replaceBodyText(infoboxType_, Data::tileStatDescs[tileStats_[0]], Data::tileStatDescs[tileStats_[1]], Data::tileStatDescs[tileStats_[2]] );
+        string wildTileInfoTextUpdated = replaceBodyText(locType_, Data::tileStatDescs[tileStats_[0]], Data::tileStatDescs[tileStats_[1]], Data::tileStatDescs[tileStats_[2]] );
         string wildTileInfoTextUpdWrap = wrapText(wildTileInfoTextUpdated);
         bodyText_.setString(wildTileInfoTextUpdWrap);
 
@@ -144,7 +153,7 @@ void Infobox::processInput() {
 void Infobox::update() {
 
 }
-
+// RENDER ALL
 void Infobox::render(sf::RenderTarget& rt) {
     rt.draw(*infoboxRect_);
     rt.draw(bodyText_);
@@ -173,8 +182,27 @@ string Infobox::getData() {
     // return linkData_;
 }
 
+string Infobox::replaceText(string stringToReplace, string placeHolderText, string replaceWith) {
+    while (stringToReplace.find(placeHolderText) != string::npos)
+        stringToReplace.replace(stringToReplace.find(placeHolderText), placeHolderText.length(), replaceWith);
+    return stringToReplace;
+}
+
+// string Infobox::replaceIntroText() {
+//     string loc = "LOCPLACEHOLDER";
+//     string city = "CITYPLACEHOLDER";
+//     string replaceLoc = locType_;
+//     string intro = Data::introText;
+//     while (intro.find(loc) != string::npos)
+//         intro.replace(intro.find(loc), loc.length(), replaceLoc);
+//     while (intro.find(city) != string::npos)
+//         intro.replace(intro.find(city), city.length(), "Baltimore");
+
+//     return intro;
+// }
+
 string Infobox::replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies) {
-    string wildTileInfoTextUpdated = Data::wildTileBodyText;
+    string wildTileInfoTextUpdated = Data::wildBody1;
     string loc = "LOCPLACEHOLDER";
     string food = "FOODPLACEHOLDER";
     string surv = "SURVIVORSPLACEHOLDER";

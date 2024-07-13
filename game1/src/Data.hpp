@@ -14,8 +14,8 @@ namespace Data {
     inline const float res2x = 800.f;
     inline const float res2y = 600.f;
 
-    inline const float useResX = res2x;
-    inline const float useResY = res2y;
+    inline const float useResX = res1x;
+    inline const float useResY = res1y;
     // inline const int charSize = 20;
 
     inline const int worldWidth = 50;
@@ -40,9 +40,16 @@ namespace Data {
     inline const string tileTypes[numTileType] = {"apartment", "church", "park", "school", "restaurant", "gas station", "office", "police HQ"};
     inline const string tileStats[numTileStats] = {"Food", "Zombies", "Survivors"};
     inline const string tileMissions[numTileMissions] = {"Scout area", "Scavenge for food", "Kill zombies", "Recruit survivors", "Reclaim"};
-    // inline const string wildTileBodyText = "This is a LOCPLACEHOLDER.\nFood: FOODPLACEHOLDER\nZombies: ZOMBIESPLACEHOLDER\nSurvivors: SURVIVORSPLACEHOLDER\n";
-    inline const string wildTileBodyText = "This is a LOCPLACEHOLDER that we've scouted. Here's what we know is here.\n\nFood: FOODPLACEHOLDER.\nZombies: ZOMBIESPLACEHOLDER.\nSurvivors: SURVIVORSPLACEHOLDER.";
-    inline const string dummyText = "One thousand pounds of cheese for one flower! That may sound like an unfair trade, but it happened once. Tulips were first grown in Holland in the 1600s. Many rich people enjoyed planting them in their gardens. They were willing to pay a lot of money for the tulip bulbs, which looked like small onions. Traders drove up the prices. They began to buy up the tulips to sell them later for more money. Other people enjoyed collecting rare types of tulips.\n\nSoon, tulip bulbs were worth thousands of silver coins. People sold everything they had to buy them. The prices went up so quickly that people thought they would be able to get rich by selling the tulips later.";
+    
+    inline const string locPh = "LOCPLACEHOLDER";
+    inline const string cityPh = "CITYPLACEHOLDER";
+    inline const string foodPh = "FOODPLACEHOLDER";
+    inline const string zomPh = "ZOMBIESPLACEHOLDER";
+    inline const string survPh = "SURVIVORSPLACEHOLDER";
+    inline const string wildBody1 = "This is a LOCPLACEHOLDER that we've scouted. Here's what we know is here.\n\nFood: FOODPLACEHOLDER.\nZombies: ZOMBIESPLACEHOLDER.\nSurvivors: SURVIVORSPLACEHOLDER.";
+    inline const string reclaimedBody = "This LOCPLACEHOLDER is within our walls. Some of our people are living here, and we're using it to store food and other supplies. It's safe for now.";
+    // inline const string dummyText = "One thousand pounds of cheese for one flower! That may sound like an unfair trade, but it happened once. Tulips were first grown in Holland in the 1600s. Many rich people enjoyed planting them in their gardens. They were willing to pay a lot of money for the tulip bulbs, which looked like small onions. Traders drove up the prices. They began to buy up the tulips to sell them later for more money. Other people enjoyed collecting rare types of tulips.\n\nSoon, tulip bulbs were worth thousands of silver coins. People sold everything they had to buy them. The prices went up so quickly that people thought they would be able to get rich by selling the tulips later.";
+    inline const string introText = "It's been 6 months since the outbreak. People watched with horror on their smartphones as it struck country after country, the same stories: riots, panic, violence. Ordinary people giving into a kind of madness the world had never seen before. It was terrifying, but it made for great entertainment. See, we assumed it would stay in the third world, like we were special somehow, and it wouldn't be able to hurt us here.\n\nWhen the parasite made its way, inevitably, to the western world, the explanations varied for the first victims. Depending on their background, some were chalked up as mental health victims, some as savage migrants, or alien terrorists. Most met their end by the police, the evidence covered up, incidents to mention and quickly brush past in the evening news. Topics avoided like contagious disease, even as the sight of armored police carriers in our neighborhoods increased, even as economies crashed like dead birds falling out of the sky.\n\nThis parasite doesn't discriminate. The bread riots spread it even faster. It's everywhere now. Our city, Baltimore, collapsed a week ago. We watched the National Guard leave a week ago, and they've blocked off all roads in and out. No one knows what they're up to, but we don't have faith that they're coming back. Now it's just us, trapped in here with drones flying over us, others that are just as or more desperate, and the living dead.\n\nWe're not going to give up. 7 of us have decided to stick together. We've put up some walls and barbed wire to block off an abandoned LOCPLACEHOLDER. The dead are restless outside our walls. And our food and supplies won't last forever. The government and military were never on our side - we can only trust each other. But we're going to reclaim CITYPLACEHOLDER, block by block.";
 
     inline const string onClickClose = "close stack";
     inline const string onClickAccept = "accept stack";

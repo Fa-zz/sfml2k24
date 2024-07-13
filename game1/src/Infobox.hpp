@@ -16,7 +16,8 @@ class Infobox : public Engine::State {
 public:
     // Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context);
     Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus);
-    Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string infoboxType, int* tileStats, int* tileMissions);
+    Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string locType);
+    Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string locType, int* tileStats, int* tileMissions);
 
     void init() override;
     void loop(const sf::Time& deltaTime);
@@ -35,7 +36,7 @@ public:
 
 private:
     // std::shared_ptr<GUIContext> gui_context_;
-    string infoboxStatus_, infoboxType_;
+    string infoboxStatus_, locType_;
     int* tileStats_;
     int* tileMissions_;
     int charSize_;
@@ -73,6 +74,8 @@ private:
     void createMissionsLink();
     void initBodyText();
     void createScrollText();
+    string replaceIntroText();
+    string replaceText(string stringToReplace, string placeHolderText, string replaceWith);
     string replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies);
     sf::String wrapText(sf::String string);
     void makeScrollable(string scrollMe);

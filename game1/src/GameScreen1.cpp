@@ -30,7 +30,9 @@ void GameScreen1::start() {
 GameScreen1::~GameScreen1() { }
 
 void GameScreen1::init() { 
+    player_.setPos(sf::Vector2f(m_context->m_gameMaster->getPlayerPos().x * 16, m_context->m_gameMaster->getPlayerPos().y * 16));
     m_context->m_gameMaster->addIntroInfobox();
+    cout << player_.getPos().x << " " << player_.getPos().y << endl;
 }
 
 void GameScreen1::loop(const sf::Time& deltaTime) {

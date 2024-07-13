@@ -24,9 +24,9 @@ public:
     void initMainMenuElems();
     void initHighlight();
     void initTopBar();
-    void addIntroInfobox();
+    void addIntroInfobox(string tileType);
     void addTileInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions);
-    void addMissionInfobox();
+    void addInfobox(string boxType);
     void setWindowSize(sf::Vector2u windowSize);
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);

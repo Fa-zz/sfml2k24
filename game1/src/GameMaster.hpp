@@ -25,11 +25,11 @@ public:
 	void popCurrentInfobox();
 	void setGUI(GUI& gui);
 	Terrain& getGroundTileAtPos(int y, int x);
+	sf::Vector2u getPlayerPos();
 private:
 	int height_, width_;
     GUI& gui_;
 	World* world_;
-	// string linkData_[2];
 	string linkData_;
-	void addMissionInfobox();
+	// void addMissionInfobox();
 };

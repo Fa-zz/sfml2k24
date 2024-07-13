@@ -8,7 +8,7 @@ using namespace std;
 class Terrain {
 public:
     // Terrain(int x, int y, float tileSizeX, float tileSizeY, const sf::Texture& texture, string tileStatus, string tileType, int* tileStats, int* tileMissions);
-    Terrain(int x, int y, float tileSizeX, float tileSizeY, const sf::Texture& texture);
+    Terrain(int x, int y, float tileSizeX, float tileSizeY, int tileMapX_, int tileMapY_, const sf::Texture& texture);
     ~Terrain();
 
     sf::Sprite& getSprite();
@@ -33,6 +33,7 @@ private:
     // int y_; // y: y coordinate of sprite on texture png
     float tileSizeX_; // tileSizeX: Size of tile in x direction
     float tileSizeY_; // tileSizeY: Size of tile in y direction
+    int tileMapX_, tileMapY_; // coordinates of sprite on the tileMap
     sf::Sprite sprite_;
     // int dummyInfo_;
     string tileStatus_;

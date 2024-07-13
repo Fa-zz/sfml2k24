@@ -1,7 +1,6 @@
 #include "GameMaster.hpp"
 
 void GameMaster::initGame() {
-    
     world_ = new World();
     width_ = Data::worldWidth;
     height_ = Data::worldHeight;
@@ -26,7 +25,7 @@ Terrain& GameMaster::getGroundTileAtPos(int y, int x) {
 
 void GameMaster::addIntroInfobox() {
     if (gui_.getGUIStackEmpty()) {
-        gui_.addIntroInfobox();
+        gui_.addIntroInfobox(world_->getGroundTileAtPos(world_->getStartingLoc().y, world_->getStartingLoc().x)->getTileType());
     }
 }
 
@@ -41,19 +40,19 @@ void GameMaster::addTileInfobox(float mouseX, float mouseY) {
     }
 }
 
-void GameMaster::addMissionInfobox() {
-    gui_.addMissionInfobox();
-}
-
 void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp) {
     linkData_ = gui_.getClickData();
     if (linkData_ == Data::onClickClose) {
-        gui_.popCurrentState();
+        gui_.popCurrentState();    
     } else if (linkData_ == Data::onClickCreateMissionChoice) {
-        addMissionInfobox();
+        gui_.addInfobox(Data::missionChoice);
     }
     linkData_ = "";
     gui_.passInput(mouseX, mouseY, clicked, scrollDown, scrollUp);
 }
 
 void GameMaster::popCurrentInfobox() { gui_.popCurrentState(); }
+
+sf::Vector2u GameMaster::getPlayerPos() {
+    return world_->getStartingLoc();
+}

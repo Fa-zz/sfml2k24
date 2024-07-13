@@ -90,8 +90,8 @@ void GUI::initTopBar() {
     guiMap_["topBar"] = topBar_;
 }
 
-void GUI::addIntroInfobox() {
-    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, Data::intro), false);
+void GUI::addIntroInfobox(string tileType) {
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, Data::intro, tileType), false);
 }
 
 void GUI::addTileInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions) {
@@ -102,11 +102,14 @@ void GUI::addTileInfobox(string tileStatus, string tileType, int* tileStats, int
     gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, tileStatus, tileType, tileStats, tileMissions));
 }
 
-void GUI::addMissionInfobox() {
+void GUI::addInfobox(string boxType) {
     if (!gui_context_ || !gui_context_->stateMachine_) {
         throw std::runtime_error("GUI context or state machine not initialized");
     }
-    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, Data::missionChoice), false);
+    if (boxType == "") {
+        throw std::runtime_error("infobox type not set");
+    }
+    gui_context_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, boxType), false);
 }
 
 void GUI::initAll() {

@@ -16,7 +16,9 @@ public:
     // Terrain* getBuildingTileAtPos(int y, int x);
     // vector<vector<Terrain*>> getBuildingTiles();
     // vector<vector<int>> getCollisionTiles();
+    sf::Vector2u getStartingLoc();
 private:
+    int worldHeight_, worldWidth_;
     sf::Texture groundTexture_; // groundTexture_: Tex for ground tiles, loaded in from assets
     // sf::Texture buildingTexture_; // buildingTexture_: Tex for building tiles, loaded in from assets
     vector<Terrain*> allTerrains_; // allTerrains_: Every vector we create from the loaded textures is added to this vector
@@ -26,7 +28,7 @@ private:
     vector<vector<Terrain*>> groundTiles_; // groundTiles_: All ground tiles present for every location of the game board. Rendered first
     // vector<vector<Terrain*>> buildingTiles_; // buildingTiles_: All building tiles present for every location of the game board. Rendered second
     // vector<vector<int>> collisionTiles_;
-
+    sf::Vector2u startingLoc_ = {1000,1000};
     int loadTerrainTextures(); // Loads ground, building, and other textures
     int loadTerrainMap(); // Loads pieces of terrains
     int* getRandomStatsArray();
