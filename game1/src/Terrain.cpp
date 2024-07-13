@@ -33,14 +33,14 @@ void Terrain::setSpritePos(int x, int y) {
 
 void Terrain::setTileStatus(string x) { 
     tileStatus_ = x; 
-    // sf::Color(180,0,0) bloody red color
+    // sf::Color(180,0,0) bloody red color. Lower R value, more darker
     // sf::Color(0,0,0,255) is black (undiscovered)
     // sf::Color(155,155,255,50) is a murky, foggy color (wild)
     // sf::Color(255,255,255) regular (reclaimed)
     if (tileStatus_ == Data::undiscoveredTile) {
         sprite_.setColor(sf::Color(0,0,0,255));
     } else if (tileStatus_ == Data::wildTile) {
-        sprite_.setColor(sf::Color(155,155,255,50));
+        sprite_.setColor(sf::Color(50,155,155,50));
     } else if (tileStatus_ == Data::reclaimedTile) {
         sprite_.setColor(sf::Color(255,255,255));
     }
@@ -63,3 +63,36 @@ string Terrain::getTileType() { return tileType_; };
 string Terrain::getTileStatus() { return tileStatus_; };
 int* Terrain::getTileStats() { return tileStats_; }
 int* Terrain::getTileMissions() { return tileMissions_; }
+
+void Terrain::setTileStatStateColor(int tileStatsIndex) {
+    if (tileStats_[tileStatsIndex] == 0) {
+        tileStatStateColor_ = sf::Color(sf::Color::White);
+    } else {
+        if (tileStatsIndex == 0) {
+            if (tileStats_[tileStatsIndex] == 1)
+                tileStatStateColor_ = DefinedColors::foodLow;
+            if (tileStats_[tileStatsIndex] == 2)
+                tileStatStateColor_ = DefinedColors::foodMed;
+            if (tileStats_[tileStatsIndex] == 3)
+                tileStatStateColor_ = DefinedColors::foodHigh;
+        } else if (tileStatsIndex == 1) {
+            if (tileStats_[tileStatsIndex] == 1)
+                tileStatStateColor_ = DefinedColors::zombLow;
+            if (tileStats_[tileStatsIndex] == 2)
+                tileStatStateColor_ = DefinedColors::zombMed;
+            if (tileStats_[tileStatsIndex] == 3)
+                tileStatStateColor_ = DefinedColors::zombHigh;
+        } else if (tileStatsIndex == 2) {
+            if (tileStats_[tileStatsIndex] == 1)
+                tileStatStateColor_ = DefinedColors::survLow;
+            if (tileStats_[tileStatsIndex] == 2)
+                tileStatStateColor_ = DefinedColors::survMed;
+            if (tileStats_[tileStatsIndex] == 3)
+                tileStatStateColor_ = DefinedColors::survHigh;
+        }
+
+    }
+
+}
+
+sf::Color Terrain::getTileStatStateColor() { return tileStatStateColor_; }

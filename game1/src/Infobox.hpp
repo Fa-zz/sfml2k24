@@ -5,6 +5,7 @@
 #include "StateMachine.hpp"
 #include "GUI.hpp"
 #include "Textlink.hpp"
+#include "GameMaster.hpp"
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <string>
@@ -31,6 +32,7 @@ public:
     void start() override;
     void handleInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
     string getData();
+    // void helloWorld(int x);
 
     ~Infobox();
 

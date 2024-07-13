@@ -163,6 +163,18 @@ void GUI::passInput(float x, float y, bool clicked, bool scrollDown, bool scroll
     gui_context_->stateMachine_->GetCurrent()->handleInput(x, y, clicked, scrollDown, scrollUp);
 
 }
+void GUI::sendData() {
+    auto currentState = gui_context_->stateMachine_->GetCurrent();
+    if (currentState) {
+        if (Infobox* infoboxState = dynamic_cast<Infobox*>(currentState)) {
+            // infoboxState->helloWorld(42); // or whatever argument you need to pass
+        } else {
+            std::cerr << "Current state is not an Infobox" << std::endl;
+        }
+    } else {
+        std::cerr << "No current state" << std::endl;
+    }
+}
 string GUI::getClickData() {
     return gui_context_->stateMachine_->GetCurrent()->getData();
 }

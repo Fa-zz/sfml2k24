@@ -69,9 +69,16 @@ void Engine::StateMachine::ProcessStateChange()
     }
 }
 
-std::unique_ptr<Engine::State> &Engine::StateMachine::GetCurrent()
-{
-    return m_stateStack.top();
+// std::unique_ptr<Engine::State> &Engine::StateMachine::GetCurrent()
+// {
+//     return m_stateStack.top();
+// }
+
+Engine::State* Engine::StateMachine::GetCurrent() {
+    if (!m_stateStack.empty()) {
+        return m_stateStack.top().get();
+    }
+    return nullptr;
 }
 
 bool Engine::StateMachine::IsEmpty() const

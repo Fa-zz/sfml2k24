@@ -6,7 +6,7 @@ GameScreen1::GameScreen1(std::shared_ptr<Context> &context)
     : m_context(context), window_(*(m_context->m_window)), player_(*(m_context->m_player)) {
     m_context->m_gameMaster->initGame();
     width_ = Data::worldWidth;
-    height_ = Data::worldHeight;
+    height_ = Data::worldHeight; 
     // m_context->m_world->genTiles(height_, width_);
     view_ = m_context->m_window->getView();
     view_.setSize(view_.getSize().x / 6, view_.getSize().y / 6);
@@ -30,7 +30,7 @@ void GameScreen1::start() {
 GameScreen1::~GameScreen1() { }
 
 void GameScreen1::init() { 
-    player_.setPos(sf::Vector2f(m_context->m_gameMaster->getPlayerPos().x * 16, m_context->m_gameMaster->getPlayerPos().y * 16));
+    player_.setPos(sf::Vector2f(m_context->m_gameMaster->getStartingLoc().x * 16, m_context->m_gameMaster->getStartingLoc().y * 16));
     m_context->m_gameMaster->addIntroInfobox();
     cout << player_.getPos().x << " " << player_.getPos().y << endl;
 }
@@ -71,6 +71,22 @@ void GameScreen1::processInput() {
                         break;
                     case sf::Keyboard::S:
                         m_context->m_player->addDir(sf::Vector2f{0.f, Data::playerSpeed});
+                        break;
+                    case sf::Keyboard::Num1: // Default map mode
+                        m_context->m_gameMaster->mapMode(0);
+                        defaultMapMode_ = true;
+                        break;
+                    case sf::Keyboard::Num2: // Food map mode
+                        m_context->m_gameMaster->mapMode(1);
+                        defaultMapMode_ = false;
+                        break;
+                    case sf::Keyboard::Num3: // Zombie map mode
+                        m_context->m_gameMaster->mapMode(2);
+                        defaultMapMode_ = false;
+                        break;
+                    case sf::Keyboard::Num4: // Survivor map mode
+                        m_context->m_gameMaster->mapMode(3);
+                        defaultMapMode_ = false;
                         break;
                     case sf::Keyboard::Enter:
                         reset();
@@ -146,6 +162,13 @@ void GameScreen1::render() {
             // }
             groundTile.setSpritePos(x, y);
             window_.draw(groundTile.getSprite());
+            if (!defaultMapMode_) {
+                sf::Color color = groundTile.getTileStatStateColor();
+                sf::RectangleShape rect(sf::Vector2f(16,16));
+                rect.setPosition(x * 16, y * 16);
+                rect.setFillColor(color);
+                window_.draw(rect);
+            }
         }
     }
     m_context->m_gui->renderGUIElems(window_);

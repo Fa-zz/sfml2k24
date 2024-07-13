@@ -20,7 +20,7 @@ namespace Engine
         void PopCurrent();
         void PopAll();
         void ProcessStateChange();
-        std::unique_ptr<State> &GetCurrent();
+        Engine::State* GetCurrent();
         bool IsEmpty() const;
 
     private:

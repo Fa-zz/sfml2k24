@@ -34,9 +34,10 @@ namespace Data {
     inline const int numTileType = 8;
     inline const int numTileStatus = 3;
     inline const int numTileStats = 3;
+    inline const int numTileStatStates = 4;
     inline const int numTileMissions = 5;
     inline const string tileStatus[numTileStatus] = {wildTile, reclaimedTile, undiscoveredTile};
-    inline const string tileStatDescs[6] = {"none", "few", "low", "medium", "high", "a lot"};
+    inline const string tileStatDescs[numTileStatStates] = {"none", "low", "medium", "high"};
     inline const string tileTypes[numTileType] = {"apartment", "church", "park", "school", "restaurant", "gas station", "office", "police HQ"};
     inline const string tileStats[numTileStats] = {"Food", "Zombies", "Survivors"};
     inline const string tileMissions[numTileMissions] = {"Scout area", "Scavenge for food", "Kill zombies", "Recruit survivors", "Reclaim"};

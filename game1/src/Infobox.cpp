@@ -49,7 +49,7 @@ void Infobox::init() {
         bodyText_.setString(wildTileInfoTextUpdWrap);
 
     } else if (infoboxStatus_ == Data::missionChoice) {
-        bodyText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
+        // bodyText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
         // string bodyTextWrapped = wrapText(Data::dummyText);
         // string bodyTextWrappedScrollable = makeScrollable(bodyTextWrapped);
 
@@ -201,17 +201,17 @@ string Infobox::replaceText(string stringToReplace, string placeHolderText, stri
 //     return intro;
 // }
 
-string Infobox::replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies) {
+string Infobox::replaceBodyText(string replaceLoc, string replaceFood, string replaceZombies, string replaceSurvivors) {
     string wildTileInfoTextUpdated = Data::wildBody1;
     string loc = "LOCPLACEHOLDER";
     string food = "FOODPLACEHOLDER";
-    string surv = "SURVIVORSPLACEHOLDER";
     string zomb = "ZOMBIESPLACEHOLDER";
+    string surv = "SURVIVORSPLACEHOLDER";
 
     wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(loc), loc.length(), replaceLoc);
     wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(food), food.length(), replaceFood);
-    wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(surv), surv.length(), replaceSurvivors);
     wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(zomb), zomb.length(), replaceZombies);
+    wildTileInfoTextUpdated.replace(wildTileInfoTextUpdated.find(surv), surv.length(), replaceSurvivors);
 
     return wildTileInfoTextUpdated;
 }
@@ -301,3 +301,4 @@ string Infobox::getBoundedString(int upd) {
 void Infobox::loop(const sf::Time& deltaTime) { }
 void Infobox::update(const sf::Time& deltaTime) { }
 void Infobox::render() { }
+// void Infobox::helloWorld(int x) { }

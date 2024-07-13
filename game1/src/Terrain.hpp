@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Data.hpp"
+#include "Colors.hpp"
 #include <string>
 #include <vector>
 using namespace std;
@@ -27,6 +28,8 @@ public:
     string getTileStatus();
     int* getTileStats();
     int* getTileMissions();
+    void setTileStatStateColor(int tileStatsIndex);
+    sf::Color getTileStatStateColor();
 
 private:
     // int x_; // x: x coordinate of sprite on texture png
@@ -38,6 +41,7 @@ private:
     // int dummyInfo_;
     string tileStatus_;
     string tileType_;
+    sf::Color tileStatStateColor_;
     // int tileStats_[Data::numTileStats];
     // int tileMissions_[Data::numTileMissions];
     // vector<int> tileStats_;

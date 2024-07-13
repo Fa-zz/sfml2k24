@@ -36,6 +36,7 @@ private:
     int highlightX_, highlightY_;
     bool scrollDownPressed_ = false;
     bool scrollUpPressed_ = false;
+    bool defaultMapMode_ = true;
 
     void reset();
 };

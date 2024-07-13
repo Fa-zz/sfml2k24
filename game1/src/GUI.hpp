@@ -34,6 +34,7 @@ public:
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
     void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
+    void sendData();
     string getClickData();
     bool getGUIStackEmpty();
     void popCurrentState();
