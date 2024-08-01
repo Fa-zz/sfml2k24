@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "SFML/Graphics.hpp"
+#include "Data.hpp"
 #include "Character.hpp"
 #include "World.hpp"
 #include "InputHandler.hpp"

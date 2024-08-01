@@ -6,40 +6,69 @@
 
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Data.hpp"
 #include "GUI.hpp"
 #include "Terrain.hpp"
-// #include "World.hpp"
+#include "Person.hpp"
+#include "StateMachine.hpp"
+#include "State.hpp"
+#include "Infobox.hpp"
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <fstream>
 #include <utility>
 #include <cstdlib>
 #include <iostream>
 using namespace std;
+
+struct GMContext {
+    std::unique_ptr<Engine::StateMachine> stateMachine_;
+    GMContext() {
+        stateMachine_ = std::make_unique<Engine::StateMachine>();
+    }
+};
 
 class GameMaster {
 public:
 	GameMaster(GUI& gui);
 	~GameMaster();
 	void initGame();
-	void addIntroInfobox();
-	void addTileInfobox(float mouseX, float mouseY);
-    void infoboxMaster(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp);
-	void popCurrentInfobox();
-	void setGUI(GUI& gui);
+	void initPeople();
 	void genTiles(int height, int width);
 	void mapMode(int mapMode);
+	void addIntroInfobox();
+	void addTileInfobox(float mouseX, float mouseY);
+	void addInfobox(string type);
+	void updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp);
+	bool getInfoboxStackEmpty();
+	void popCurrentInfobox();
+	Infobox* getCurrentInfobox();
+	void createInfobox();
+	void passTileType(string tileType);
+	void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
 	Terrain& getGroundTileAtPos(int y, int x); // Y AND X
 	sf::Vector2u getStartingLoc();
 	int getPopulation();
+    void setWindowSize(sf::Vector2u windowSize);
 private:
+	std::shared_ptr<GMContext> gmcontext_;
 	sf::Texture groundTexture_;
 	vector<vector<Terrain*>> groundTiles_;
+	sf::Vector2u windowSize_;
+	int charSize_;
+	sf::Font font_;
 	sf::Vector2u startingLoc_ = {1000,1000}; // X AND Y
 	vector<pair<int, int>> wildTilesCoords; // Y AND X
 	int height_, width_;
     GUI& gui_;
 	// World* world_;
+	int currX_, currY_;
 	string linkData_;
+	vector<string> maleNames_;
+	vector<string> femaleNames_;
+	unordered_map<int, Person*> personMap_; 
+	int lastID_ = 0;
 	int loadTerrainTextures();
 	int* getRandomStatsArray();
 	// int population_;

@@ -3,18 +3,18 @@
 // TileInfobox::TileInfobox(sf::Font font, float windowX, float windowSizeY, unordered_map<string,int> data) : font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), data_(data) {
 // Infobox::Infobox(sf::Font font, float windowSizeX, float windowSizeY, int data, std::shared_ptr<GUIContext> &gui_context_) : font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), data_(data), gui_context_(gui_context_) {
 
-Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus)
-: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus) {
+Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxType)
+: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxType_(infoboxType) {
 
 }
 
-Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string locType)
-: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus), locType_(locType) {
+Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxType, string locType)
+: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxType_(infoboxType), locType_(locType) {
 
 }
 
-Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxStatus, string locType, int* tileStats, int* tileMissions) 
-: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxStatus_(infoboxStatus), locType_(locType), tileStats_(tileStats), tileMissions_(tileMissions)  {
+Infobox::Infobox(int charSize, sf::Font font, float windowSizeX, float windowSizeY, string infoboxType, string locType, int* tileStats, int* tileMissions) 
+: charSize_(charSize), font_(font), windowSizeX_(windowSizeX), windowSizeY_(windowSizeY), infoboxType_(infoboxType), locType_(locType), tileStats_(tileStats), tileMissions_(tileMissions)  {
 
 }
 
@@ -25,40 +25,59 @@ void Infobox::pause() {
 void Infobox::start() {
     isPaused_ = false;
 }
-// INIT TEXTBOX
+// INIT INFOBOX
 void Infobox::init() {
-    createInfobox();
-    createCloseLink();
-    initBodyText();
+}
 
-    if (infoboxStatus_ == Data::intro) {
+void Infobox::createInfobox() {
+    createBox();
+    initBodyText();
+    createCloseLink();
+
+    if (infoboxType_ == Data::intro) {
         scrollable_ = true;
         string updatedIntro = replaceText(Data::introText, Data::locPh, locType_);
         makeScrollable(wrapText(replaceText(updatedIntro, Data::cityPh, "Baltimore")));
         bodyText_.setString(getBoundedString(0));
         createScrollText();
 
-    } else if (infoboxStatus_ == Data::reclaimedTile) {
+    } else if (infoboxType_ == Data::reclaimedTile) {
         bodyText_.setString(wrapText(replaceText(Data::reclaimedBody, Data::locPh, locType_)));
     
-    } else if (infoboxStatus_ == Data::wildTile) {
+    } else if (infoboxType_ == Data::wildTile) {
         createMissionsLink();
-
         string wildTileInfoTextUpdated = replaceBodyText(locType_, Data::tileStatDescs[tileStats_[0]], Data::tileStatDescs[tileStats_[1]], Data::tileStatDescs[tileStats_[2]] );
         string wildTileInfoTextUpdWrap = wrapText(wildTileInfoTextUpdated);
         bodyText_.setString(wildTileInfoTextUpdWrap);
 
-    } else if (infoboxStatus_ == Data::missionChoice) {
+    } else if (infoboxType_ == Data::missionChoice) {
         // bodyText_.setString("Choose a mission at the church here.\nYou can scout the area to learn more,\nscavenge for food, kill zombies,\nor recruit survivors.");
-        // string bodyTextWrapped = wrapText(Data::dummyText);
-        // string bodyTextWrappedScrollable = makeScrollable(bodyTextWrapped);
+        string bodyTextWrapped = wrapText(replaceText(Data::missionsBody, Data::locPh, locType_));
+        bodyText_.setString(bodyTextWrapped);
 
-        // bodyText_.setString(bodyTextWrapped);
+        int missionLinkY = 450;
+        for (int i = 0; i < Data::numTileMissions; i++) {
+            string linkText = Data::tileMissionsText[i];
+            string onClick = "";
+            cout << "Infobox.cpp tileMissions: " << tileMissions_[i] << endl;
+            if (tileMissions_[i] == 0) {
+                onClick = Data::onClickNone;
+            } else {
+                onClick = Data::onClickCreatePersonChoice + " " + Data::tileMissionsText[i];
+            }
+
+            Textlink *missionLink = new Textlink(linkText, font_, charSize_, onClick);
+            auto missLiterals = Data::calculateLiterals(102, missionLinkY);
+            missionLink->setPosition(windowSizeX_ * missLiterals.first, windowSizeY_ * missLiterals.second);
+            links_.push_back(missionLink);
+            missionLinkY += 50;
+        }    
     }
+    readyToDraw_ = true;
 }
 
 // CREATE INFOBOX
-void Infobox::createInfobox() {
+void Infobox::createBox() {
     infoboxRect_ = new sf::RectangleShape();
     infoboxRect_->setOutlineThickness(10);
     infoboxRect_->setFillColor(sf::Color(32, 178, 170));
@@ -110,15 +129,15 @@ void Infobox::loop(sf::RenderTarget& rt) {
         update();
     }
 }
-
+// Destructor
 Infobox::~Infobox() {
     if (infoboxRect_)
         delete infoboxRect_;
     // for (auto & element : optionsText_) {
     //     delete element;
     // }
-    for (auto& link : links_) {
-        delete link;
+    for (int i = 0; i < links_.size(); i++) {
+        delete links_[i];
     }
 }
 // PROCESS INPUT
@@ -155,14 +174,15 @@ void Infobox::update() {
 }
 // RENDER ALL
 void Infobox::render(sf::RenderTarget& rt) {
-    rt.draw(*infoboxRect_);
-    rt.draw(bodyText_);
-    if (scrollable_)
-        rt.draw(scrollText_);
-    for (auto& link : links_) {
-        rt.draw(link->getText());
+    if (readyToDraw_) {
+        rt.draw(*infoboxRect_);
+        rt.draw(bodyText_);
+        if (scrollable_)
+            rt.draw(scrollText_);
+        for (auto& link : links_) {
+            rt.draw(link->getText());
+        }
     }
-    // rt.draw(optionText_);
 }
 
 void Infobox::handleInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
@@ -181,6 +201,22 @@ string Infobox::getData() {
     return data;
     // return linkData_;
 }
+
+void Infobox::setMissions(int* missionsArr) {
+    for (int i = 0; i < Data::numTileMissions; i++) {
+        tileMissions_[i] = missionsArr[i];
+    }
+}
+
+void Infobox::setLoc(string loc) {
+    locType_ = loc;
+}
+
+// void Infobox::setPopulation(unordered_map<int, Person*>& personMap) {
+//     personMap_ = personMap;
+//     for (auto i = personMap_.begin(); i != personMap_.end(); i++)
+//         cout << i->first << "       " << i->second << endl;
+// }
 
 string Infobox::replaceText(string stringToReplace, string placeHolderText, string replaceWith) {
     while (stringToReplace.find(placeHolderText) != string::npos)

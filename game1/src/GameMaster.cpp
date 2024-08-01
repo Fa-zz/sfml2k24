@@ -1,7 +1,7 @@
 #include "GameMaster.hpp"
 
 int GameMaster::loadTerrainTextures() {
-    if (!groundTexture_.loadFromFile("assets/groundtiles.png")) {
+    if (!groundTexture_.loadFromFile(Data::groundTexturePath)) {
         return -1;
     }
     return 0;
@@ -13,6 +13,53 @@ void GameMaster::initGame() {
     height_ = Data::worldHeight;
     loadTerrainTextures();
     genTiles(height_, width_);
+    initPeople();
+}
+
+void GameMaster::initPeople() {
+    // Getting male names from .txt file
+    ifstream mNameInputFile(Data::mNamesPath); 
+    if (!mNameInputFile.is_open()) { 
+        cerr << "Error opening the male names file!" << endl; 
+    } 
+    string maleLine;
+    while (getline(mNameInputFile, maleLine)) { 
+        maleNames_.push_back(maleLine);
+    }
+    mNameInputFile.close();
+
+    // Getting female names from .txt file
+    ifstream fNameInputFile(Data::fNamesPath);
+    if (!fNameInputFile.is_open()) { 
+        cerr << "Error opening the female names file!" << endl; 
+    }
+    string femaleLine;
+    while (getline(fNameInputFile, femaleLine)) {
+        femaleNames_.push_back(femaleLine);
+    }
+    fNameInputFile.close();
+
+    // Randomly generating starting 7 citizens
+    for (int i = 0; i < 6; i++) {
+        int randJob = Data::getRandNum(0, Data::numJobs-1);
+        int randSex = Data::getRandNum(0, 1);
+        // pulling from men names if sex == 1, pulling from women names if sex == 0
+        cout << "GM.cpp, randSex = " << randSex << endl;
+        if (randSex == 1) { 
+            int randName = Data::getRandNum(0, maleNames_.size()-1);
+            personMap_[lastID_] = new Person(lastID_, maleNames_[randName], Data::jobs[randJob]);
+        } else if (randSex == 0) {
+            int randName = Data::getRandNum(0, femaleNames_.size()-1);
+            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[randJob]);
+        } else {
+            int randName = Data::getRandNum(0, femaleNames_.size()-1);
+            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[randJob]);
+        }
+        personMap_[lastID_]->print();
+        lastID_ += 1;
+    }
+
+    gui_.setPersonCount(lastID_+1);
 }
 
 void GameMaster::genTiles(int height, int width) {
@@ -20,7 +67,7 @@ void GameMaster::genTiles(int height, int width) {
     for (int i = 0; i < height; ++i) {
         groundTiles_[i].resize(width, nullptr);
     }
-    int tileMissionsFull[Data::numTileMissions] = {1, 1, 1, 1};
+    int tileMissionsUnd[Data::numTileMissions] = {1, 0, 0, 0};
 
     for (int i = 0; i < groundTiles_.size(); i++) {
         for (int j = 0; j < groundTiles_[i].size(); j++) {
@@ -62,7 +109,7 @@ void GameMaster::genTiles(int height, int width) {
 
             newTile->setTileType(Data::tileTypes[randNum]);
             newTile->setTileStats(getRandomStatsArray());
-            newTile->setTileMissions(tileMissionsFull);
+            newTile->setTileMissions(tileMissionsUnd);
             if (i == groundTiles_.size()/2 && j == groundTiles_[i].size()/2) {
                 startingLoc_.x = j;
                 startingLoc_.y = i;
@@ -78,7 +125,7 @@ void GameMaster::genTiles(int height, int width) {
             // cout << " " << endl;
         }
     }
-    // Set the tiles immediately around starting tile to wild
+    // Set the tiles immediately around starting tile to wild, and record each tiles' coord
     groundTiles_[startingLoc_.y][startingLoc_.x-1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y, startingLoc_.x - 1));
     groundTiles_[startingLoc_.y-1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
@@ -95,6 +142,17 @@ void GameMaster::genTiles(int height, int width) {
     wildTilesCoords.push_back(make_pair(startingLoc_.y + 1, startingLoc_.x));
     groundTiles_[startingLoc_.y+1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y + 1, startingLoc_.x - 1));
+
+    int arr1[4] = {0,1,1,1};
+    int arr2[4] = {0,1,1,0};
+    for (int i = 0; i < wildTilesCoords.size(); i++) {
+        if (groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->getTileStats()[1] == 0) {
+            groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr1);
+        } else {
+            groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr2);
+        }
+
+    }
 }
 
 void GameMaster::mapMode(int mapMode) {
@@ -121,8 +179,9 @@ void GameMaster::mapMode(int mapMode) {
 }
 
 // CONSTRUCTOR AND DESTRUCTOR
-GameMaster::GameMaster(GUI& gui) : gui_(gui) { 
-
+GameMaster::GameMaster(GUI& gui) : gui_(gui), gmcontext_(std::make_shared<GMContext>()) { 
+    charSize_ = gui_.getCharSize();
+    font_ = gui_.getFont();
 }
 
 GameMaster::~GameMaster() { 
@@ -131,6 +190,10 @@ GameMaster::~GameMaster() {
             delete groundTiles_[i][j];
         }
     }
+    for (auto& pair : personMap_) {
+        delete pair.second;
+    }
+    personMap_.clear();
 }
 
 Terrain& GameMaster::getGroundTileAtPos(int y, int x) {
@@ -153,37 +216,94 @@ int* GameMaster::getRandomStatsArray() {
     return r;
 }
 void GameMaster::addIntroInfobox() {
-    if (gui_.getGUIStackEmpty()) {
-        gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+    // Add an intro infobox and pass in the starting tile type, then create it
+    if (gmcontext_->stateMachine_->IsEmpty()) {
+        addInfobox(Data::intro);
+        passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+        // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
     }
+    createInfobox();
 }
 
-void GameMaster::addTileInfobox(float mouseX, float mouseY) {
-    if (gui_.getGUIStackEmpty()) {
-        gui_.addTileInfobox(
-            getGroundTileAtPos(mouseY, mouseX).getTileStatus(),
-            getGroundTileAtPos(mouseY, mouseX).getTileType(),
-            getGroundTileAtPos(mouseY, mouseX).getTileStats(), 
-            getGroundTileAtPos(mouseY, mouseX).getTileMissions()
+// void GameMaster::addTileInfobox(float mouseX, float mouseY) {
+//     if (gui_.getGUIStackEmpty()) {
+//         currX_ = mouseX;
+//         currY_ = mouseY;
+//         gui_.addTileInfobox(
+//             getGroundTileAtPos(mouseY, mouseX).getTileStatus(),
+//             getGroundTileAtPos(mouseY, mouseX).getTileType(),
+//             getGroundTileAtPos(mouseY, mouseX).getTileStats(), 
+//             getGroundTileAtPos(mouseY, mouseX).getTileMissions()
+//         );
+//     }
+// }
+
+void GameMaster::addInfobox(string type) {
+    gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, type), false);
+}
+
+void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp) {
+    if (gmcontext_->stateMachine_->IsEmpty()) {
+        return;
+    }
+
+    linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
+    if (linkData_ == Data::onClickClose) {
+        popCurrentInfobox();    
+    } else if (linkData_ == Data::onClickCreateMissionChoice) {
+        gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
+            charSize_, font_, windowSize_.x, windowSize_.y,
+            Data::missionChoice,
+            getGroundTileAtPos(currY_, currX_).getTileType(),
+            getGroundTileAtPos(currY_, currX_).getTileStats(), 
+            getGroundTileAtPos(currY_, currX_).getTileMissions())
         );
     }
-}
-
-void GameMaster::infoboxMaster(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp) {
-    linkData_ = gui_.getClickData();
-    if (linkData_ == Data::onClickClose) {
-        gui_.popCurrentState();    
-    } else if (linkData_ == Data::onClickCreateMissionChoice) {
-        gui_.addInfobox(Data::missionChoice);
-    }
     linkData_ = "";
-    gui_.passInput(mouseX, mouseY, clicked, scrollDown, scrollUp);
+    passInput(mouseX, mouseY, clicked, scrollDown, scrollUp);
 }
 
-void GameMaster::popCurrentInfobox() { gui_.popCurrentState(); }
+bool GameMaster::getInfoboxStackEmpty() { return gmcontext_->stateMachine_->IsEmpty(); }
+
+void GameMaster::popCurrentInfobox() {
+    gmcontext_->stateMachine_->PopCurrent();
+    gmcontext_->stateMachine_->ProcessStateChange();
+    gui_.setCurrInfobox(nullptr);
+}
+
+Infobox* GameMaster::getCurrentInfobox() {
+    auto currentState = gmcontext_->stateMachine_->GetCurrent();
+    if (currentState) {
+        if (Infobox* infoboxState = dynamic_cast<Infobox*>(currentState)) {
+            return infoboxState;
+        } else {
+            std::cerr << "Current state is not an Infobox" << std::endl;
+        }
+    } else {
+        std::cerr << "No current state" << std::endl;
+    }
+}
+
+void GameMaster::createInfobox() {
+    gmcontext_->stateMachine_->ProcessStateChange(); // stateMan needs to process state change (i.e. push new state onto stack) b4 creating Ibox
+    Infobox* currInfobox = getCurrentInfobox();
+    currInfobox->createInfobox();
+    gui_.setCurrInfobox(currInfobox);
+}
+
+void GameMaster::passTileType(string type) {
+    Infobox* currInfobox = getCurrentInfobox();
+    currInfobox->setLoc(type);
+}
+
+void GameMaster::passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
+    gmcontext_->stateMachine_->GetCurrent()->handleInput(x, y, clicked, scrollDown, scrollUp);
+}
 
 // sf::Vector2u GameMaster::getPlayerPos() { return world_->getStartingLoc(); }
 
 int GameMaster::getPopulation() {
     return 7;
 }
+
+void GameMaster::setWindowSize(sf::Vector2u windowSize) { windowSize_ = sf::Vector2u{windowSize.x, windowSize.y}; }

@@ -6,6 +6,7 @@ MainMenuState::MainMenuState(std::shared_ptr<Context> &context)
     : m_context(context), window_(*(m_context->m_window)) { 
         // m_context->m_window->setView(m_context->m_window->getDefaultView());
         m_context->m_gui->setWindowSize(m_context->m_window->getSize());
+        m_context->m_gameMaster->setWindowSize(m_context->m_window->getSize());
         m_context->m_gui->setDrawingMainMenu(true);
         // m_context->m_gui->initMainMenuElems();
 }

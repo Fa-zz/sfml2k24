@@ -6,6 +6,7 @@ OBJ_NAME = play
 INCLUDE_PATHS = -Iinclude
 LIBRARY_PATHS = -Llib
 COMPILER_FLAGS = -std=c++17 -Wall -O0 -g
+# COMPILER_FLAGS = -std=c++17
 LINKER_FLAGS = -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 
 all:

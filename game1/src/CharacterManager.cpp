@@ -18,15 +18,15 @@ CharacterManager::~CharacterManager() {
 }
 
 int CharacterManager::loadCharacterTextures() {
-    if (!characterTexture_.loadFromFile("assets/characters.png")) {
+    if (!characterTexture_.loadFromFile(Data::characterTexturePath)) {
         return -1;
     }
     return 0;
 }
 
 int CharacterManager::loadCharacters() {
-    characters_.push_back(new Character(0, 32, 16, 16, characterTexture_, sf::Vector2f{3.f * 16, 6.f * 16}));
-    characters_.push_back(new Character(0, 48, 16, 16, characterTexture_, sf::Vector2f{16.f * 16, 10.f * 16}));
+    // characters_.push_back(new Character(0, 32, 16, 16, characterTexture_, sf::Vector2f{3.f * 16, 6.f * 16}));
+    // characters_.push_back(new Character(0, 48, 16, 16, characterTexture_, sf::Vector2f{16.f * 16, 10.f * 16}));
     return 0;
 }
 

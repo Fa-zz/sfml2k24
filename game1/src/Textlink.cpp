@@ -4,8 +4,11 @@ Textlink::Textlink(string stringText, sf::Font font, int size, string onClick): 
     text_.setFont(font_);
     text_.setCharacterSize(size);
     text_.setString(stringText);
-    text_.setFillColor(sf::Color::Cyan);
-    text_.setStyle(sf::Text::Underlined);
+    if (onClick == Data::onClickNone) {
+        text_.setFillColor(sf::Color::White);
+    } else {
+        text_.setFillColor(sf::Color::Cyan);
+    }
 }
 
 Textlink::~Textlink() {
@@ -26,6 +29,8 @@ void Textlink::setPosition(float x, float y) {
 
 void Textlink::setUnderline() { text_.setStyle(sf::Text::Underlined); }
 void Textlink::setColor(int i) { 
+    if (onClick_ == Data::onClickNone)
+        return;
     if (i == 1) {
         text_.setFillColor(sf::Color::Blue); 
         selected_ = true;
@@ -33,4 +38,4 @@ void Textlink::setColor(int i) {
         text_.setFillColor(sf::Color::Cyan);
         selected_ = false;
     }
-    }
+}

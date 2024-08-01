@@ -34,7 +34,6 @@ namespace Engine {
         virtual void handleInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {}
         virtual string getData() {}
 
-
         virtual void pause() {};
         virtual void start() {};
     };

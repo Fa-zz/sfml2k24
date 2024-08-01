@@ -54,7 +54,8 @@ void Terrain::setTileStats(int* tileStats) {
 }
 
 void Terrain::setTileMissions(int* tileMissions) {
-    for (int i = 0; i < sizeof(*tileMissions)/sizeof(tileMissions[0]); i++) {
+    for (int i = 0; i < Data::numTileMissions; i++) {
+
         tileMissions_[i] = tileMissions[i];
     }
 }

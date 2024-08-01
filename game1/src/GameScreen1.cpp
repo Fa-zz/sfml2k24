@@ -57,7 +57,7 @@ void GameScreen1::processInput() {
         highlightX_ = worldPos.x / 16;
         highlightY_ = worldPos.y / 16;
 
-        if (m_context->m_gui->getGUIStackEmpty()) {
+        if (m_context->m_gameMaster->getInfoboxStackEmpty()) {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
                     case sf::Keyboard::D:
@@ -71,6 +71,9 @@ void GameScreen1::processInput() {
                         break;
                     case sf::Keyboard::S:
                         m_context->m_player->addDir(sf::Vector2f{0.f, Data::playerSpeed});
+                        break;
+                    case sf::Keyboard::P:
+                        m_context->m_gameMaster->addInfobox(Data::populationInfo);
                         break;
                     case sf::Keyboard::Num1: // Default map mode
                         m_context->m_gameMaster->mapMode(0);
@@ -92,18 +95,21 @@ void GameScreen1::processInput() {
                         reset();
                         m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
                         break;
-                    case sf::Keyboard::P:
-                        m_context->m_window->setSize(sf::Vector2u(Data::res2x, Data::res2y));
-                        // view_ = m_context->m_window->getDefaultView();
+                    // case sf::Keyboard::P:
+                    //     m_context->m_window->setSize(sf::Vector2u(Data::res2x, Data::res2y));
+                    //     // view_ = m_context->m_window->getDefaultView();
+                    //     break;
+                    default:
                         break;
                 }
             }
             if (event.type == sf::Event::MouseMoved) {
+                m_context->m_gui->hoveringOverTopBar(mousePosF_);
                 m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
             }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->addTileInfobox(highlightX_, highlightY_);
-            }
+            // if (event.type == sf::Event::MouseButtonPressed) {
+            //     m_context->m_gameMaster->addTileInfobox(highlightX_, highlightY_);
+            // }
         } else {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
@@ -112,14 +118,14 @@ void GameScreen1::processInput() {
                         break;
                 }
                 if (event.key.code == sf::Keyboard::S)
-                    m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false, true, false);
+                    m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, false, true, false);
                 if (event.key.code == sf::Keyboard::W)
-                    m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false, false, true);
+                    m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, false, false, true);
             }
 
-            m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, false, false, false);
+            m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, false, false, false);
             if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->infoboxMaster(mousePosF_.x, mousePosF_.y, true, false, false);
+                m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, true, false, false);
             }
         }
     }
