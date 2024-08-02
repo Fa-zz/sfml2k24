@@ -31,7 +31,7 @@ GameScreen1::~GameScreen1() { }
 
 void GameScreen1::init() { 
     player_.setPos(sf::Vector2f(m_context->m_gameMaster->getStartingLoc().x * 16, m_context->m_gameMaster->getStartingLoc().y * 16));
-    m_context->m_gameMaster->addIntroInfobox();
+    m_context->m_gameMaster->addInfobox(0, 0, Data::intro, true);
     cout << player_.getPos().x << " " << player_.getPos().y << endl;
 }
 
@@ -72,9 +72,9 @@ void GameScreen1::processInput() {
                     case sf::Keyboard::S:
                         m_context->m_player->addDir(sf::Vector2f{0.f, Data::playerSpeed});
                         break;
-                    case sf::Keyboard::P:
-                        m_context->m_gameMaster->addInfobox(Data::populationInfo);
-                        break;
+                    // case sf::Keyboard::P:
+                    //     m_context->m_gameMaster->addInfobox(Data::populationInfo);
+                    //     break;
                     case sf::Keyboard::Num1: // Default map mode
                         m_context->m_gameMaster->mapMode(0);
                         defaultMapMode_ = true;
@@ -108,7 +108,7 @@ void GameScreen1::processInput() {
                 m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
             }
             if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->addTileInfobox(highlightX_, highlightY_, m_context->m_gameMaster->getGroundTileAtPos(highlightY_, highlightX_).getTileStatus(), true);
+                m_context->m_gameMaster->addInfobox(highlightX_, highlightY_, m_context->m_gameMaster->getGroundTileAtPos(highlightY_, highlightX_).getTileStatus(), true);
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {

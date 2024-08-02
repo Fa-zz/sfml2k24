@@ -215,33 +215,63 @@ int* GameMaster::getRandomStatsArray() {
     }
     return r;
 }
-void GameMaster::addIntroInfobox() {
+// void GameMaster::addIntroInfobox() {
+//     // // Add an intro infobox and pass in the starting tile type, then create it
+//     // if (gmcontext_->stateMachine_->IsEmpty()) {
+//     //     addInfobox(Data::intro);
+//     //     passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+//     //     // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+//     // }
+//     // createInfobox();
+// }
+
+// void GameMaster::addTileInfobox(float mouseX, float mouseY, string status, bool create) {
+//     currX_ = mouseX;
+//     currY_ = mouseY;
+//     // string status = getGroundTileAtPos(currY_, currX_).getTileStatus();
+//     gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
+//         charSize_, font_, windowSize_.x, windowSize_.y,
+//         status,
+//         getGroundTileAtPos(currY_, currX_).getTileType(),
+//         getGroundTileAtPos(currY_, currX_).getTileStats(), 
+//         getGroundTileAtPos(currY_, currX_).getTileMissions())
+//     );
+//     if (create)
+//         createInfobox();
+// }
+
+void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool create) {
     // Add an intro infobox and pass in the starting tile type, then create it
-    if (gmcontext_->stateMachine_->IsEmpty()) {
-        addInfobox(Data::intro);
-        passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
-        // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+    if (status == Data::intro) {
+        if (gmcontext_->stateMachine_->IsEmpty()) {
+            gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, status), false);
+            gmcontext_->stateMachine_->ProcessStateChange();
+            passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+            // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
+        }
+    } else if ( status != Data::missionChoice ) {
+        currX_ = mouseX;
+        currY_ = mouseY;
+        gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
+            charSize_, font_, windowSize_.x, windowSize_.y,
+            getGroundTileAtPos(currY_, currX_).getTileStatus(),
+            getGroundTileAtPos(currY_, currX_).getTileType(),
+            getGroundTileAtPos(currY_, currX_).getTileStats(), 
+            getGroundTileAtPos(currY_, currX_).getTileMissions()));
+        gmcontext_->stateMachine_->ProcessStateChange();
+    } else if (status == Data::missionChoice) {
+        currX_ = mouseX;
+        currY_ = mouseY;
+        // string status = getGroundTileAtPos(currY_, currX_).getTileStatus();
+        gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
+            charSize_, font_, windowSize_.x, windowSize_.y,
+            status,
+            getGroundTileAtPos(currY_, currX_).getTileType(),
+            getGroundTileAtPos(currY_, currX_).getTileStats(), 
+            getGroundTileAtPos(currY_, currX_).getTileMissions()));
+        gmcontext_->stateMachine_->ProcessStateChange();
     }
     createInfobox();
-}
-
-void GameMaster::addTileInfobox(float mouseX, float mouseY, string status, bool create) {
-    currX_ = mouseX;
-    currY_ = mouseY;
-    // string status = getGroundTileAtPos(currY_, currX_).getTileStatus();
-    gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
-        charSize_, font_, windowSize_.x, windowSize_.y,
-        status,
-        getGroundTileAtPos(currY_, currX_).getTileType(),
-        getGroundTileAtPos(currY_, currX_).getTileStats(), 
-        getGroundTileAtPos(currY_, currX_).getTileMissions())
-    );
-    if (create)
-        createInfobox();
-}
-
-void GameMaster::addInfobox(string type) {
-    gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, type), false);
 }
 
 void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp) {
@@ -253,9 +283,9 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
         popCurrentInfobox();
         return;  
     } else if (linkData_ == Data::onClickCreateMissionChoice) {
-        addTileInfobox(currX_, currY_, Data::missionChoice, true);
+        addInfobox(currX_, currY_, Data::missionChoice, true);
     } else if (linkData_ == Data::onClickCreatePersonChoice) {
-        addInfobox(Data::personChoice);
+        addInfobox(currX_, currY_, Data::personChoice, true);
     }
     linkData_ = "";
     passInput(mouseX, mouseY, clicked, scrollDown, scrollUp);
@@ -283,7 +313,7 @@ Infobox* GameMaster::getCurrentInfobox() {
 }
 
 void GameMaster::createInfobox() {
-    gmcontext_->stateMachine_->ProcessStateChange(); // stateMan needs to process state change (i.e. push new state onto stack) b4 creating Ibox
+    // gmcontext_->stateMachine_->ProcessStateChange(); // stateMan needs to process state change (i.e. push new state onto stack) b4 creating Ibox
     Infobox* currInfobox = getCurrentInfobox();
     currInfobox->createInfobox();
     gui_.pushInfobox(currInfobox);

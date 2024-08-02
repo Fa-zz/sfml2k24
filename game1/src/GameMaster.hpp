@@ -37,9 +37,9 @@ public:
 	void initPeople();
 	void genTiles(int height, int width);
 	void mapMode(int mapMode);
-	void addIntroInfobox();
-	void addTileInfobox(float mouseX, float mouseY, string status, bool create);
-	void addInfobox(string type);
+	// void addIntroInfobox();
+	// void addTileInfobox(float mouseX, float mouseY, string status, bool create);
+	void addInfobox(float mouseX, float mouseY, string status, bool create);
 	void updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp);
 	bool getInfoboxStackEmpty();
 	void popCurrentInfobox();
