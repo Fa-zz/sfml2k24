@@ -28,7 +28,8 @@ public:
     // void addIntroInfobox(string tileType);
     // void addTileInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions);
     // void addInfobox(string boxType, unordered_map<int, Person*>& personMap);
-    void setCurrInfobox(Infobox* infobox);
+    void pushInfobox(Infobox* infobox);
+    void popInfobox();
     void setWindowSize(sf::Vector2u windowSize);
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);
@@ -77,7 +78,8 @@ private:
     sf::RectangleShape* topBar_;
     unordered_map<string, sf::RectangleShape*> guiMap_;
     vector<sf::RectangleShape*> guiElems_;
-    Infobox* currInfobox_ = nullptr;
+    vector<Infobox*> infoboxStack_;
+    // Infobox* currInfobox_ = nullptr;
 
     // bool drawTopAndBottomWindow_;
     bool drawMainMenu_;

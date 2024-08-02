@@ -200,9 +200,9 @@ GUI::~GUI() {
     }
 }
 
-void GUI::setCurrInfobox(Infobox* infobox) {
-    currInfobox_ = infobox;
-}
+void GUI::pushInfobox(Infobox* infobox) { infoboxStack_.push_back(infobox); }
+
+void GUI::popInfobox() { infoboxStack_.pop_back(); }
 
 // void GUI::setDrawingTopAndBottomWindow(bool drawing) { drawTopAndBottomWindow_ = drawing; }
 void GUI::setDrawingMainMenu(bool drawing) { drawMainMenu_ = drawing; }
@@ -343,7 +343,7 @@ void GUI::renderHUDElems(sf::RenderTarget& rt) {
 
     // if (!gui_context_->stateMachine_->IsEmpty()) {
     //     gui_context_->stateMachine_->GetCurrent()->loop(rt);
-    if (currInfobox_)
-        currInfobox_->loop(rt);
+    if (!(infoboxStack_.empty()))
+        infoboxStack_.back()->loop(rt);
 }
 

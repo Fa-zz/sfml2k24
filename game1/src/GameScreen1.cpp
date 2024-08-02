@@ -107,9 +107,9 @@ void GameScreen1::processInput() {
                 m_context->m_gui->hoveringOverTopBar(mousePosF_);
                 m_context->m_gui->setHighlightPos(highlightX_, highlightY_);
             }
-            // if (event.type == sf::Event::MouseButtonPressed) {
-            //     m_context->m_gameMaster->addTileInfobox(highlightX_, highlightY_);
-            // }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                m_context->m_gameMaster->addTileInfobox(highlightX_, highlightY_, m_context->m_gameMaster->getGroundTileAtPos(highlightY_, highlightX_).getTileStatus(), true);
+            }
         } else {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {

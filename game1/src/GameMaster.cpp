@@ -225,39 +225,37 @@ void GameMaster::addIntroInfobox() {
     createInfobox();
 }
 
-// void GameMaster::addTileInfobox(float mouseX, float mouseY) {
-//     if (gui_.getGUIStackEmpty()) {
-//         currX_ = mouseX;
-//         currY_ = mouseY;
-//         gui_.addTileInfobox(
-//             getGroundTileAtPos(mouseY, mouseX).getTileStatus(),
-//             getGroundTileAtPos(mouseY, mouseX).getTileType(),
-//             getGroundTileAtPos(mouseY, mouseX).getTileStats(), 
-//             getGroundTileAtPos(mouseY, mouseX).getTileMissions()
-//         );
-//     }
-// }
+void GameMaster::addTileInfobox(float mouseX, float mouseY, string status, bool create) {
+    currX_ = mouseX;
+    currY_ = mouseY;
+    // string status = getGroundTileAtPos(currY_, currX_).getTileStatus();
+    gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
+        charSize_, font_, windowSize_.x, windowSize_.y,
+        status,
+        getGroundTileAtPos(currY_, currX_).getTileType(),
+        getGroundTileAtPos(currY_, currX_).getTileStats(), 
+        getGroundTileAtPos(currY_, currX_).getTileMissions())
+    );
+    if (create)
+        createInfobox();
+}
 
 void GameMaster::addInfobox(string type) {
     gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(charSize_, font_, windowSize_.x, windowSize_.y, type), false);
 }
 
 void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp) {
-    if (gmcontext_->stateMachine_->IsEmpty()) {
+    if (gmcontext_->stateMachine_->IsEmpty())   // if there's nothing in the stateMan, return
         return;
-    }
 
     linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
     if (linkData_ == Data::onClickClose) {
-        popCurrentInfobox();    
+        popCurrentInfobox();
+        return;  
     } else if (linkData_ == Data::onClickCreateMissionChoice) {
-        gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
-            charSize_, font_, windowSize_.x, windowSize_.y,
-            Data::missionChoice,
-            getGroundTileAtPos(currY_, currX_).getTileType(),
-            getGroundTileAtPos(currY_, currX_).getTileStats(), 
-            getGroundTileAtPos(currY_, currX_).getTileMissions())
-        );
+        addTileInfobox(currX_, currY_, Data::missionChoice, true);
+    } else if (linkData_ == Data::onClickCreatePersonChoice) {
+        addInfobox(Data::personChoice);
     }
     linkData_ = "";
     passInput(mouseX, mouseY, clicked, scrollDown, scrollUp);
@@ -266,9 +264,9 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
 bool GameMaster::getInfoboxStackEmpty() { return gmcontext_->stateMachine_->IsEmpty(); }
 
 void GameMaster::popCurrentInfobox() {
+    gui_.popInfobox();
     gmcontext_->stateMachine_->PopCurrent();
     gmcontext_->stateMachine_->ProcessStateChange();
-    gui_.setCurrInfobox(nullptr);
 }
 
 Infobox* GameMaster::getCurrentInfobox() {
@@ -288,7 +286,7 @@ void GameMaster::createInfobox() {
     gmcontext_->stateMachine_->ProcessStateChange(); // stateMan needs to process state change (i.e. push new state onto stack) b4 creating Ibox
     Infobox* currInfobox = getCurrentInfobox();
     currInfobox->createInfobox();
-    gui_.setCurrInfobox(currInfobox);
+    gui_.pushInfobox(currInfobox);
 }
 
 void GameMaster::passTileType(string type) {
