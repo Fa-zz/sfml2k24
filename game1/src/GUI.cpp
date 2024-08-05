@@ -80,63 +80,19 @@ void GUI::initTopBar() {
     topBar_ = new sf::RectangleShape();
     topBar_->setFillColor(sf::Color(0,0,128));
     topBar_->setPosition(sf::Vector2f(0.f,0.f));
-    // topBar_->setSize(sf::Vector2f( static_cast<float>(windowSize_.x) , static_cast<float>(windowSize_.y * 0.111f) )); // On 1440x900, this is 1440x100
     auto topBarLiterals = Data::calculateLiterals(1440, 100);
     topBar_->setSize(sf::Vector2f(windowSize_.x * topBarLiterals.first, windowSize_.x * topBarLiterals.second));
-    {
-    // x=30, y=30
-    // int x = 15;
-    // int offset = 0;
-    // int increaseXBy = 150;
-    // int y = 50;
-    // cityName_ = "Baltimore";
-    // population_ = "Pop: " + to_string(personCount_);
-    // food_ = "Food: " + to_string(foodCount_);
-    // mood_ = "Mood: " + to_string(moodCount_);
-    // days_ = "Days: " + to_string(dayCount_);
-    // tBCityName_.setFont(font_);
-    // tBCityName_.setCharacterSize(charSize_);
-    // tBCityName_.setString(cityName_);
-    // tBPopulation_.setString(population_);
-    // // tBPopulation_.setCharacterSize(charSize_);
-    // // tBPopulation_.setFont(font_);
-    // tBFood_.setString(food_);
-    // // tBFood_.setCharacterSize(charSize_);
-    // // tBFood_.setFont(font_);
-    // tBMood_.setString(mood_);
-    // // tBMood_.setCharacterSize(charSize_);
-    // // tBMood_.setFont(font_);
-    // tBDays_.setString(days_);
-    // // tBDays_.setCharacterSize(charSize_);
-    // // tBDays_.setFont(font_);
-
-    // topBarTexts_.push_back(tBCityName_);
-    // topBarTexts_.push_back(tBPopulation_);
-    // topBarTexts_.push_back(tBFood_);
-    // topBarTexts_.push_back(tBMood_);
-    // topBarTexts_.push_back(tBDays_);
-    // for (int i = 0; i < 4; i++) {
-    //     auto literals = Data::calculateLiterals(x+=offset,y);
-    //     topBarTexts_[i].setFont(font_);
-    //     topBarTexts_[i].setCharacterSize(charSize_);
-    //     topBarTexts_[i].setPosition(sf::Vector2f(windowSize_.x * literals.first, windowSize_.y * literals.second));
-    //     offset+=increaseXBy;
-    // }
-
-    // auto cityNameLiterals = Data::calculateLiterals(x, y);
-    // auto popLiterals = Data::calculateLiterals(x+=increaseXBy, y);
-    // auto foodLiterals = Data::calculateLiterals(x+=increaseXBy, y);
-    // auto moodLiterals = Data::calculateLiterals(x+=increaseXBy, y);
-    // auto dayLiterals = Data::calculateLiterals(x+=increaseXBy, y);
-    // tBCityName_.setPosition(sf::Vector2f(windowSize_.x * cityNameLiterals.first, windowSize_.x * cityNameLiterals.second));
-    }
-
-    topBarText_.setString("Baltimore   [P]op:" + to_string(personCount_) + "   [F]d:" + to_string(foodCount_) + "   [M]ood:" + to_string(moodCount_) + "   Day:" + to_string(dayCount_));
-    // topBarText_.setString("placeholder");
+    
+    topBarText_.setString("Baltimore   (P)op:" + to_string(personCount_) + "   (F)d:" + to_string(foodCount_) + "   (M)ood:" + to_string(moodCount_) + "   Day:" + to_string(dayCount_) + "\n\n\Maps:   (1)Default   (2)Fd   (3)Zs   (4)Survs");
     topBarText_.setCharacterSize(charSize_);
-    topBarText_.setOrigin(topBarText_.getGlobalBounds().getSize() / 2.f + topBarText_.getLocalBounds().getPosition());
-    topBarText_.setPosition(topBar_->getPosition() + (topBar_->getSize() / 2.f));
-    // topBarText_.setPosition()
+    topBarText_.setOrigin(
+        topBarText_.getGlobalBounds().width / 2.f, 
+        topBarText_.getGlobalBounds().height / 2.f
+    );
+    sf::Vector2f centerPosition = topBar_->getPosition() + (topBar_->getSize() / 2.f);
+    topBarText_.setPosition(centerPosition.x, centerPosition.y);
+    
+
     guiElems_.push_back(topBar_);
     guiMap_["topBar"] = topBar_;
 }
@@ -232,7 +188,7 @@ void GUI::hoveringOverTopBar(sf::Vector2f mouseCords) {
     // }
 }
 void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
-void GUI::setPersonCount(int personCount) { 
+void GUI::setPopNum(int personCount) { 
     personCount_ = personCount;
     if (guiMap_["topBar_"])
         delete guiMap_["topBar_"];

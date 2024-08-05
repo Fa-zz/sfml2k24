@@ -19,6 +19,7 @@
 #include <fstream>
 #include <utility>
 #include <cstdlib>
+#include <cctype>
 #include <iostream>
 using namespace std;
 
@@ -45,11 +46,16 @@ public:
 	void popCurrentInfobox();
 	Infobox* getCurrentInfobox();
 	void createInfobox();
+	float calcDanger();
+	float calcDangerDecRate();
 	void passTileType(string tileType);
+	// void passMission(string mission);
+	void passMissionInfo();
+	void passPeopleString();
 	void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
 	Terrain& getGroundTileAtPos(int y, int x); // Y AND X
 	sf::Vector2u getStartingLoc();
-	int getPopulation();
+	int getPopulationNum();
     void setWindowSize(sf::Vector2u windowSize);
 private:
 	std::shared_ptr<GMContext> gmcontext_;
@@ -64,13 +70,18 @@ private:
     GUI& gui_;
 	// World* world_;
 	int currX_, currY_;
-	string linkData_;
+	string currMission_;
+	// string linkData_;
+	vector<string> linkData_;
 	vector<string> maleNames_;
 	vector<string> femaleNames_;
 	unordered_map<int, Person*> personMap_; 
+	int daysToTake_ = 3;
+	float danger_, dangerDecRate_;
 	int lastID_ = 0;
 	int loadTerrainTextures();
 	int* getRandomStatsArray();
+	string getPeopleList();
 	// int population_;
 	// void addMissionInfobox();
 };

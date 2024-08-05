@@ -31,8 +31,8 @@ namespace Engine {
         virtual void render() = 0;
         virtual void render(sf::RenderTarget& rt) {}
 
-        virtual void handleInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {}
-        virtual string getData() {}
+        virtual void setInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {}
+        virtual vector<string> getData() {}
 
         virtual void pause() {};
         virtual void start() {};

@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <iostream>
 using namespace std;
@@ -5,14 +6,16 @@ using namespace std;
 class Person {
 public:
     Person(int id, string name);
-    Person(int id, string name, string occupation);
+    Person(int id, string name, string job);
+    string getName();
+    string getJob();
 
     void print() const {
-        std::cout << "ID: " << ID << ", Name: " << name << ", Occupation: " << occupation << std::endl;
+        std::cout << "ID: " << ID_ << ", Name: " << name_ << ", Job: " << job_ << std::endl;
     }
 private:
-    int ID;
-    string name;
-    string occupation;
-    int gender;
+    int ID_;
+    string name_;
+    string job_;
+    int gender_;
 };

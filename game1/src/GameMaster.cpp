@@ -39,8 +39,8 @@ void GameMaster::initPeople() {
     }
     fNameInputFile.close();
 
-    // Randomly generating starting 7 citizens
-    for (int i = 0; i < 6; i++) {
+    // Randomly generating starting citizens (by default, 7)
+    for (int i = 0; i < Data::startingPopNum; i++) {
         int randJob = Data::getRandNum(0, Data::numJobs-1);
         int randSex = Data::getRandNum(0, 1);
         // pulling from men names if sex == 1, pulling from women names if sex == 0
@@ -58,8 +58,7 @@ void GameMaster::initPeople() {
         personMap_[lastID_]->print();
         lastID_ += 1;
     }
-
-    gui_.setPersonCount(lastID_+1);
+    gui_.setPopNum(lastID_);
 }
 
 void GameMaster::genTiles(int height, int width) {
@@ -249,7 +248,8 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
             // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
         }
-    } else if ( status != Data::missionChoice ) {
+    // If creating an Infobox for an overview of a wild, active, reclaimed, or undiscovered tile
+    } else if ( status == Data::wildTile || status == Data::activeTile || status == Data::reclaimedTile || status == Data::undiscoveredTile ) {
         currX_ = mouseX;
         currY_ = mouseY;
         gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
@@ -259,10 +259,9 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             getGroundTileAtPos(currY_, currX_).getTileStats(), 
             getGroundTileAtPos(currY_, currX_).getTileMissions()));
         gmcontext_->stateMachine_->ProcessStateChange();
+
+    // If creating an Infobox for selecting a mission at a tile
     } else if (status == Data::missionChoice) {
-        currX_ = mouseX;
-        currY_ = mouseY;
-        // string status = getGroundTileAtPos(currY_, currX_).getTileStatus();
         gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
             charSize_, font_, windowSize_.x, windowSize_.y,
             status,
@@ -270,6 +269,16 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             getGroundTileAtPos(currY_, currX_).getTileStats(), 
             getGroundTileAtPos(currY_, currX_).getTileMissions()));
         gmcontext_->stateMachine_->ProcessStateChange();
+
+    // If creating an Infobox for selecting a people to undertake a mission
+    } else if (status == Data::personChoice) {
+        gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
+            charSize_, font_, windowSize_.x, windowSize_.y,
+            status));
+        gmcontext_->stateMachine_->ProcessStateChange();
+        passMissionInfo(); // passing mission name, danger, and days to take
+        currMission_ = "";
+        passPeopleString();
     }
     createInfobox();
 }
@@ -279,15 +288,21 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
         return;
 
     linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
-    if (linkData_ == Data::onClickClose) {
-        popCurrentInfobox();
-        return;  
-    } else if (linkData_ == Data::onClickCreateMissionChoice) {
-        addInfobox(currX_, currY_, Data::missionChoice, true);
-    } else if (linkData_ == Data::onClickCreatePersonChoice) {
-        addInfobox(currX_, currY_, Data::personChoice, true);
+    // if (linkData_.size() > 0)
+    //     cout << "linkData_: " << linkData_[0] << endl;
+    if (!(linkData_.empty())) {
+        if (linkData_[0] == Data::onClickClose) {
+            popCurrentInfobox();
+            return;
+        } else if (linkData_[0] == Data::onClickCreateMissionChoice) {
+            addInfobox(currX_, currY_, Data::missionChoice, true);
+        } else if (linkData_[0] == Data::onClickCreatePersonChoice) {
+            currMission_ = linkData_[1];
+            Data::lowercase(currMission_);
+            addInfobox(currX_, currY_, Data::personChoice, true);
+        }
+        linkData_.clear();
     }
-    linkData_ = "";
     passInput(mouseX, mouseY, clicked, scrollDown, scrollUp);
 }
 
@@ -319,18 +334,64 @@ void GameMaster::createInfobox() {
     gui_.pushInfobox(currInfobox);
 }
 
+float GameMaster::calcDanger() {
+    if (getGroundTileAtPos(currY_, currX_).getTileStats()[1] != 0) {
+        return 1.f;
+    } else {
+        return 0;
+    }
+}
+
+float GameMaster::calcDangerDecRate() {
+    int zombieStat = getGroundTileAtPos(currY_, currX_).getTileStats()[1];
+    int end = Data::numTileStatStates;
+    if (zombieStat == 0) {
+        return 1.f;
+    } else if (zombieStat == 1) {
+        return 1.f;
+    } else if (zombieStat == 2) {
+        return 0.5f;
+    } else if (zombieStat == 3) {
+        return 0.25f;
+    }
+}
+
+
 void GameMaster::passTileType(string type) {
     Infobox* currInfobox = getCurrentInfobox();
     currInfobox->setLoc(type);
 }
 
+void GameMaster::passMissionInfo() {
+    Infobox* currInfobox = getCurrentInfobox();
+    string mission = currMission_;
+    string danger = to_string( static_cast<int>( calcDanger() * 100.f) ); 
+    string days = to_string(daysToTake_);
+    currInfobox->setMissionInfo(mission, danger, days);
+}
+
+// void GameMaster::passMission(string mission) {
+//     Infobox* currInfobox = getCurrentInfobox();
+//     currInfobox->setMission(mission);
+// }
+
+void GameMaster::passPeopleString() {
+    string peopleString;
+    for (int i = 0; i < personMap_.size(); i++) {
+        // 20. Muhammad, Soldier
+        peopleString += to_string(i+1) + ". " + personMap_[i]->getName() + ", " + personMap_[i]->getJob() + "\n";
+    }
+    Infobox* currInfobox = getCurrentInfobox();
+    currInfobox->setPopulation(peopleString);
+}
+
 void GameMaster::passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
-    gmcontext_->stateMachine_->GetCurrent()->handleInput(x, y, clicked, scrollDown, scrollUp);
+    gmcontext_->stateMachine_->GetCurrent()->setInput(x, y, clicked, scrollDown, scrollUp);
 }
 
 // sf::Vector2u GameMaster::getPlayerPos() { return world_->getStartingLoc(); }
 
-int GameMaster::getPopulation() {
+int GameMaster::getPopulationNum() {
     return 7;
 }
 

@@ -36,7 +36,7 @@ public:
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
-    void setPersonCount(int personCount);
+    void setPopNum(int popNum);
     // void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
     // void passMissionsToInfobox(int* missionsArr);
     // void passLocToInfobox(string loc);
