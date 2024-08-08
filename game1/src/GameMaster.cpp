@@ -41,19 +41,47 @@ void GameMaster::initPeople() {
 
     // Randomly generating starting citizens (by default, 7)
     for (int i = 0; i < Data::startingPopNum; i++) {
-        int randJob = Data::getRandNum(0, Data::numJobs-1);
+        // int randJob = Data::getRandNum(0, Data::numJobs-1);
+        int job;
+        switch (i) {
+            case 0:
+                job = 0;
+                break;
+            case 1:
+                job = 2;
+                break;
+            case 2:
+                job = 2;
+                break;
+            case 3:
+                job = 3;
+                break;
+            case 4:
+                job = 1;
+                break;
+            case 5:
+                job = 1;
+                break;
+            case 6:
+                job = 1;
+                break;
+            default:
+                job = Data::getRandNum(0, Data::numJobs-1);
+                break;
+        }
+
         int randSex = Data::getRandNum(0, 1);
         // pulling from men names if sex == 1, pulling from women names if sex == 0
         cout << "GM.cpp, randSex = " << randSex << endl;
         if (randSex == 1) { 
             int randName = Data::getRandNum(0, maleNames_.size()-1);
-            personMap_[lastID_] = new Person(lastID_, maleNames_[randName], Data::jobs[randJob]);
+            personMap_[lastID_] = new Person(lastID_, maleNames_[randName], Data::jobs[job]);
         } else if (randSex == 0) {
             int randName = Data::getRandNum(0, femaleNames_.size()-1);
-            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[randJob]);
+            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[job]);
         } else {
             int randName = Data::getRandNum(0, femaleNames_.size()-1);
-            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[randJob]);
+            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[job]);
         }
         personMap_[lastID_]->print();
         lastID_ += 1;
@@ -288,8 +316,8 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
         return;
 
     linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
-    // if (linkData_.size() > 0)
-    //     cout << "linkData_: " << linkData_[0] << endl;
+    if (linkData_.size() > 0)
+        cout << "linkData_: " << linkData_[0] << endl;
     if (!(linkData_.empty())) {
         if (linkData_[0] == Data::onClickClose) {
             popCurrentInfobox();
@@ -377,6 +405,8 @@ void GameMaster::passMissionInfo() {
 
 void GameMaster::passPeopleString() {
     string peopleString;
+    // // Depending on the mission, people string needs to be sorted and 
+    // if (currMission_ == Data::tileMissionsText)
     for (int i = 0; i < personMap_.size(); i++) {
         // 20. Muhammad, Soldier
         peopleString += to_string(i+1) + ". " + personMap_[i]->getName() + ", " + personMap_[i]->getJob() + "\n";

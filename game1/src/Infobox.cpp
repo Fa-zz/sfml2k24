@@ -185,7 +185,7 @@ void Infobox::processInput() {
         }
     }
     if (scrollLinksVec_.size() > 0) {
-        for (int i = startingLink_; i < endingLink_; ++i) {
+        for (int i = startingLink_; i <= endingLink_; ++i) {
             auto& link = scrollLinksVec_[i];
             if (link->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {
                 link->setColor(1);
@@ -201,7 +201,7 @@ void Infobox::processInput() {
         if (linkVecClicked == 0 )
             linkData_ = links_[selectedIndex_]->getOnClick();
         else if (linkVecClicked == 1 )
-            linkData_ = links_[selectedIndex_]->getOnClick();
+            linkData_ = scrollLinksVec_[selectedIndex_]->getOnClick();
         clicked_ = false;
     } else {
         linkData_.push_back("placeholder");
@@ -475,8 +475,8 @@ void Infobox::makeScrollableLinks(string scrollMe) {
         endingLink_ = 7;
         scrollableLinks_ = true;
         createScrollText();
-    } else if (scrollLinksVec_.size() < 7) {
-        endingLink_ = scrollLinksVec_.size();
+    } else if (scrollLinksVec_.size() <= 7) {
+        endingLink_ = scrollLinksVec_.size() - 1;
     }
 }
 

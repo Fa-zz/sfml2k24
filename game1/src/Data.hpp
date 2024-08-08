@@ -67,7 +67,7 @@ namespace Data {
     inline const string jobBuilder = "builder";
     inline const string jobSurvivor = "survivor";
     inline const string jobs[numJobs] = {jobLeader, jobSoldier, jobScavenger, jobBuilder, jobSurvivor};
-    inline const int startingPopNum = 10;
+    inline const int startingPopNum = 7;
 
     inline const string wildBody1 = "This is a LOCPLACEHOLDER that we've scouted. Here's what we know is here.\n\nFood: FOODPLACEHOLDER.\nZombies: ZOMBIESPLACEHOLDER.\nSurvivors: SURVIVORSPLACEHOLDER.";
     inline const string reclaimedBody = "This LOCPLACEHOLDER is reclaimed and within our walls. Some of our people are living here, and we're using it to store food and other supplies. Make sure we have guards on our walls.";
