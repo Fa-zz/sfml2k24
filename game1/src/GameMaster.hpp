@@ -48,6 +48,7 @@ public:
 	void createInfobox();
 	float calcDanger();
 	float calcDangerDecRate();
+	void updateTileMissions(int y, int x);
 	void passTileType(string tileType);
 	// void passMission(string mission);
 	void passMissionInfo();

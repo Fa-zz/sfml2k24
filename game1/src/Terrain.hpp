@@ -23,7 +23,8 @@ public:
     void setTileStatus(string x);
     void setTileType(string x);
     void setTileStats(int* tileStats);
-    void setTileMissions(int* tileMissions);
+    void setTileMissionsArr(int* tileMissions);
+    void setTileMissionsInt(int missionIndex, bool activate);
     string getTileType();
     string getTileStatus();
     int* getTileStats();

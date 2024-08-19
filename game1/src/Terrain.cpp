@@ -53,11 +53,15 @@ void Terrain::setTileStats(int* tileStats) {
     }
 }
 
-void Terrain::setTileMissions(int* tileMissions) {
+void Terrain::setTileMissionsArr(int* tileMissions) {
     for (int i = 0; i < Data::numTileMissions; i++) {
-
         tileMissions_[i] = tileMissions[i];
     }
+}
+
+// setTileMissionsInt takes the mission index to change. it is simply flipped
+void Terrain::setTileMissionsInt(int missionInt, bool activate) {
+    tileMissions_[missionInt] = activate;
 }
 
 string Terrain::getTileType() { return tileType_; };

@@ -134,9 +134,11 @@ void GameMaster::genTiles(int height, int width) {
                     break;
             }
 
+            // every tile starts out undiscovered, with a random type and stats
             newTile->setTileType(Data::tileTypes[randNum]);
             newTile->setTileStats(getRandomStatsArray());
-            newTile->setTileMissions(tileMissionsUnd);
+            newTile->setTileMissionsArr(tileMissionsUnd);
+            // setting start location
             if (i == groundTiles_.size()/2 && j == groundTiles_[i].size()/2) {
                 startingLoc_.x = j;
                 startingLoc_.y = i;
@@ -170,16 +172,20 @@ void GameMaster::genTiles(int height, int width) {
     groundTiles_[startingLoc_.y+1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y + 1, startingLoc_.x - 1));
 
-    int arr1[4] = {0,1,1,1};
-    int arr2[4] = {0,1,1,0};
-    for (int i = 0; i < wildTilesCoords.size(); i++) {
-        if (groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->getTileStats()[1] == 0) {
-            groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr1);
-        } else {
-            groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr2);
-        }
-
+    // For every widl tile, we update its missions 
+    for (int i = 0 ; i < wildTilesCoords.size(); i++) {
+        updateTileMissions(wildTilesCoords[i].first, wildTilesCoords[i].second);
     }
+    // int arr1[4] = {0,1,1,1};
+    // int arr2[4] = {0,1,1,0};
+    // for (int i = 0; i < wildTilesCoords.size(); i++) {
+    //     if (groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->getTileStats()[1] == 0) {
+    //         groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr1);
+    //     } else {
+    //         groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr2);
+    //     }
+
+    // }
 }
 
 void GameMaster::mapMode(int mapMode) {
@@ -384,6 +390,40 @@ float GameMaster::calcDangerDecRate() {
     }
 }
 
+// Takes a wildtileCoord index as argument. Certain missions are only available if there is data at the 
+// Cannot scout area (Data::tileMissionsText[0]) if tile is wildTile or reclaimedTile
+// Cannot scavenge for food (Data::tileMissionsText[1]) if getTileStats()[0] == 0
+// Cannot kill zombies (Data::tileMissionsText[2]) if getTileStats()[1] == 0
+// Cannot recruit survivors (Data::tileMissionsText[3]) if getTileStats()[2] == 0
+// Cannot reclaim (Data::tileMissionsText[4]) if getTileStats()[1] > 0 AND if tile is undiscoveredTile
+void GameMaster::updateTileMissions(int y, int x) {
+    auto tile = groundTiles_[y][x];
+    auto tileStatus = tile->getTileStatus();
+
+    if (tileStatus == Data::reclaimedTile) {
+        for (int i = 0; i < Data::numTileMissions; i++) {
+            tile->setTileMissionsInt(i, false);
+        }
+        return;
+    }
+
+    if (tileStatus == Data::wildTile) {
+        tile->setTileMissionsInt(0, false);
+
+        // List of mission conditions based on tile stats
+        std::vector<std::pair<int, bool>> missionConditions = {
+            {1, tile->getTileStats()[0] != 0},  // Food present for scavenge mission
+            {2, tile->getTileStats()[1] != 0},  // Zombies present for kill mission
+            {3, tile->getTileStats()[2] != 0},  // Survivors present for recruit mission
+            {4, tile->getTileStats()[1] == 0}   // No zombies for reclaim mission
+        };
+
+        // Apply the conditions
+        for (const auto& [missionIndex, condition] : missionConditions) {
+            tile->setTileMissionsInt(missionIndex, condition);
+        }
+    }
+}
 
 void GameMaster::passTileType(string type) {
     Infobox* currInfobox = getCurrentInfobox();
