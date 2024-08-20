@@ -75,15 +75,17 @@ void GameMaster::initPeople() {
         cout << "GM.cpp, randSex = " << randSex << endl;
         if (randSex == 1) { 
             int randName = Data::getRandNum(0, maleNames_.size()-1);
-            personMap_[lastID_] = new Person(lastID_, maleNames_[randName], Data::jobs[job]);
+            people_.emplace_back(lastID_, maleNames_[randName], Data::jobs[job]);
+            // personMap_[lastID_] = new Person(lastID_, maleNames_[randName], Data::jobs[job]);
         } else if (randSex == 0) {
             int randName = Data::getRandNum(0, femaleNames_.size()-1);
-            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[job]);
+            people_.emplace_back(lastID_, femaleNames_[randName], Data::jobs[job]);
         } else {
             int randName = Data::getRandNum(0, femaleNames_.size()-1);
-            personMap_[lastID_] = new Person(lastID_, femaleNames_[randName], Data::jobs[job]);
+            people_.emplace_back(lastID_, femaleNames_[randName], Data::jobs[job]);
         }
-        personMap_[lastID_]->print();
+        people_[lastID_].print();
+        // personMap_[lastID_]->print();
         lastID_ += 1;
     }
     gui_.setPopNum(lastID_);
@@ -223,10 +225,10 @@ GameMaster::~GameMaster() {
             delete groundTiles_[i][j];
         }
     }
-    for (auto& pair : personMap_) {
-        delete pair.second;
-    }
-    personMap_.clear();
+    // for (auto& pair : personMap_) {
+    //     delete pair.second;
+    // }
+    // personMap_.clear();
 }
 
 Terrain& GameMaster::getGroundTileAtPos(int y, int x) {
@@ -282,7 +284,7 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
             // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
         }
-    // If creating an Infobox for an overview of a wild, active, reclaimed, or undiscovered tile
+    // If creating an Infobox of a wild, active, reclaimed, or undiscovered tile
     } else if ( status == Data::wildTile || status == Data::activeTile || status == Data::reclaimedTile || status == Data::undiscoveredTile ) {
         currX_ = mouseX;
         currY_ = mouseY;
@@ -311,8 +313,8 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             status));
         gmcontext_->stateMachine_->ProcessStateChange();
         passMissionInfo(); // passing mission name, danger, and days to take
-        currMission_ = "";
-        passPeopleString();
+        // currMission_ = "";
+        passPeopleString(); // pass the list of people sorted by the mission type
     }
     createInfobox();
 }
@@ -322,8 +324,10 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
         return;
 
     linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
-    if (linkData_.size() > 0)
-        cout << "linkData_: " << linkData_[0] << endl;
+    // if (linkData_.size() > 0) {
+    //     cout << "linkData_: " << linkData_[0];
+    //     cout << linkData_[1] << endl;
+    // }
     if (!(linkData_.empty())) {
         if (linkData_[0] == Data::onClickClose) {
             popCurrentInfobox();
@@ -332,7 +336,7 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
             addInfobox(currX_, currY_, Data::missionChoice, true);
         } else if (linkData_[0] == Data::onClickCreatePersonChoice) {
             currMission_ = linkData_[1];
-            Data::lowercase(currMission_);
+            // Data::lowercase(currMission_);
             addInfobox(currX_, currY_, Data::personChoice, true);
         }
         linkData_.clear();
@@ -443,13 +447,53 @@ void GameMaster::passMissionInfo() {
 //     currInfobox->setMission(mission);
 // }
 
+// Custom comparator for sorting by specific job priority
+bool GameMaster::customJobComparator(Person& p1, Person& p2, std::string& priorityJob) {
+    if (p1.getJob() == priorityJob && p2.getJob() != priorityJob) {
+        return true;
+    }
+    if (p2.getJob() == priorityJob && p1.getJob() != priorityJob) {
+        return false;
+    }
+    return p1.getName() < p2.getName();  // Alphabetical sort if jobs are the same or neither is the priority job
+}
+
 void GameMaster::passPeopleString() {
     string peopleString;
-    // // Depending on the mission, people string needs to be sorted and 
-    // if (currMission_ == Data::tileMissionsText)
-    for (int i = 0; i < personMap_.size(); i++) {
+    // // Depending on the mission, people needs to be sorted 
+    // If scout mission, prior job is survivor
+    if (currMission_ == Data::tileMissionsText[0]) {
+        priorityJob_ = Data::jobSurvivor;
+    // If scavenge mission, prior job is scavenger
+    } else if (currMission_ == Data::tileMissionsText[1]) {
+        priorityJob_ = Data::jobScavenger;
+    // If kill zombies mission, prior job is soldier
+    } else if (currMission_ == Data::tileMissionsText[2]) {
+        priorityJob_ = Data::jobSoldier;
+    // If recruit survivors mission, prior job is leader
+    } else if (currMission_ == Data::tileMissionsText[3]) {
+        priorityJob_ = Data::jobLeader;
+    // If rebuild mission, prior job is builder
+    } else if (currMission_ == Data::tileMissionsText[4]) {
+        priorityJob_ = Data::jobBuilder;
+    }
+    // cout << "Priority job is : " << priorityJob_ << " for curr mission: " << currMission_ << endl;
+
+    sort(people_.begin(), people_.end(), 
+              [this](Person& p1, Person& p2) {
+                  return customJobComparator(p1, p2, priorityJob_);
+              });
+    // sort(people_.begin(), people_.end(), priorityJob);
+
+    // Display sorted people
+    // cout << "Displaying sorted people" << endl;
+    // for (const auto& person : people_) {
+    //     person.print();
+    // }
+
+    for (int i = 0; i < people_.size(); i++) {
         // 20. Muhammad, Soldier
-        peopleString += to_string(i+1) + ". " + personMap_[i]->getName() + ", " + personMap_[i]->getJob() + "\n";
+        peopleString += to_string(i+1) + ". " + people_[i].getName() + ", " + people_[i].getJob() + "\n";
     }
     Infobox* currInfobox = getCurrentInfobox();
     currInfobox->setPopulation(peopleString);

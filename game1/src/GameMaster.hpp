@@ -15,7 +15,7 @@
 #include "Infobox.hpp"
 #include <string>
 #include <vector>
-#include <unordered_map>
+// #include <unordered_map>
 #include <fstream>
 #include <utility>
 #include <cstdlib>
@@ -52,6 +52,7 @@ public:
 	void passTileType(string tileType);
 	// void passMission(string mission);
 	void passMissionInfo();
+	bool customJobComparator(Person& p1, Person& p2, std::string& priorityJob);
 	void passPeopleString();
 	void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
 	Terrain& getGroundTileAtPos(int y, int x); // Y AND X
@@ -76,7 +77,9 @@ private:
 	vector<string> linkData_;
 	vector<string> maleNames_;
 	vector<string> femaleNames_;
-	unordered_map<int, Person*> personMap_; 
+	vector<Person> people_;
+	string priorityJob_;
+	// unordered_map<int, Person*> personMap_; 
 	int daysToTake_ = 3;
 	float danger_, dangerDecRate_;
 	int lastID_ = 0;

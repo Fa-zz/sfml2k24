@@ -459,14 +459,14 @@ void Infobox::makeScrollableLinks(string scrollMe) {
                 i += 1;
             }
             // Textlink is created
-            vector<string> onClickPerson = {Data::onClickSelect, to_string(i)};
+            vector<string> onClickPerson = {Data::onClickSelect, to_string(scrollLinksVec_.size())};
             Textlink* link = new Textlink(line, font_, charSize_, onClickPerson);
             scrollLinksVec_.push_back(link);
             line = "";
         }
     }
     if (!line.empty()) {
-        vector<string> onClickPerson = {Data::onClickSelect, to_string(scrollMe.length()-1)};
+        vector<string> onClickPerson = {Data::onClickSelect, to_string(scrollLinksVec_.size())};
         Textlink* link = new Textlink(line, font_, charSize_, onClickPerson);
         scrollLinksVec_.push_back(link);
     }
