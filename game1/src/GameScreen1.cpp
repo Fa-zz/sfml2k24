@@ -114,18 +114,18 @@ void GameScreen1::processInput() {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
                     case sf::Keyboard::Escape:
-                        m_context->m_gameMaster->popCurrentInfobox();
+                        m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickClose}, false, true, false);
                         break;
                 }
                 if (event.key.code == sf::Keyboard::S)
-                    m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, false, true, false);
+                    m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {"placeholder"}, false, true, false);
                 if (event.key.code == sf::Keyboard::W)
-                    m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, false, false, true);
+                    m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {"placeholder"}, false, false, true);
             }
 
-            m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, false, false, false);
+            m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {"placeholder"}, false, false, false);
             if (event.type == sf::Event::MouseButtonPressed) {
-                m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, true, false, false);
+                m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {"placeholder"}, true, false, false);
             }
         }
     }

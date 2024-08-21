@@ -319,11 +319,16 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
     createInfobox();
 }
 
-void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp) {
+void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkData, bool clicked, bool scrollDown, bool scrollUp) {
     if (gmcontext_->stateMachine_->IsEmpty())   // if there's nothing in the stateMan, return
         return;
 
-    linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
+    // if linkData_ is == placeholder from the GameScreen, we'll check the infobox and use that linkData
+    if (linkData[0] == "placeholder")
+        linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
+    else
+        linkData_ = linkData;
+
     if (linkData_.size() > 0) {
         if (linkData_[0] != "placeholder") {
             cout << "linkData_: " << linkData_[0];
@@ -333,6 +338,12 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
     if (!(linkData_.empty())) {
         // User closes the current open infobox
         if (linkData_[0] == Data::onClickClose) {
+            // Handling case where we are on choosing people screen, if we close that infobox we want to clear local data and signify that we are no longer on that screen
+            if (choosingPeople_) {
+                if (currSelected_.size() > 0)
+                    currSelected_.clear();
+                choosingPeople_ = false;
+            }
             popCurrentInfobox();
             return;
         // User clicks on a link to see mission choices for a tile
@@ -372,16 +383,12 @@ void GameMaster::popCurrentInfobox() {
     gui_.popInfobox(); // delete reference in gui
     gmcontext_->stateMachine_->PopCurrent(); // tell stateman to pop current
     gmcontext_->stateMachine_->ProcessStateChange(); // process the state change
-    if (currSelected_.size() > 0) // TODO: This is also repeated in the next function, redundant
-        currSelected_.clear();
 }
 
 void GameMaster::popAllInfoboxes() {
     gui_.popAllInfobox(); // del all references in gui
     gmcontext_->stateMachine_->PopAll(); // tell stateman to pop all
     gmcontext_->stateMachine_->ProcessStateChange(); // process state change
-    if (currSelected_.size() > 0)
-        currSelected_.clear();
 }
 
 Infobox* GameMaster::getCurrentInfobox() {

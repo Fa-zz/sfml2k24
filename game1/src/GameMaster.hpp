@@ -54,7 +54,7 @@ public:
 	// void addIntroInfobox();
 	// void addTileInfobox(float mouseX, float mouseY, string status, bool create);
 	void addInfobox(float mouseX, float mouseY, string status, bool create);
-	void updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp);
+	void updateInfobox(float mouseX, float mouseY, vector<string> linkData, bool clicked, bool scrollDown, bool scrollUp);
 	bool getInfoboxStackEmpty();
 	void popCurrentInfobox();
 	void popAllInfoboxes();
