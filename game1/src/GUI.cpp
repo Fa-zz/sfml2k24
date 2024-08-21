@@ -160,6 +160,8 @@ void GUI::pushInfobox(Infobox* infobox) { infoboxStack_.push_back(infobox); }
 
 void GUI::popInfobox() { infoboxStack_.pop_back(); }
 
+void GUI::popAllInfobox() { infoboxStack_.clear(); }
+
 // void GUI::setDrawingTopAndBottomWindow(bool drawing) { drawTopAndBottomWindow_ = drawing; }
 void GUI::setDrawingMainMenu(bool drawing) { drawMainMenu_ = drawing; }
 void GUI::setDrawingHighlight(bool drawing) { drawHighlight_ = drawing; }

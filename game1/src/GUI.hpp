@@ -30,6 +30,7 @@ public:
     // void addInfobox(string boxType, unordered_map<int, Person*>& personMap);
     void pushInfobox(Infobox* infobox);
     void popInfobox();
+    void popAllInfobox();
     void setWindowSize(sf::Vector2u windowSize);
     void setDrawingTopAndBottomWindow(bool drawing);
     void setDrawingMainMenu(bool drawing);

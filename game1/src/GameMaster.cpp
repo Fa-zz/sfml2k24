@@ -313,8 +313,8 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             status));
         gmcontext_->stateMachine_->ProcessStateChange();
         passMissionInfo(); // passing mission name, danger, and days to take
-        // currMission_ = "";
         passPeopleString(); // pass the list of people sorted by the mission type
+        // currMission_ = "";
     }
     createInfobox();
 }
@@ -324,20 +324,42 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
         return;
 
     linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
-    // if (linkData_.size() > 0) {
-    //     cout << "linkData_: " << linkData_[0];
-    //     cout << linkData_[1] << endl;
-    // }
+    if (linkData_.size() > 0) {
+        if (linkData_[0] != "placeholder") {
+            cout << "linkData_: " << linkData_[0];
+            cout << linkData_[1] << endl;
+        }
+    }
     if (!(linkData_.empty())) {
+        // User closes the current open infobox
         if (linkData_[0] == Data::onClickClose) {
             popCurrentInfobox();
             return;
+        // User clicks on a link to see mission choices for a tile
         } else if (linkData_[0] == Data::onClickCreateMissionChoice) {
             addInfobox(currX_, currY_, Data::missionChoice, true);
+        // User clicks on a link to select people for a selected mission.
         } else if (linkData_[0] == Data::onClickCreatePersonChoice) {
             currMission_ = linkData_[1];
-            // Data::lowercase(currMission_);
+            choosingPeople_ = true;
             addInfobox(currX_, currY_, Data::personChoice, true);
+        // User selects/deselects people for a selected mission
+        } else if (linkData_[0] == Data::onClickSelect && choosingPeople_ == true) {
+            selectedIndex_ = stoi(linkData_[1]); // This is the index of the selected person in people_. (Indexes can change depending on how the vector is sorted given different missions)
+            selectedID_ = people_[selectedIndex_].getID(); // This is the ID of the selected person (Unique for each person object)
+            // cout << " User has chosen person at index " << personIndex << " corresponding to ";
+            // people_[personIndex].print();
+
+            // Finds the occurrence of of the ID appearing in currSelected_. If it's there the person must be erased from currSelected_. Else, add them to currSelected_
+            vector<int>::iterator position = find(currSelected_.begin(), currSelected_.end(), selectedID_);
+            if (position != currSelected_.end()) {  // element was found
+                currSelected_.erase(position);
+            } else if (position == currSelected_.end()) { // == myVector.end() means the element was not found
+                currSelected_.push_back(selectedID_);
+            }
+            // Re calculate danger and days to take
+            passMissionInfo();
+        // User accepts mission. Mission is created, tile becomes an active tile, and stack is cleared.
         }
         linkData_.clear();
     }
@@ -347,9 +369,19 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, bool clicked, bool sc
 bool GameMaster::getInfoboxStackEmpty() { return gmcontext_->stateMachine_->IsEmpty(); }
 
 void GameMaster::popCurrentInfobox() {
-    gui_.popInfobox();
-    gmcontext_->stateMachine_->PopCurrent();
-    gmcontext_->stateMachine_->ProcessStateChange();
+    gui_.popInfobox(); // delete reference in gui
+    gmcontext_->stateMachine_->PopCurrent(); // tell stateman to pop current
+    gmcontext_->stateMachine_->ProcessStateChange(); // process the state change
+    if (currSelected_.size() > 0) // TODO: This is also repeated in the next function, redundant
+        currSelected_.clear();
+}
+
+void GameMaster::popAllInfoboxes() {
+    gui_.popAllInfobox(); // del all references in gui
+    gmcontext_->stateMachine_->PopAll(); // tell stateman to pop all
+    gmcontext_->stateMachine_->ProcessStateChange(); // process state change
+    if (currSelected_.size() > 0)
+        currSelected_.clear();
 }
 
 Infobox* GameMaster::getCurrentInfobox() {
@@ -370,28 +402,6 @@ void GameMaster::createInfobox() {
     Infobox* currInfobox = getCurrentInfobox();
     currInfobox->createInfobox();
     gui_.pushInfobox(currInfobox);
-}
-
-float GameMaster::calcDanger() {
-    if (getGroundTileAtPos(currY_, currX_).getTileStats()[1] != 0) {
-        return 1.f;
-    } else {
-        return 0;
-    }
-}
-
-float GameMaster::calcDangerDecRate() {
-    int zombieStat = getGroundTileAtPos(currY_, currX_).getTileStats()[1];
-    int end = Data::numTileStatStates;
-    if (zombieStat == 0) {
-        return 1.f;
-    } else if (zombieStat == 1) {
-        return 1.f;
-    } else if (zombieStat == 2) {
-        return 0.5f;
-    } else if (zombieStat == 3) {
-        return 0.25f;
-    }
 }
 
 // Takes a wildtileCoord index as argument. Certain missions are only available if there is data at the 
@@ -434,11 +444,69 @@ void GameMaster::passTileType(string type) {
     currInfobox->setLoc(type);
 }
 
+int GameMaster::calcDanger() {
+    if (getGroundTileAtPos(currY_, currX_).getTileStats()[1] != 0) {
+        return 100;
+    } else {
+        return 0;
+    }
+}
+
+int GameMaster::calcDangerDecRate() {
+    int zombieStat = getGroundTileAtPos(currY_, currX_).getTileStats()[1];
+    int end = Data::numTileStatStates;
+    if (zombieStat == 0) {
+        return 100;
+    } else if (zombieStat == 1) {
+        return 100;
+    } else if (zombieStat == 2) {
+        return 50;
+    } else if (zombieStat == 3) {
+        return 25;
+    }
+}
+
 void GameMaster::passMissionInfo() {
     Infobox* currInfobox = getCurrentInfobox();
     string mission = currMission_;
-    string danger = to_string( static_cast<int>( calcDanger() * 100.f) ); 
-    string days = to_string(daysToTake_);
+    string danger = to_string( calcDanger() ); 
+    string days = to_string( daysToTake_ );
+
+    // If people are selected, we need to iterate over the selected and using their job calculate the new danger and days to take.
+    if (currSelected_.size() > 0) {
+        int calcdDays = daysToTake_;
+        int subtractDay = 0;
+        int calcdDanger = stoi(danger);
+        int factor = calcDangerDecRate();
+        for (int i = 0; i < currSelected_.size(); i++) {
+            std::__1::__wrap_iter<Person *> person = IDtoPerson(currSelected_[i]);
+            // Calculate the decrease in danger. Soldiers decrease danger by complete factor, non soldiers decrease danger by 1/2 factor
+            if (person->getJob() == Data::jobSoldier) {
+                calcdDanger -= factor;
+            } else {
+                calcdDanger -= (factor/2);
+            }
+
+            // In the same loop we calculate factor of decreasing days. Person with priorJob will decrease day by 1. It takes 2 persons without to decrease day by 1.
+            if (person->getJob() == priorityJob_) {
+                calcdDays -= 1;
+            } else {
+                if (subtractDay == 1) {
+                    calcdDays -= 1;
+                    subtractDay = 0;
+                } else {
+                    subtractDay += 1;
+                }
+            }
+        }
+        if (calcdDanger < 0)
+            calcdDanger = 0;
+        if (calcdDays < 1)
+            calcdDays = 1;
+        danger = to_string( calcdDanger );
+        days = to_string ( calcdDays );
+    }
+
     currInfobox->setMissionInfo(mission, danger, days);
 }
 
@@ -507,6 +575,15 @@ void GameMaster::passInput(float x, float y, bool clicked, bool scrollDown, bool
 
 int GameMaster::getPopulationNum() {
     return 7;
+}
+
+std::__1::__wrap_iter<Person *> GameMaster::IDtoPerson(int targetID) {
+    auto it = std::find_if(people_.begin(), people_.end(), 
+                           [targetID](Person& person) { return person.getID() == targetID; });
+
+    if (it != people_.end()) {
+        return it;
+    }
 }
 
 void GameMaster::setWindowSize(sf::Vector2u windowSize) { windowSize_ = sf::Vector2u{windowSize.x, windowSize.y}; }

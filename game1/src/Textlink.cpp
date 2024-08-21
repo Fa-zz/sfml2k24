@@ -20,8 +20,15 @@ sf::Text& Textlink::getText() {
 }
 
 vector<string> Textlink::getOnClick() {
+    clicked_ = !clicked_;
     return onClick_;
 }
+
+bool Textlink::getClicked() {
+    return clicked_;
+}
+
+void Textlink::setClicked(bool clicked) { clicked_ = clicked; }
 
 void Textlink::setPosition(float x, float y) {
     text_.setPosition(x, y);
@@ -39,4 +46,11 @@ void Textlink::setColor(int i) {
         text_.setFillColor(sf::Color::Cyan);
         selected_ = false;
     }
+}
+
+void Textlink::flipColor() { 
+    if (text_.getFillColor() == sf::Color::Blue)
+        text_.setFillColor(sf::Color::Cyan);
+    else
+        text_.setFillColor(sf::Color::Blue);
 }

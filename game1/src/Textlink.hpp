@@ -14,9 +14,12 @@ public:
 	// void setOnClick();
 	sf::Text& getText();
 	vector<string> getOnClick();
+	bool getClicked();
+	void setClicked(bool clicked);
 	void setPosition(float x, float y);
 	void setUnderline();
 	void setColor(int i);
+	void flipColor();
 	void setSelected(bool selected);
 	
 private:
@@ -24,4 +27,5 @@ private:
     sf::Text text_;
     vector<string> onClick_;
 	bool selected_;
+	bool clicked_ = false;
 };

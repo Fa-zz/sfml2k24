@@ -59,7 +59,6 @@ void Infobox::createInfobox() {
         for (int i = 0; i < Data::numTileMissions; i++) {
             string linkText = Data::tileMissionsText[i];
             vector<string> onClick;
-            cout << "Infobox.cpp tileMissions: " << tileMissions_[i] << endl;
             if (tileMissions_[i] == 0) {
                 onClick.push_back(Data::onClickNone);
             } else {
@@ -171,7 +170,7 @@ Infobox::~Infobox() {
 }
 // PROCESS INPUT
 void Infobox::processInput() {
-    // Handle input for links. Link color changes when hovered over. Link data acquired when clicked
+    // Handle input for links. Hovering -  Link color changes when hovered over. Link data acquired when clicked
     selectedIndex_ = -1;
     int linkVecClicked = -1;
     for (int i = 0; i < links_.size(); ++i) {
@@ -187,26 +186,36 @@ void Infobox::processInput() {
     if (scrollLinksVec_.size() > 0) {
         for (int i = startingLink_; i <= endingLink_; ++i) {
             auto& link = scrollLinksVec_[i];
-            if (link->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {
-                link->setColor(1);
+            if (link->getText().getGlobalBounds().contains(mousePosX_, mousePosY_)) {                
                 selectedIndex_ = i;
                 linkVecClicked = 1;
+                link->setColor(1);
             } else {
-                link->setColor(0);
+                if (link->getClicked())
+                    link->setColor(1);
+                else
+                    link->setColor(0);
             }
         }
     }
-    // get onClick data on from link
+    // After clicking - get onClick data on from a regular link or link in linkVec
     if (clicked_ && selectedIndex_ != -1) {
-        if (linkVecClicked == 0 )
+        if (linkVecClicked == 0 ) {
             linkData_ = links_[selectedIndex_]->getOnClick();
-        else if (linkVecClicked == 1 )
+        } else if (linkVecClicked == 1 ) {
             linkData_ = scrollLinksVec_[selectedIndex_]->getOnClick();
+            // scrollLinksVec_[selectedIndex_]->flipColor();
+            // if (scrollLinksVec_[selectedIndex_]->getClicked()) {
+            //     scrollLinksVec_[selectedIndex_]->setColor(0);
+            // } else {
+            //     scrollLinksVec_[selectedIndex_]->setColor(1);
+            // }
+        }
         clicked_ = false;
     } else {
         linkData_.push_back("placeholder");
     }
-    // Handle input for scrollable text and links.
+    // Handle scroll input for scrollable text and links.
     if (scrollableBody_ || scrollableLinks_) {
         if (scrollableBody_) {
             if (scrollDown_) {
@@ -234,7 +243,7 @@ void Infobox::setInput(float x, float y, bool clicked, bool scrollDown, bool scr
     scrollUp_ = scrollUp;
     processInput();
 }
-
+// main update function
 void Infobox::update() {
     if (reachedEndOfScroll_) {
         scrollText_.setString("Reached end");
@@ -242,9 +251,15 @@ void Infobox::update() {
         scrollText_.setString("Scroll with W/S");
         scrollText_.setFillColor(sf::Color::Blue);
     }
-
+    if (infoboxType_ == Data::personChoice) {
+            string updatedDanger = replaceText(Data::personChoiceBody, Data::dangPh, danger_);
+            string updatedDays = replaceText(updatedDanger, Data::dayPh, days_);
+            string bodyTextWrapped = wrapText(updatedDays);
+            bodyText_.setString(bodyTextWrapped);
+    }
 }
-// RENDER ALL
+
+// main render function
 void Infobox::render(sf::RenderTarget& rt) {
     int addBy = 50;
     int offset = 0;
@@ -445,7 +460,7 @@ void Infobox::bindLinksVec(int upd) {
     endingLink_ = max(0, min(endingLink_, (int)scrollLinksVec_.size() - 1));
 }
 void Infobox::makeScrollableLinks(string scrollMe) {
-    cout << " Scroll me: " << scrollMe << endl;
+    // cout << " Scroll me: " << scrollMe << endl;
     // Create and populate the scrollLinksVec_ object
     // Similar to makeScrollableBody except this fn. creates Textlink objects at each line, which it then adds to scrollLinksVec_ object
     string line;

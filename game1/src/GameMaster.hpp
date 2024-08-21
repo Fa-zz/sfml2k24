@@ -30,6 +30,19 @@ struct GMContext {
     }
 };
 
+struct Mission {
+	string missionObjective;
+	vector<int> missionUndertakers;
+	int missionY, missionX;
+	Mission () {}
+	Mission (string objective, vector<int> undertakers, int y, int x) : missionObjective(objective), missionUndertakers(undertakers), missionY(y), missionX(x) { }
+	void clear() {
+		missionObjective="";
+		missionUndertakers.clear();
+		missionY=0,missionX=0;
+	}
+};
+
 class GameMaster {
 public:
 	GameMaster(GUI& gui);
@@ -44,10 +57,11 @@ public:
 	void updateInfobox(float mouseX, float mouseY, bool clicked, bool scrollDown, bool scrollUp);
 	bool getInfoboxStackEmpty();
 	void popCurrentInfobox();
+	void popAllInfoboxes();
 	Infobox* getCurrentInfobox();
 	void createInfobox();
-	float calcDanger();
-	float calcDangerDecRate();
+	int calcDanger();
+	int calcDangerDecRate();
 	void updateTileMissions(int y, int x);
 	void passTileType(string tileType);
 	// void passMission(string mission);
@@ -58,6 +72,7 @@ public:
 	Terrain& getGroundTileAtPos(int y, int x); // Y AND X
 	sf::Vector2u getStartingLoc();
 	int getPopulationNum();
+	std::__1::__wrap_iter<Person *> IDtoPerson(int targetID);
     void setWindowSize(sf::Vector2u windowSize);
 private:
 	std::shared_ptr<GMContext> gmcontext_;
@@ -73,15 +88,18 @@ private:
 	// World* world_;
 	int currX_, currY_;
 	string currMission_;
+	vector<int> currSelected_;
+	vector<Mission> activeMissions_;
 	// string linkData_;
 	vector<string> linkData_;
 	vector<string> maleNames_;
 	vector<string> femaleNames_;
 	vector<Person> people_;
+	bool choosingPeople_ = false;
 	string priorityJob_;
 	// unordered_map<int, Person*> personMap_; 
 	int daysToTake_ = 3;
-	float danger_, dangerDecRate_;
+	int danger_, dangerDecRate_, selectedID_, selectedIndex_;
 	int lastID_ = 0;
 	int loadTerrainTextures();
 	int* getRandomStatsArray();

@@ -7,6 +7,7 @@ class Person {
 public:
     Person(int id, string name);
     Person(int id, string name, string job);
+    int getID();
     string getName();
     string getJob();
 
