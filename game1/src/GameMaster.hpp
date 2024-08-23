@@ -34,8 +34,9 @@ struct Mission {
 	string missionObjective;
 	vector<int> missionUndertakers;
 	int missionY, missionX;
+	string danger, daysToTake;
 	Mission () {}
-	Mission (string objective, vector<int> undertakers, int y, int x) : missionObjective(objective), missionUndertakers(undertakers), missionY(y), missionX(x) { }
+	Mission (string objective, vector<int> undertakers, int y, int x, string dang, string days) : missionObjective(objective), missionUndertakers(undertakers), missionY(y), missionX(x), danger(dang), daysToTake(days) { }
 	void clear() {
 		missionObjective="";
 		missionUndertakers.clear();
@@ -66,6 +67,7 @@ public:
 	void passTileType(string tileType);
 	// void passMission(string mission);
 	void passMissionInfo();
+	void passMissionInfoDirect(string mission, string danger, string days);
 	bool customJobComparator(Person& p1, Person& p2, std::string& priorityJob);
 	void passPeopleString();
 	void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
@@ -77,7 +79,7 @@ public:
 private:
 	std::shared_ptr<GMContext> gmcontext_;
 	sf::Texture groundTexture_;
-	vector<vector<Terrain*>> groundTiles_;
+	vector<vector<Terrain*>> worldTiles_;
 	sf::Vector2u windowSize_;
 	int charSize_;
 	sf::Font font_;
@@ -98,8 +100,9 @@ private:
 	bool choosingPeople_ = false;
 	string priorityJob_;
 	// unordered_map<int, Person*> personMap_; 
-	int daysToTake_ = 3;
+	const int DAYS_TO_TAKE_ = 3;
 	int danger_, dangerDecRate_, selectedID_, selectedIndex_;
+	string strDays_, strDanger_;
 	int lastID_ = 0;
 	int loadTerrainTextures();
 	int* getRandomStatsArray();

@@ -87,6 +87,7 @@ private:
     void createBox();
     void createCloseLink();
     void initHeaderText();
+    void createAcceptLink();
     void createMissionsLink();
     void initBodyText();
     void createScrollText();

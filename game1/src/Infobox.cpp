@@ -73,6 +73,7 @@ void Infobox::createInfobox() {
             missionLinkY += 50;
         }    
     } else if (infoboxType_ == Data::personChoice) {
+        createAcceptLink();
         string missUpper = currMission_;
         Data::uppercaseString(missUpper);
         headerText_.setString(missUpper + " MISSION");
@@ -83,7 +84,6 @@ void Infobox::createInfobox() {
         bodyText_.setString(bodyTextWrapped);
 
         makeScrollableLinks(peopleString_);
-
     }
     readyToDraw_ = true;
 }
@@ -103,7 +103,7 @@ void Infobox::createBox() {
 
 void Infobox::createCloseLink() {
     vector<string> onClick = {Data::onClickClose};
-    Textlink *closeLink = new Textlink("Close (Esc)", font_, charSize_, onClick);
+    Textlink *closeLink = new Textlink("(C)lose", font_, charSize_, onClick);
     auto closeLiterals = Data::calculateLiterals(105, 155);
     closeLink->setPosition(windowSizeX_ * closeLiterals.first, windowSizeY_ * closeLiterals.second);
     links_.push_back(closeLink);
@@ -115,6 +115,14 @@ void Infobox::initHeaderText() {
     headerText_.setFillColor(sf::Color::Black);
     auto bodyTextLiterals = Data::calculateLiterals(410, 200);
     headerText_.setPosition(windowSizeX_ * bodyTextLiterals.first, windowSizeY_ * bodyTextLiterals.second);
+}
+
+void Infobox::createAcceptLink() {
+    vector<string> onClick = {Data::onClickAccept};
+    Textlink *acceptLink = new Textlink("(A)ccept", font_, charSize_, onClick);
+    auto acceptLiterals = Data::calculateLiterals(1130, 155);
+    acceptLink->setPosition(windowSizeX_ * acceptLiterals.first, windowSizeY_ * acceptLiterals.second);
+    links_.push_back(acceptLink);
 }
 
 void Infobox::createScrollText() {
@@ -473,18 +481,27 @@ void Infobox::makeScrollableLinks(string scrollMe) {
                 line += scrollMe[i + 1];
                 i += 1;
             }
-            // Textlink is created
-            vector<string> onClickPerson = {Data::onClickSelect, to_string(scrollLinksVec_.size())};
+            // Textlink is created. Check if link is clickable. Link is clickable if it does not contain a "!" in its string
+            vector<string> onClickPerson;
+            int index = line.find("!");
+            // Found "!" in string
+            if (index != std::string::npos) {
+                // If found, nothing should happen when you click on the link, and remove "!" from string
+                onClickPerson = {Data::onClickNone};
+                line[index] = ' ';
+            } else {
+                onClickPerson = {Data::onClickSelect, to_string(scrollLinksVec_.size())};
+            }
             Textlink* link = new Textlink(line, font_, charSize_, onClickPerson);
             scrollLinksVec_.push_back(link);
             line = "";
         }
     }
-    if (!line.empty()) {
-        vector<string> onClickPerson = {Data::onClickSelect, to_string(scrollLinksVec_.size())};
-        Textlink* link = new Textlink(line, font_, charSize_, onClickPerson);
-        scrollLinksVec_.push_back(link);
-    }
+    // if (!line.empty()) {
+    //     vector<string> onClickPerson = {Data::onClickSelect, to_string(scrollLinksVec_.size())};
+    //     Textlink* link = new Textlink(line, font_, charSize_, onClickPerson);
+    //     scrollLinksVec_.push_back(link);
+    // }
     // Set endingLink_
     if (scrollLinksVec_.size() > 7) {
         endingLink_ = 7;

@@ -9,3 +9,7 @@ int Person::getID() { return ID_; }
 string Person::getName() { return name_; }
 
 string Person::getJob() { return job_; }
+
+bool Person::getBusy() { return busy_; }
+
+void Person::setBusy(bool busy) { busy_ = busy; }

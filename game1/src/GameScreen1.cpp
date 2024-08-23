@@ -113,8 +113,11 @@ void GameScreen1::processInput() {
         } else {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
-                    case sf::Keyboard::Escape:
-                        m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickClose}, false, true, false);
+                    case sf::Keyboard::C:
+                        m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickClose}, false, false, false);
+                        break;
+                    case sf::Keyboard::A:
+                        m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickAccept}, false, false, false);
                         break;
                 }
                 if (event.key.code == sf::Keyboard::S)

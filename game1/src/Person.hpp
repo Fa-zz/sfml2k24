@@ -10,6 +10,8 @@ public:
     int getID();
     string getName();
     string getJob();
+    bool getBusy();
+    void setBusy(bool busy);
 
     void print() const {
         std::cout << "ID: " << ID_ << ", Name: " << name_ << ", Job: " << job_ << std::endl;
@@ -19,4 +21,5 @@ private:
     string name_;
     string job_;
     int gender_;
+    bool busy_ = false;
 };

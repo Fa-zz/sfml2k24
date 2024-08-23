@@ -92,14 +92,14 @@ void GameMaster::initPeople() {
 }
 
 void GameMaster::genTiles(int height, int width) {
-    groundTiles_.resize(height);  // Resize outer and inner vector
+    worldTiles_.resize(height);  // Resize outer and inner vector
     for (int i = 0; i < height; ++i) {
-        groundTiles_[i].resize(width, nullptr);
+        worldTiles_[i].resize(width, nullptr);
     }
     int tileMissionsUnd[Data::numTileMissions] = {1, 0, 0, 0};
 
-    for (int i = 0; i < groundTiles_.size(); i++) {
-        for (int j = 0; j < groundTiles_[i].size(); j++) {
+    for (int i = 0; i < worldTiles_.size(); i++) {
+        for (int j = 0; j < worldTiles_[i].size(); j++) {
 
             int lb = 0, ub = Data::numTileType-1;
             int randNum = rand() % (ub - lb + 1) + lb;
@@ -141,7 +141,7 @@ void GameMaster::genTiles(int height, int width) {
             newTile->setTileStats(getRandomStatsArray());
             newTile->setTileMissionsArr(tileMissionsUnd);
             // setting start location
-            if (i == groundTiles_.size()/2 && j == groundTiles_[i].size()/2) {
+            if (i == worldTiles_.size()/2 && j == worldTiles_[i].size()/2) {
                 startingLoc_.x = j;
                 startingLoc_.y = i;
                 newTile->setTileStatus(Data::reclaimedTile);
@@ -149,7 +149,7 @@ void GameMaster::genTiles(int height, int width) {
                 newTile->setTileStatus(Data::undiscoveredTile);
             }
 
-            groundTiles_[i][j] = newTile;
+            worldTiles_[i][j] = newTile;
 
             // cout << "Tile type: " << newTile->getTileType() << endl;
             // cout << "Tile stats: " << newTile->getTileStats()[0] << " " << newTile->getTileStats()[1] << " " << newTile->getTileStats()[2] << endl;
@@ -157,21 +157,21 @@ void GameMaster::genTiles(int height, int width) {
         }
     }
     // Set the tiles immediately around starting tile to wild, and record each tiles' coord
-    groundTiles_[startingLoc_.y][startingLoc_.x-1]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y][startingLoc_.x-1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y, startingLoc_.x - 1));
-    groundTiles_[startingLoc_.y-1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y-1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y - 1, startingLoc_.x - 1));
-    groundTiles_[startingLoc_.y-1][startingLoc_.x]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y-1][startingLoc_.x]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y - 1, startingLoc_.x));
-    groundTiles_[startingLoc_.y-1][startingLoc_.x+1]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y-1][startingLoc_.x+1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y - 1, startingLoc_.x + 1));
-    groundTiles_[startingLoc_.y][startingLoc_.x+1]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y][startingLoc_.x+1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y, startingLoc_.x + 1));
-    groundTiles_[startingLoc_.y+1][startingLoc_.x+1]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y+1][startingLoc_.x+1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y + 1, startingLoc_.x + 1));
-    groundTiles_[startingLoc_.y+1][startingLoc_.x]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y+1][startingLoc_.x]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y + 1, startingLoc_.x));
-    groundTiles_[startingLoc_.y+1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
+    worldTiles_[startingLoc_.y+1][startingLoc_.x-1]->setTileStatus(Data::wildTile);
     wildTilesCoords.push_back(make_pair(startingLoc_.y + 1, startingLoc_.x - 1));
 
     // For every widl tile, we update its missions 
@@ -181,10 +181,10 @@ void GameMaster::genTiles(int height, int width) {
     // int arr1[4] = {0,1,1,1};
     // int arr2[4] = {0,1,1,0};
     // for (int i = 0; i < wildTilesCoords.size(); i++) {
-    //     if (groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->getTileStats()[1] == 0) {
-    //         groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr1);
+    //     if (worldTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->getTileStats()[1] == 0) {
+    //         worldTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr1);
     //     } else {
-    //         groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr2);
+    //         worldTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileMissions(arr2);
     //     }
 
     // }
@@ -196,17 +196,17 @@ void GameMaster::mapMode(int mapMode) {
             break;
         case 1: // Food map mode
             for (int i = 0; i < wildTilesCoords.size(); i++) {
-                groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileStatStateColor(0);
+                worldTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileStatStateColor(0);
             }
             break;
         case 2: // Zombies map mode
             for (int i = 0; i < wildTilesCoords.size(); i++) {
-                groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileStatStateColor(1);
+                worldTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileStatStateColor(1);
             }
             break;
         case 3: // Survivors map mode
             for (int i = 0; i < wildTilesCoords.size(); i++) {
-                groundTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileStatStateColor(2);
+                worldTiles_[wildTilesCoords[i].first][wildTilesCoords[i].second]->setTileStatStateColor(2);
             }
             break;
 
@@ -220,9 +220,9 @@ GameMaster::GameMaster(GUI& gui) : gui_(gui), gmcontext_(std::make_shared<GMCont
 }
 
 GameMaster::~GameMaster() { 
-    for (int i = 0; i < groundTiles_.size(); i++) {
-        for (int j = 0; j < groundTiles_[i].size(); j++) {
-            delete groundTiles_[i][j];
+    for (int i = 0; i < worldTiles_.size(); i++) {
+        for (int j = 0; j < worldTiles_[i].size(); j++) {
+            delete worldTiles_[i][j];
         }
     }
     // for (auto& pair : personMap_) {
@@ -232,7 +232,7 @@ GameMaster::~GameMaster() {
 }
 
 Terrain& GameMaster::getGroundTileAtPos(int y, int x) {
-    return *groundTiles_[y][x];
+    return *worldTiles_[y][x];
 }
 
 sf::Vector2u GameMaster::getStartingLoc() {
@@ -250,30 +250,6 @@ int* GameMaster::getRandomStatsArray() {
     }
     return r;
 }
-// void GameMaster::addIntroInfobox() {
-//     // // Add an intro infobox and pass in the starting tile type, then create it
-//     // if (gmcontext_->stateMachine_->IsEmpty()) {
-//     //     addInfobox(Data::intro);
-//     //     passTileType( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
-//     //     // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
-//     // }
-//     // createInfobox();
-// }
-
-// void GameMaster::addTileInfobox(float mouseX, float mouseY, string status, bool create) {
-//     currX_ = mouseX;
-//     currY_ = mouseY;
-//     // string status = getGroundTileAtPos(currY_, currX_).getTileStatus();
-//     gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
-//         charSize_, font_, windowSize_.x, windowSize_.y,
-//         status,
-//         getGroundTileAtPos(currY_, currX_).getTileType(),
-//         getGroundTileAtPos(currY_, currX_).getTileStats(), 
-//         getGroundTileAtPos(currY_, currX_).getTileMissions())
-//     );
-//     if (create)
-//         createInfobox();
-// }
 
 void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool create) {
     // Add an intro infobox and pass in the starting tile type, then create it
@@ -285,7 +261,7 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
             // gui_.addIntroInfobox( getGroundTileAtPos(startingLoc_.y, startingLoc_.x).getTileType() );
         }
     // If creating an Infobox of a wild, active, reclaimed, or undiscovered tile
-    } else if ( status == Data::wildTile || status == Data::activeTile || status == Data::reclaimedTile || status == Data::undiscoveredTile ) {
+    } else if ( status == Data::wildTile || status == Data::reclaimedTile || status == Data::undiscoveredTile ) {
         currX_ = mouseX;
         currY_ = mouseY;
         gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
@@ -307,14 +283,28 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
         gmcontext_->stateMachine_->ProcessStateChange();
 
     // If creating an Infobox for selecting a people to undertake a mission
-    } else if (status == Data::personChoice) {
+    } else if (status == Data::personChoice || status == Data::activeTile) {
         gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
             charSize_, font_, windowSize_.x, windowSize_.y,
             status));
         gmcontext_->stateMachine_->ProcessStateChange();
-        passMissionInfo(); // passing mission name, danger, and days to take
-        passPeopleString(); // pass the list of people sorted by the mission type
-        // currMission_ = "";
+        if (status == Data::personChoice) {
+            passMissionInfo(); // passing mission name, danger, and days to take
+            passPeopleString(); // pass the list of people sorted by the mission type
+        } 
+        // else if (status == Data::activeTile) {
+            
+        //     for (int i = 0; i < activeMissions_.size(); i++) {
+        //         if (activeMissions_[i].missionY == currY_ && activeMissions_[i].missionX == currX_) {
+        //             passMissionInfoDirect(
+        //                 activeMissions_[i].missionObjective,
+        //                 activeMissions_[i].danger,
+        //                 activeMissions_[i].daysToTake
+        //             );
+        //         }
+        //         break;
+        //     }
+        // }
     }
     createInfobox();
 }
@@ -343,6 +333,7 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
                 if (currSelected_.size() > 0)
                     currSelected_.clear();
                 choosingPeople_ = false;
+                currMission_ = "";
             }
             popCurrentInfobox();
             return;
@@ -370,7 +361,18 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
             }
             // Re calculate danger and days to take
             passMissionInfo();
-        // User accepts mission. Mission is created, tile becomes an active tile, and stack is cleared.
+        // User accepts mission, after choosing people. Mission is created, tile becomes an active tile, and stack is cleared.
+        } else if (linkData_[0] == Data::onClickAccept && choosingPeople_ == true && currSelected_.size() > 0) {
+            // Mission *newMission = new Mission(currMission_, currSelected_, currY_, currX_);
+            activeMissions_.emplace_back(currMission_, currSelected_, currY_, currX_, strDanger_, strDays_);
+            for (int i = 0; i < currSelected_.size(); i++) {
+                IDtoPerson(currSelected_[i])->setBusy(true);
+            }
+            currMission_ = "";
+            currSelected_.clear();
+            choosingPeople_ = false;
+            worldTiles_[currY_][currX_]->setTileStatus(Data::activeTile);
+            popAllInfoboxes();
         }
         linkData_.clear();
     }
@@ -418,7 +420,7 @@ void GameMaster::createInfobox() {
 // Cannot recruit survivors (Data::tileMissionsText[3]) if getTileStats()[2] == 0
 // Cannot reclaim (Data::tileMissionsText[4]) if getTileStats()[1] > 0 AND if tile is undiscoveredTile
 void GameMaster::updateTileMissions(int y, int x) {
-    auto tile = groundTiles_[y][x];
+    auto tile = worldTiles_[y][x];
     auto tileStatus = tile->getTileStatus();
 
     if (tileStatus == Data::reclaimedTile) {
@@ -476,14 +478,14 @@ int GameMaster::calcDangerDecRate() {
 void GameMaster::passMissionInfo() {
     Infobox* currInfobox = getCurrentInfobox();
     string mission = currMission_;
-    string danger = to_string( calcDanger() ); 
-    string days = to_string( daysToTake_ );
+    string strDanger_ = to_string( calcDanger() ); 
+    string strDays_ = to_string( DAYS_TO_TAKE_ );
 
     // If people are selected, we need to iterate over the selected and using their job calculate the new danger and days to take.
     if (currSelected_.size() > 0) {
-        int calcdDays = daysToTake_;
+        int calcdDays = DAYS_TO_TAKE_;
         int subtractDay = 0;
-        int calcdDanger = stoi(danger);
+        int calcdDanger = stoi(strDanger_);
         int factor = calcDangerDecRate();
         for (int i = 0; i < currSelected_.size(); i++) {
             std::__1::__wrap_iter<Person *> person = IDtoPerson(currSelected_[i]);
@@ -510,10 +512,15 @@ void GameMaster::passMissionInfo() {
             calcdDanger = 0;
         if (calcdDays < 1)
             calcdDays = 1;
-        danger = to_string( calcdDanger );
-        days = to_string ( calcdDays );
+        strDanger_ = to_string( calcdDanger );
+        strDays_ = to_string ( calcdDays );
     }
 
+    currInfobox->setMissionInfo(mission, strDanger_, strDays_);
+}
+
+void GameMaster::passMissionInfoDirect(string mission, string danger, string days) {
+    Infobox* currInfobox = getCurrentInfobox();
     currInfobox->setMissionInfo(mission, danger, days);
 }
 
@@ -568,14 +575,19 @@ void GameMaster::passPeopleString() {
 
     for (int i = 0; i < people_.size(); i++) {
         // 20. Muhammad, Soldier
-        peopleString += to_string(i+1) + ". " + people_[i].getName() + ", " + people_[i].getJob() + "\n";
+        peopleString += to_string(i+1) + ". " + people_[i].getName() + ", " + people_[i].getJob();
+        if (people_[i].getBusy() == true) {
+            peopleString += "!";
+        }
+        peopleString +=  + "\n";
     }
     Infobox* currInfobox = getCurrentInfobox();
     currInfobox->setPopulation(peopleString);
 }
 
 void GameMaster::passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
-    gmcontext_->stateMachine_->GetCurrent()->setInput(x, y, clicked, scrollDown, scrollUp);
+    if (!(gmcontext_->stateMachine_->IsEmpty()))
+        gmcontext_->stateMachine_->GetCurrent()->setInput(x, y, clicked, scrollDown, scrollUp);
 }
 
 // sf::Vector2u GameMaster::getPlayerPos() { return world_->getStartingLoc(); }

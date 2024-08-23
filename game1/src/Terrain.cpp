@@ -43,6 +43,8 @@ void Terrain::setTileStatus(string x) {
         sprite_.setColor(sf::Color(50,155,155,50));
     } else if (tileStatus_ == Data::reclaimedTile) {
         sprite_.setColor(sf::Color(255,255,255));
+    } else if (tileStatus_ == Data::activeTile) {
+        sprite_.setColor(sf::Color::Yellow);
     }
 }
 void Terrain::setTileType(string x) { tileType_ = x; }
