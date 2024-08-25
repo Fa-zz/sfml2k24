@@ -86,6 +86,7 @@ private:
     void initClose(); 
     void createBox();
     void createCloseLink();
+    void createCancelLink();
     void initHeaderText();
     void createAcceptLink();
     void createMissionsLink();

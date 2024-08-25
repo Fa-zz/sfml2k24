@@ -90,6 +90,7 @@ void Infobox::createInfobox() {
 
         makeScrollableLinks(peopleString_);
     } else if(infoboxType_ == Data::activeTile) {
+        createCancelLink();
         headerText_.setString("ACTIVE MISSION");
         string body = Data::activeTileBody;
         body += peopleString_;
@@ -137,13 +138,13 @@ void Infobox::createAcceptLink() {
     links_.push_back(acceptLink);
 }
 
-// void Infobox::createCancelLink() {
-//     vector<string> onClick = {Data::onClickAccept};
-//     Textlink *acceptLink = new Textlink("(A)ccept", font_, charSize_, onClick);
-//     auto acceptLiterals = Data::calculateLiterals(1130, 155);
-//     acceptLink->setPosition(windowSizeX_ * acceptLiterals.first, windowSizeY_ * acceptLiterals.second);
-//     links_.push_back(acceptLink);
-// }
+void Infobox::createCancelLink() {
+    vector<string> onClick = {Data::onClickCancel};
+    Textlink *cancelLink = new Textlink("C(a)ncel", font_, charSize_, onClick);
+    auto cancelLiterals = Data::calculateLiterals(1110, 155);
+    cancelLink->setPosition(windowSizeX_ * cancelLiterals.first, windowSizeY_ * cancelLiterals.second);
+    links_.push_back(cancelLink);
+}
 
 void Infobox::createScrollText() {
     drawScrollText_ = true;

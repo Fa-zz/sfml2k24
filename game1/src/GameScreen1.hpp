@@ -34,6 +34,7 @@ private:
     sf::Vector2f mousePosF_;
     // Terrain* currTerrain_;
     int highlightX_, highlightY_;
+    int currX_, currY_;
     bool scrollDownPressed_ = false;
     bool scrollUpPressed_ = false;
     bool defaultMapMode_ = true;

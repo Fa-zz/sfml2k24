@@ -370,6 +370,15 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
             choosingPeople_ = false;
             worldTiles_[currY_][currX_]->setTileStatus(Data::activeTile);
             popAllInfoboxes();
+        // User is on active tile and cancels
+        } else if (linkData_[0] == Data::onClickCancel && worldTiles_[currY_][currX_]->getTileStatus() == Data::activeTile) {
+            vector<int> freedIDs = worldTiles_[currY_][currX_]->getAssigned();
+            for (int i = 0; i < freedIDs.size(); i++) {
+                IDtoPerson(freedIDs[i])->setBusy(false);
+            }
+            worldTiles_[currY_][currX_]->clearMission();
+            worldTiles_[currY_][currX_]->setTileStatus(Data::wildTile);
+            popAllInfoboxes();
         }
         linkData_.clear();
     }

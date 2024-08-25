@@ -109,6 +109,8 @@ void GameScreen1::processInput() {
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 m_context->m_gameMaster->addInfobox(highlightX_, highlightY_, m_context->m_gameMaster->getGroundTileAtPos(highlightY_, highlightX_).getTileStatus(), true);
+                currY_ = highlightY_;
+                currX_ = highlightX_;
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {
@@ -117,8 +119,13 @@ void GameScreen1::processInput() {
                         m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickClose}, false, false, false);
                         break;
                     case sf::Keyboard::A:
-                        m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickAccept}, false, false, false);
-                        break;
+                        {
+                            auto tileStatus = m_context->m_gameMaster->getGroundTileAtPos(currY_, currX_).getTileStatus();
+                            if (tileStatus == Data::activeTile)
+                                m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickCancel}, false, false, false);
+                            else
+                                m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {Data::onClickAccept}, false, false, false);
+                        }
                 }
                 if (event.key.code == sf::Keyboard::S)
                     m_context->m_gameMaster->updateInfobox(mousePosF_.x, mousePosF_.y, {"placeholder"}, false, true, false);

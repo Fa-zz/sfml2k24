@@ -67,7 +67,7 @@ namespace Data {
     inline const string jobBuilder = "builder";
     inline const string jobSurvivor = "survivor";
     inline const string jobs[numJobs] = {jobLeader, jobSoldier, jobScavenger, jobBuilder, jobSurvivor};
-    inline const int startingPopNum = 50;
+    inline const int startingPopNum = 7;
 
     inline const string introText = "It's been 6 months since the outbreak. People watched with horror on their smartphones as it struck country after country, the same stories: riots, panic, violence. Ordinary people giving into a kind of madness the world had never seen before. It was terrifying, but it made for great entertainment. See, we assumed it would stay in the third world, like we were special somehow, and it wouldn't be able to hurt us here.\n\nWhen the parasite made its way, inevitably, to the western world, the explanations varied for the first victims. Depending on their background, some were chalked up as mental health victims, some as savage migrants, or alien terrorists. Most met their end by the police, the evidence covered up, incidents to mention and quickly brush past in the evening news. Topics avoided like contagious disease, even as the sight of armored police carriers in our neighborhoods increased, even as economies crashed like dead birds falling out of the sky.\n\nThis parasite doesn't discriminate. The bread riots spread it even faster. It's everywhere now. Our city, Baltimore, collapsed a week ago. We watched the National Guard leave a week ago, and they've blocked off all roads in and out. No one knows what they're up to, but we don't have faith that they're coming back. Now it's just us, trapped in here with drones flying over us, others that are just as or more desperate, and the living dead.\n\nWe're not going to give up. 7 of us have decided to stick together. We've put up some walls and barbed wire to block off an abandoned LOCPLACEHOLDER. The dead are restless outside our walls. And our food and supplies won't last forever. The government and military were never on our side - we can only trust each other. But we're going to reclaim CITYPLACEHOLDER, block by block.";
     inline const string wildBody1 = "This is a LOCPLACEHOLDER that we've scouted. Here's what we know is here.\n\nFood: FOODPLACEHOLDER.\nZombies: ZOMBIESPLACEHOLDER.\nSurvivors: SURVIVORSPLACEHOLDER.";
@@ -81,6 +81,7 @@ namespace Data {
     inline const string notLink = "";
     inline const string onClickClose = "close stack";
     inline const string onClickAccept = "accept stack";
+    inline const string onClickCancel = "cancel stack";
     inline const string onClickSelect = "select";
     inline const string onClickCreateReclaimedTile = "create " + reclaimedTile;
     inline const string onClickCreateWildTile = "create " + wildTile;

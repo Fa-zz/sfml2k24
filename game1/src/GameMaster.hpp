@@ -77,6 +77,7 @@ public:
 	int getPopulationNum();
 	std::__1::__wrap_iter<Person *> IDtoPerson(int targetID);
     void setWindowSize(sf::Vector2u windowSize);
+	bool getCancel();
 private:
 	std::shared_ptr<GMContext> gmcontext_;
 	sf::Texture groundTexture_;
@@ -105,6 +106,7 @@ private:
 	const int DAYS_TO_TAKE_ = 3;
 	int danger_, dangerDecRate_, selectedID_, selectedIndex_;
 	string strDays_, strDanger_;
+	bool cancel_ = false;
 	int lastID_ = 0;
 	int loadTerrainTextures();
 	int* getRandomStatsArray();
