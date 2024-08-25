@@ -297,6 +297,7 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
                 worldTiles_[currY_][currX_]->getDanger(),
                 worldTiles_[currY_][currX_]->getDays()
             );
+            passMissionPeople( worldTiles_[currY_][currX_]->getAssigned() );
         }
     }
     createInfobox();
@@ -356,9 +357,11 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
             passMissionInfo();
         // User accepts mission, after choosing people. Mission is created, tile becomes an active tile, and stack is cleared.
         } else if (linkData_[0] == Data::onClickAccept && choosingPeople_ == true && currSelected_.size() > 0) {
-            // Mission *newMission = new Mission(currMission_, currSelected_, currY_, currX_);
+            cout << "strDanger_ after accept: " << strDanger_ << endl;
             worldTiles_[currY_][currX_]->setMission(currMission_, currSelected_, strDanger_, strDays_);
-            // activeMissions_.emplace_back(currMission_, currSelected_, currY_, currX_, strDanger_, strDays_);
+            cout << "Danger: " << worldTiles_[currY_][currX_]->getDanger();
+            cout << "Days: " << worldTiles_[currY_][currX_]->getDays();
+
             for (int i = 0; i < currSelected_.size(); i++) {
                 IDtoPerson(currSelected_[i])->setBusy(true);
             }
@@ -472,8 +475,8 @@ int GameMaster::calcDangerDecRate() {
 void GameMaster::passMissionInfo() {
     Infobox* currInfobox = getCurrentInfobox();
     string mission = currMission_;
-    string strDanger_ = to_string( calcDanger() ); 
-    string strDays_ = to_string( DAYS_TO_TAKE_ );
+    strDanger_ = to_string( calcDanger() ); 
+    strDays_ = to_string( DAYS_TO_TAKE_ );
 
     // If people are selected, we need to iterate over the selected and using their job calculate the new danger and days to take.
     if (currSelected_.size() > 0) {
@@ -487,7 +490,7 @@ void GameMaster::passMissionInfo() {
             if (person->getJob() == Data::jobSoldier) {
                 calcdDanger -= factor;
             } else {
-                calcdDanger -= (factor/2);
+                calcdDanger -= (factor/4);
             }
 
             // In the same loop we calculate factor of decreasing days. Person with priorJob will decrease day by 1. It takes 2 persons without to decrease day by 1.
@@ -518,10 +521,17 @@ void GameMaster::passMissionInfoDirect(string mission, string danger, string day
     currInfobox->setMissionInfo(mission, danger, days);
 }
 
-// void GameMaster::passMission(string mission) {
-//     Infobox* currInfobox = getCurrentInfobox();
-//     currInfobox->setMission(mission);
-// }
+void GameMaster::passMissionPeople(vector<int> missionPeople) {
+    string peopleString;
+    for (int i = 0; i < missionPeople.size(); i++) {
+        // 20. Muhammad, Soldier
+        peopleString += to_string(i+1) + ". " + IDtoPerson(missionPeople[i])->getName() + ", " + IDtoPerson(missionPeople[i])->getJob();
+        peopleString +=  + "\n";
+    }
+    Infobox* currInfobox = getCurrentInfobox();
+    currInfobox->setPopulation(peopleString);
+
+}
 
 // Custom comparator for sorting by specific job priority
 bool GameMaster::customJobComparator(Person& p1, Person& p2, std::string& priorityJob) {
@@ -555,11 +565,11 @@ void GameMaster::passPeopleString() {
     }
     // cout << "Priority job is : " << priorityJob_ << " for curr mission: " << currMission_ << endl;
 
+    // Sort people by priority
     sort(people_.begin(), people_.end(), 
               [this](Person& p1, Person& p2) {
                   return customJobComparator(p1, p2, priorityJob_);
               });
-    // sort(people_.begin(), people_.end(), priorityJob);
 
     // Display sorted people
     // cout << "Displaying sorted people" << endl;
@@ -570,9 +580,9 @@ void GameMaster::passPeopleString() {
     for (int i = 0; i < people_.size(); i++) {
         // 20. Muhammad, Soldier
         peopleString += to_string(i+1) + ". " + people_[i].getName() + ", " + people_[i].getJob();
-        if (people_[i].getBusy() == true) {
+        // If someone's busy, add a special symbol that will let Infobox.cpp know to make this link inactive
+        if (people_[i].getBusy() == true)
             peopleString += "!";
-        }
         peopleString +=  + "\n";
     }
     Infobox* currInfobox = getCurrentInfobox();

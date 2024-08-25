@@ -68,6 +68,7 @@ public:
 	// void passMission(string mission);
 	void passMissionInfo();
 	void passMissionInfoDirect(string mission, string danger, string days);
+	void passMissionPeople(vector<int> missionPeople);
 	bool customJobComparator(Person& p1, Person& p2, std::string& priorityJob);
 	void passPeopleString();
 	void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);

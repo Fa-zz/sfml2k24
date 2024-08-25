@@ -92,7 +92,7 @@ private:
     void initBodyText();
     void createScrollText();
     string replaceIntroText();
-    string replaceText(string stringToReplace, string placeHolderText, string replaceWith);
+    string replaceText(string stringToReplace, vector<string> placeHolderTexts, vector<string> replaceWith);
     string replaceBodyText(string replaceLoc, string replaceFood, string replaceSurvivors, string replaceZombies);
     sf::String wrapText(sf::String string);
     void makeScrollableBody(string scrollMe);
