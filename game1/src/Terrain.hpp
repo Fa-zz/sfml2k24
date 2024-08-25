@@ -32,6 +32,14 @@ public:
     void setTileStatStateColor(int tileStatsIndex);
     sf::Color getTileStatStateColor();
 
+    void setMission(string objective, vector<int> assigned, string danger, string daysToTake);
+    string getObjective();
+    vector<int> getAssigned();
+    string getDanger();
+    string getDays();
+    void clearMission();
+    void updateDaysToTake();
+
 private:
     // int x_; // x: x coordinate of sprite on texture png
     // int y_; // y: y coordinate of sprite on texture png
@@ -39,7 +47,6 @@ private:
     float tileSizeY_; // tileSizeY: Size of tile in y direction
     int tileMapX_, tileMapY_; // coordinates of sprite on the tileMap
     sf::Sprite sprite_;
-    // int dummyInfo_;
     string tileStatus_;
     string tileType_;
     sf::Color tileStatStateColor_;
@@ -49,4 +56,11 @@ private:
     // vector<int> tileMissions_;
     int tileStats_[Data::numTileStats];
     int tileMissions_[Data::numTileMissions];
+
+    // Mission infos
+    string missionObjective_;
+    vector<int> assignedToMission_;
+    // int missionY_, missionX_;
+    string danger_, daysToTake_;
+
 };

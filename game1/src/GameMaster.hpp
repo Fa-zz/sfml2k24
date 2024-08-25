@@ -30,19 +30,19 @@ struct GMContext {
     }
 };
 
-struct Mission {
-	string missionObjective;
-	vector<int> missionUndertakers;
-	int missionY, missionX;
-	string danger, daysToTake;
-	Mission () {}
-	Mission (string objective, vector<int> undertakers, int y, int x, string dang, string days) : missionObjective(objective), missionUndertakers(undertakers), missionY(y), missionX(x), danger(dang), daysToTake(days) { }
-	void clear() {
-		missionObjective="";
-		missionUndertakers.clear();
-		missionY=0,missionX=0;
-	}
-};
+// struct Mission {
+// 	string missionObjective;
+// 	vector<int> assignedToMission;
+// 	int missionY, missionX;
+// 	string danger, daysToTake;
+// 	Mission () {}
+// 	Mission (string objective, vector<int> undertakers, int y, int x, string dang, string days) : missionObjective(objective), missionUndertakers(undertakers), missionY(y), missionX(x), danger(dang), daysToTake(days) { }
+// 	void clear() {
+// 		missionObjective="";
+// 		missionUndertakers.clear();
+// 		missionY=0,missionX=0;
+// 	}
+// };
 
 class GameMaster {
 public:
@@ -91,7 +91,8 @@ private:
 	int currX_, currY_;
 	string currMission_;
 	vector<int> currSelected_;
-	vector<Mission> activeMissions_;
+	// vector<Mission> activeMissions_;
+	vector<pair<int, int>> activeTilesCoords;
 	// string linkData_;
 	vector<string> linkData_;
 	vector<string> maleNames_;

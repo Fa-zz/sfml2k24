@@ -291,20 +291,13 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
         if (status == Data::personChoice) {
             passMissionInfo(); // passing mission name, danger, and days to take
             passPeopleString(); // pass the list of people sorted by the mission type
-        } 
-        // else if (status == Data::activeTile) {
-            
-        //     for (int i = 0; i < activeMissions_.size(); i++) {
-        //         if (activeMissions_[i].missionY == currY_ && activeMissions_[i].missionX == currX_) {
-        //             passMissionInfoDirect(
-        //                 activeMissions_[i].missionObjective,
-        //                 activeMissions_[i].danger,
-        //                 activeMissions_[i].daysToTake
-        //             );
-        //         }
-        //         break;
-        //     }
-        // }
+        } else if (status == Data::activeTile) {
+            passMissionInfoDirect(
+                worldTiles_[currY_][currX_]->getObjective(),
+                worldTiles_[currY_][currX_]->getDanger(),
+                worldTiles_[currY_][currX_]->getDays()
+            );
+        }
     }
     createInfobox();
 }
@@ -364,7 +357,8 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
         // User accepts mission, after choosing people. Mission is created, tile becomes an active tile, and stack is cleared.
         } else if (linkData_[0] == Data::onClickAccept && choosingPeople_ == true && currSelected_.size() > 0) {
             // Mission *newMission = new Mission(currMission_, currSelected_, currY_, currX_);
-            activeMissions_.emplace_back(currMission_, currSelected_, currY_, currX_, strDanger_, strDays_);
+            worldTiles_[currY_][currX_]->setMission(currMission_, currSelected_, strDanger_, strDays_);
+            // activeMissions_.emplace_back(currMission_, currSelected_, currY_, currX_, strDanger_, strDays_);
             for (int i = 0; i < currSelected_.size(); i++) {
                 IDtoPerson(currSelected_[i])->setBusy(true);
             }

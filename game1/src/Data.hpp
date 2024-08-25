@@ -74,7 +74,7 @@ namespace Data {
     inline const string reclaimedBody = "This LOCPLACEHOLDER is reclaimed and within our walls. Some of our people are living here, and we're using it to store food and other supplies. Make sure we have guards on our walls.";
     inline const string missionsBody = "Choose a mission at the unreclaimed LOCPLACEHOLDER here. You can scout the area to learn more, scavenge for food, kill zombies, or recruit survivors.";
     inline const string personChoiceBody = "Choose who you want on this mission.\nDanger: DANGPLACEHOLDER%. Days to take: DAYPLACEHOLDER";    
-    inline const string activeTileBody = "Current mission: MISSPLACEHOLDER. Danger: DANGPLACEHOLDER%. Will take: DAYSPLACEHOLDER days\n\nOn mission:\n";
+    inline const string activeTileBody = "Current mission: MISSPLACEHOLDER. Danger: DANGPLACEHOLDER%. Will take: DAYSPLACEHOLDER days\n\n";
     // inline const string dummyText = "One thousand pounds of cheese for one flower! That may sound like an unfair trade, but it happened once. Tulips were first grown in Holland in the 1600s. Many rich people enjoyed planting them in their gardens. They were willing to pay a lot of money for the tulip bulbs, which looked like small onions. Traders drove up the prices. They began to buy up the tulips to sell them later for more money. Other people enjoyed collecting rare types of tulips.\n\nSoon, tulip bulbs were worth thousands of silver coins. People sold everything they had to buy them. The prices went up so quickly that people thought they would be able to get rich by selling the tulips later.";
 
 

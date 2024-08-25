@@ -84,6 +84,9 @@ void Infobox::createInfobox() {
         bodyText_.setString(bodyTextWrapped);
 
         makeScrollableLinks(peopleString_);
+    } else if(infoboxType_ == Data::activeTile) {
+        // makeScrollableBody(wrapText(replaceText(updatedIntro, Data::cityPh, "Baltimore")));
+        // bodyText_.setString(getBoundedString(0));
     }
     readyToDraw_ = true;
 }

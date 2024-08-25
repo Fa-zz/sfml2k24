@@ -103,3 +103,24 @@ void Terrain::setTileStatStateColor(int tileStatsIndex) {
 }
 
 sf::Color Terrain::getTileStatStateColor() { return tileStatStateColor_; }
+
+void Terrain::setMission(string objective, vector<int> assigned, string danger, string daysToTake) {
+    missionObjective_ = objective;
+    assignedToMission_ = assigned;
+    danger_ = danger;
+    daysToTake_ = daysToTake;
+}
+string Terrain::getObjective() { return missionObjective_; }
+vector<int> Terrain::getAssigned() {  return assignedToMission_; }
+string Terrain::getDanger() { return danger_; }
+string Terrain::getDays(){ return daysToTake_; }
+void Terrain::clearMission() {
+    missionObjective_ = "";
+    assignedToMission_.clear();
+    danger_ = "";
+    daysToTake_ = "";
+}
+void Terrain::updateDaysToTake() {
+    // Decrements a day
+    daysToTake_ = to_string( stoi( daysToTake_ ) - 1 );
+}
