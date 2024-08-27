@@ -252,6 +252,8 @@ int* GameMaster::getRandomStatsArray() {
 }
 
 void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool create) {
+    currX_ = mouseX;
+    currY_ = mouseY;
     // Add an intro infobox and pass in the starting tile type, then create it
     if (status == Data::intro) {
         if (gmcontext_->stateMachine_->IsEmpty()) {
@@ -262,8 +264,6 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
         }
     // If creating an Infobox of a wild, active, reclaimed, or undiscovered tile
     } else if ( status == Data::wildTile || status == Data::reclaimedTile || status == Data::undiscoveredTile ) {
-        currX_ = mouseX;
-        currY_ = mouseY;
         gmcontext_->stateMachine_->Add(std::make_unique<Infobox>(
             charSize_, font_, windowSize_.x, windowSize_.y,
             getGroundTileAtPos(currY_, currX_).getTileStatus(),
@@ -312,13 +312,13 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
         linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
     else
         linkData_ = linkData;
-
-    if (linkData_.size() > 0) {
-        if (linkData_[0] != "placeholder") {
-            cout << "linkData_: " << linkData_[0];
-            cout << linkData_[1] << endl;
-        }
-    }
+    // cout << "CurrY: " << currY_ << " CurrX: " << currX_ << endl;
+    // if (linkData_.size() > 0) {
+    //     if (linkData_[0] != "placeholder") {
+    //         cout << "linkData_: " << linkData_[0];
+    //         cout << linkData_[1] << endl;
+    //     }
+    // }
     if (!(linkData_.empty())) {
         // User closes the current open infobox
         if (linkData_[0] == Data::onClickClose) {
@@ -357,11 +357,7 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
             passMissionInfo();
         // User accepts mission, after choosing people. Mission is created, tile becomes an active tile, and stack is cleared.
         } else if (linkData_[0] == Data::onClickAccept && choosingPeople_ == true && currSelected_.size() > 0) {
-            cout << "strDanger_ after accept: " << strDanger_ << endl;
             worldTiles_[currY_][currX_]->setMission(currMission_, currSelected_, strDanger_, strDays_);
-            cout << "Danger: " << worldTiles_[currY_][currX_]->getDanger();
-            cout << "Days: " << worldTiles_[currY_][currX_]->getDays();
-
             for (int i = 0; i < currSelected_.size(); i++) {
                 IDtoPerson(currSelected_[i])->setBusy(true);
             }
