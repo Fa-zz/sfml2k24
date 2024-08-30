@@ -23,22 +23,28 @@ public:
     void setTileStatus(string x);
     void setTileType(string x);
     void setTileStats(int* tileStats);
+    void setTileStatsInt(int index, int newStat);
     void setTileMissionsArr(int* tileMissions);
     void setTileMissionsInt(int missionIndex, bool activate);
+    void setTileMissionsString(string mission, bool active);
     string getTileType();
     string getTileStatus();
     int* getTileStats();
     int* getTileMissions();
     void setTileStatStateColor(int tileStatsIndex);
     sf::Color getTileStatStateColor();
+    // Uses the tile status and stats to determine which missions should be active
 
-    void setMission(string objective, vector<int> assigned, string danger, string daysToTake);
+    void setMission(string objective, vector<int> assigned, int danger, int daysToTake);
+    void setDays(int days);
+    string getMission();
     string getObjective();
     vector<int> getAssigned();
-    string getDanger();
-    string getDays();
+    int getDanger();
+    int getDays();
     void clearMission();
     void updateDaysToTake();
+    
 
 private:
     // int x_; // x: x coordinate of sprite on texture png
@@ -61,6 +67,6 @@ private:
     string missionObjective_;
     vector<int> assignedToMission_;
     // int missionY_, missionX_;
-    string danger_, daysToTake_;
+    int danger_, days_;
 
 };

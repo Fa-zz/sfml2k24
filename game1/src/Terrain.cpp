@@ -55,6 +55,10 @@ void Terrain::setTileStats(int* tileStats) {
     }
 }
 
+void Terrain::setTileStatsInt(int index, int newStat) {
+    tileStats_[index] = newStat;
+}
+
 void Terrain::setTileMissionsArr(int* tileMissions) {
     for (int i = 0; i < Data::numTileMissions; i++) {
         tileMissions_[i] = tileMissions[i];
@@ -64,6 +68,15 @@ void Terrain::setTileMissionsArr(int* tileMissions) {
 // setTileMissionsInt takes the mission index to change. it is simply flipped
 void Terrain::setTileMissionsInt(int missionInt, bool activate) {
     tileMissions_[missionInt] = activate;
+}
+
+void Terrain::setTileMissionsString(string mission, bool activate) {
+    for (int i = 0; i < Data::numTileMissions; i++) {
+        if (mission == Data::tileMissionsText[i]) {
+            tileMissions_[i] = activate;
+            break;
+        }
+    }
 }
 
 string Terrain::getTileType() { return tileType_; };
@@ -104,23 +117,34 @@ void Terrain::setTileStatStateColor(int tileStatsIndex) {
 
 sf::Color Terrain::getTileStatStateColor() { return tileStatStateColor_; }
 
-void Terrain::setMission(string objective, vector<int> assigned, string danger, string daysToTake) {
+void Terrain::setMission(string objective, vector<int> assigned, int danger, int daysToTake) {
     missionObjective_ = objective;
     assignedToMission_ = assigned;
     danger_ = danger;
-    daysToTake_ = daysToTake;
+    days_ = daysToTake;
+}
+
+void Terrain::setDays(int days) { days_ = days;}
+
+string Terrain::getMission() {
+    string mission = "Obj: " + missionObjective_ + " danger: " + to_string(danger_) + " days_: " + to_string(days_);
+    mission += " Assigned to mission, IDs: ";
+    for (int i = 0; i < assignedToMission_.size(); i++) {
+        mission += to_string( assignedToMission_[i] ) + " ";
+    }
+    return mission;
 }
 string Terrain::getObjective() { return missionObjective_; }
 vector<int> Terrain::getAssigned() {  return assignedToMission_; }
-string Terrain::getDanger() { return danger_; }
-string Terrain::getDays(){ return daysToTake_; }
+int Terrain::getDanger() { return danger_; }
+int Terrain::getDays(){ return days_; }
 void Terrain::clearMission() {
     missionObjective_ = "";
     assignedToMission_.clear();
-    danger_ = "";
-    daysToTake_ = "";
+    danger_ = -1;
+    days_ = -1;
 }
 void Terrain::updateDaysToTake() {
     // Decrements a day
-    daysToTake_ = to_string( stoi( daysToTake_ ) - 1 );
+    days_ = days_ - 1;
 }

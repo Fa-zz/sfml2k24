@@ -8,12 +8,16 @@ int GameMaster::loadTerrainTextures() {
 }
 
 void GameMaster::initGame() {
-    // world_ = new World();
     width_ = Data::worldWidth;
     height_ = Data::worldHeight;
     loadTerrainTextures();
     genTiles(height_, width_);
     initPeople();
+    // set top bar vals and init GUI top bar
+    gui_.initTopBar(people_.size(), food_, mood_, day_);
+    // Read results data from json
+    ifstream f("data/mission_results.json");
+    missionResults_ = json::parse(f);
 }
 
 void GameMaster::initPeople() {
@@ -88,7 +92,6 @@ void GameMaster::initPeople() {
         // personMap_[lastID_]->print();
         lastID_ += 1;
     }
-    gui_.setPopNum(lastID_);
 }
 
 void GameMaster::genTiles(int height, int width) {
@@ -96,7 +99,6 @@ void GameMaster::genTiles(int height, int width) {
     for (int i = 0; i < height; ++i) {
         worldTiles_[i].resize(width, nullptr);
     }
-    int tileMissionsUnd[Data::numTileMissions] = {1, 0, 0, 0};
 
     for (int i = 0; i < worldTiles_.size(); i++) {
         for (int j = 0; j < worldTiles_[i].size(); j++) {
@@ -139,7 +141,7 @@ void GameMaster::genTiles(int height, int width) {
             // every tile starts out undiscovered, with a random type and stats
             newTile->setTileType(Data::tileTypes[randNum]);
             newTile->setTileStats(getRandomStatsArray());
-            newTile->setTileMissionsArr(tileMissionsUnd);
+            newTile->setTileMissionsArr(Data::tileMissionsUnd);
             // setting start location
             if (i == worldTiles_.size()/2 && j == worldTiles_[i].size()/2) {
                 startingLoc_.x = j;
@@ -294,8 +296,8 @@ void GameMaster::addInfobox(float mouseX, float mouseY, string status, bool crea
         } else if (status == Data::activeTile) {
             passMissionInfoDirect(
                 worldTiles_[currY_][currX_]->getObjective(),
-                worldTiles_[currY_][currX_]->getDanger(),
-                worldTiles_[currY_][currX_]->getDays()
+                to_string(worldTiles_[currY_][currX_]->getDanger()),
+                to_string(worldTiles_[currY_][currX_]->getDays())
             );
             passMissionPeople( worldTiles_[currY_][currX_]->getAssigned() );
         }
@@ -312,7 +314,7 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
         linkData_ = gmcontext_->stateMachine_->GetCurrent()->getData();
     else
         linkData_ = linkData;
-    // cout << "CurrY: " << currY_ << " CurrX: " << currX_ << endl;
+    cout << "CurrY: " << currY_ << " CurrX: " << currX_ << endl;
     // if (linkData_.size() > 0) {
     //     if (linkData_[0] != "placeholder") {
     //         cout << "linkData_: " << linkData_[0];
@@ -357,7 +359,7 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
             passMissionInfo();
         // User accepts mission, after choosing people. Mission is created, tile becomes an active tile, and stack is cleared.
         } else if (linkData_[0] == Data::onClickAccept && choosingPeople_ == true && currSelected_.size() > 0) {
-            worldTiles_[currY_][currX_]->setMission(currMission_, currSelected_, strDanger_, strDays_);
+            worldTiles_[currY_][currX_]->setMission(currMission_, currSelected_, currDays_, currDanger_);
             for (int i = 0; i < currSelected_.size(); i++) {
                 IDtoPerson(currSelected_[i])->setBusy(true);
             }
@@ -365,15 +367,11 @@ void GameMaster::updateInfobox(float mouseX, float mouseY, vector<string> linkDa
             currSelected_.clear();
             choosingPeople_ = false;
             worldTiles_[currY_][currX_]->setTileStatus(Data::activeTile);
+            activeTilesCoords_.push_back(make_pair( currY_, currX_) );
             popAllInfoboxes();
         // User is on active tile and cancels
         } else if (linkData_[0] == Data::onClickCancel && worldTiles_[currY_][currX_]->getTileStatus() == Data::activeTile) {
-            vector<int> freedIDs = worldTiles_[currY_][currX_]->getAssigned();
-            for (int i = 0; i < freedIDs.size(); i++) {
-                IDtoPerson(freedIDs[i])->setBusy(false);
-            }
-            worldTiles_[currY_][currX_]->clearMission();
-            worldTiles_[currY_][currX_]->setTileStatus(Data::wildTile);
+            removeMission(currY_, currX_);
             popAllInfoboxes();
         }
         linkData_.clear();
@@ -480,14 +478,14 @@ int GameMaster::calcDangerDecRate() {
 void GameMaster::passMissionInfo() {
     Infobox* currInfobox = getCurrentInfobox();
     string mission = currMission_;
-    strDanger_ = to_string( calcDanger() ); 
-    strDays_ = to_string( DAYS_TO_TAKE_ );
+    currDays_ = calcDanger(); 
+    currDanger_ = DAYS_TO_TAKE_;
 
     // If people are selected, we need to iterate over the selected and using their job calculate the new danger and days to take.
     if (currSelected_.size() > 0) {
         int calcdDays = DAYS_TO_TAKE_;
         int subtractDay = 0;
-        int calcdDanger = stoi(strDanger_);
+        int calcdDanger = currDays_;
         int factor = calcDangerDecRate();
         for (int i = 0; i < currSelected_.size(); i++) {
             std::__1::__wrap_iter<Person *> person = IDtoPerson(currSelected_[i]);
@@ -514,11 +512,11 @@ void GameMaster::passMissionInfo() {
             calcdDanger = 0;
         if (calcdDays < 1)
             calcdDays = 1;
-        strDanger_ = to_string( calcdDanger );
-        strDays_ = to_string ( calcdDays );
+        currDays_ = calcdDanger;
+        currDanger_ = calcdDays;
     }
 
-    currInfobox->setMissionInfo(mission, strDanger_, strDays_);
+    currInfobox->setMissionInfo(mission, to_string(currDays_), to_string(currDanger_));
 }
 
 void GameMaster::passMissionInfoDirect(string mission, string danger, string days) {
@@ -600,6 +598,112 @@ void GameMaster::passInput(float x, float y, bool clicked, bool scrollDown, bool
 }
 
 // sf::Vector2u GameMaster::getPlayerPos() { return world_->getStartingLoc(); }
+
+// Handles the passing of a day.
+void GameMaster::progressDay() {
+    // Available resources should update
+    int deltaFood = 0, deltaMood = 0, deltaDay = 1;
+    vector<int> killed;
+    string* resultTier = nullptr;
+    // Every person consumes 3 food each day.
+    deltaFood -= people_.size() * 3;
+    // Loop thru active tiles, Check if any missions are completed, and open Report infoboxes if so
+    for (auto it = activeTilesCoords_.begin(); it != activeTilesCoords_.end(); /* no increment here */) {
+        cout << "progressDay coords, y: " << it->first << " progressDay coords, x: " << it->second << endl;
+        Terrain* activeTile = worldTiles_[it->first][it->second];
+        activeTile->updateDaysToTake(); // Decrement days to complete mission
+        if (activeTile->getDays() == 0) {
+            string resultString = missionResult(activeTile, resultTier); // Determine result of mission
+            string objective = activeTile->getObjective();
+            cout << "Result of mission: " << resultString << endl;
+
+            // TODO: Add Report infobox and send result info via AddInfobox
+
+            removeMission(it->first, it->second);
+
+            // If Reclaim and pass: Tile becomes reclaimed
+            // If Scout and pass: Tile becomes wild
+            // If Scavenge and pass: Tile's food stat becomes 0
+            // If Kill z's and pass: Tile's zombie stat becomes 0
+            // If recruit and pass: Tile's survivor stat becomes 0
+            if (*resultTier != Data::resultFail) {
+                if (objective == Data::missReclaim) {
+                    activeTile->setTileStatus(Data::reclaimedTile);
+                } else if (objective == Data::missScout) {
+                    activeTile->setTileStatus(Data::wildTile);
+                } else if (objective == Data::missScavenge) {
+                    activeTile->setTileStatsInt(0, 0);
+                } else if (objective == Data::missKillZs) {
+                    activeTile->setTileStatsInt(1, 0);
+                } else if (objective == Data::missRecruit) {
+                    activeTile->setTileStatsInt(2, 0);
+                } else if (objective == Data::missReclaim) {
+                    activeTile->setTileStatus(Data::reclaimedTile);
+                }
+            } else if (*resultTier == Data::resultFail) {
+                if (objective == Data::missScout) {
+                    activeTile->setTileStatus(Data::undiscoveredTile);
+                }
+            }
+
+            updateTileMissions(it->first, it->second);
+            
+            // Remove tile from activeTileCoords
+            it = activeTilesCoords_.erase(it);  // Iterator gets updated to the next element after erasing
+            activeTile = nullptr;
+        } else {
+            it++;
+        }
+    }
+    // Random events
+
+    // Update member vars and send those to gui top bar vals
+    updateTopBarVals(killed, deltaFood, deltaMood, deltaDay);
+    gui_.initTopBar(people_.size(), food_, mood_, day_);
+}
+
+string GameMaster::missionResult(Terrain* activeTile, string*& resultTier) {
+    int checkDanger = Data::getRandNum(1, 100);
+    int checkUnsafe = Data::getRandNum(1, 100);
+    int numResultsPerMission = 3-1;
+    // failed mission
+    if (checkDanger <= activeTile->getDanger()) {
+        string tier = Data::resultFail;
+        resultTier = &tier;
+        string missionResults = missionResults_["missions"][activeTile->getObjective()][Data::resultFail][Data::getRandNum(0,numResultsPerMission)].get<string>();
+        return missionResults;
+    // unsafe mission
+    } else if (checkUnsafe <= 25) {
+        string tier = Data::resultUnsafe;
+        resultTier = &tier;
+        string missionResults = missionResults_["missions"][activeTile->getObjective()][Data::resultUnsafe][Data::getRandNum(0,numResultsPerMission)].get<string>();
+        return missionResults;
+    } else {
+        string tier = Data::resultSafe;
+        resultTier = &tier;
+        string missionResults = missionResults_["missions"][activeTile->getObjective()][Data::resultSafe][Data::getRandNum(0,numResultsPerMission)].get<string>();
+        return missionResults;
+    }
+}
+
+void GameMaster::updateTopBarVals(vector<int> killedPeople, int deltaFood, int deltaMood, int deltaDay) {
+    food_ += deltaFood;
+    mood_ += deltaMood;
+    day_ += deltaDay;
+}
+
+void GameMaster::removeMission(int y, int x) {
+    vector<int>::iterator it;
+    vector<int> freedIDs;
+    it=worldTiles_[y][x]->getAssigned().begin();
+    freedIDs.assign(it,worldTiles_[y][x]->getAssigned().end());
+    // vector<int> freedIDs = worldTiles_[currY_][currX_]->getAssigned();
+    for (int i = 0; i < freedIDs.size(); i++) {
+        IDtoPerson(freedIDs[i])->setBusy(false);
+    }
+    worldTiles_[y][x]->clearMission();
+    worldTiles_[y][x]->setTileStatus(Data::wildTile);
+}
 
 int GameMaster::getPopulationNum() {
     return 7;

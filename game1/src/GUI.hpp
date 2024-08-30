@@ -24,7 +24,7 @@ public:
     void initAll();
     void initMainMenuElems();
     void initHighlight();
-    void initTopBar();
+    void initTopBar(int pop, int food, int mood, int day);
     // void addIntroInfobox(string tileType);
     // void addTileInfobox(string tileStatus, string tileType, int* tileStats, int* tileMissions);
     // void addInfobox(string boxType, unordered_map<int, Person*>& personMap);
@@ -37,7 +37,8 @@ public:
     void setDrawingHighlight(bool drawing);
     void setHighlightPos(int x, int y);
     void setDrawingTopBar(bool drawing);
-    void setPopNum(int popNum);
+    // void setPopNum(int popNum);
+    // void deltaTopBarVals(int deltaPop, int deltaFood, int deltaMood, int deltaDay);
     // void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
     // void passMissionsToInfobox(int* missionsArr);
     // void passLocToInfobox(string loc);
@@ -61,7 +62,7 @@ private:
     sf::Vector2u windowSize_;
     sf::Font font_;
     int charSize_;
-    int personCount_ = 0, foodCount_ = 100, moodCount_ = 100, dayCount_ = 0;
+    // int personCount_ = 0, foodCount_ = 100, moodCount_ = 100, dayCount_ = 0;
     sf::Text topWindowText_;
     // string cityName_, population_, food_, mood_, days_;
     // sf::Text tBCityName_, tBPopulation_, tBFood_, tBMood_, tBDays_, 
@@ -76,7 +77,7 @@ private:
     sf::Text mainMenuPlayButtonText_;
     sf::RectangleShape* mainMenuPlayButton_;
     sf::RectangleShape* highlightedObject_;
-    sf::RectangleShape* topBar_;
+    sf::RectangleShape* topBar_ = nullptr;
     unordered_map<string, sf::RectangleShape*> guiMap_;
     vector<sf::RectangleShape*> guiElems_;
     vector<Infobox*> infoboxStack_;

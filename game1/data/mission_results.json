@@ -1,9 +1,90 @@
 {
-	"Scavenge for food": {
-		"Outcome1": {
-			"Description": "We found 1 day's worth of food.",
-			"Options": [],
-			"Effects": "incFood21"
-		}
+	"missions": {
+	  "Scout area": {
+		"fail": [
+		  "{npc_name} ventured too far into hostile territory and was overwhelmed. {npc_name} is now missing.",
+		  "The scouting party was ambushed by a horde of zombies. {npc_name} was killed.",
+		  "The mission failed disastrously. All assigned NPCs were killed by zombies."
+		],
+		"unsafe": [
+		  "{npc_name} returned with valuable intel but was injured during the mission. The group now has a better understanding of the surroundings.",
+		  "The area was scouted, but {npc_name} was separated from the group and suffered a morale loss.",
+		  "{npc_name} completed the scouting, but the journey was rough. {npc_name} lost {hp_lost} HP."
+		],
+		"safe": [
+		  "{npc_name} successfully scouted the area, gathering crucial information. No issues encountered.",
+		  "The mission was a success! {npc_name} reported back with important details about the surroundings.",
+		  "{npc_name} returned safely from the scouting mission with a complete map of the area."
+		]
+	  },
+	  "Scavenge for food": {
+		"fail": [
+		  "While scavenging for food, {npc_name} was cornered by zombies and did not make it back.",
+		  "{npc_name} went out to find food but encountered a deadly trap. The mission was a failure.",
+		  "The scavenging mission ended in tragedy. All members sent out were killed by a massive zombie horde."
+		],
+		"unsafe": [
+		  "The team found {food_gained} pounds of food, but {npc_name} was wounded in the process.",
+		  "{npc_name} managed to grab {food_gained} pounds of food but had to fight off a group of zombies, losing {hp_lost} HP.",
+		  "Food was found, but the group had to flee before gathering enough. {npc_name} lost morale."
+		],
+		"safe": [
+		  "A great haul! The group found {food_gained} pounds of food and returned unharmed.",
+		  "{npc_name} successfully scavenged {food_gained} pounds of food without any incidents.",
+		  "The scavenging mission was a success, yielding {food_gained} pounds of food with no harm done to the group."
+		]
+	  },
+	  "Kill zombies": {
+		"fail": [
+		  "The zombie horde was too strong. {npc_name} was overrun and did not survive.",
+		  "{npc_name} tried to take on the zombies but was overwhelmed and killed.",
+		  "The group fought valiantly, but all were killed by the relentless horde."
+		],
+		"unsafe": [
+		  "The zombies were defeated, but {npc_name} was bitten and now requires medical attention.",
+		  "{npc_name} killed the zombies but was injured in the process. {npc_name} lost {hp_lost} HP.",
+		  "The mission succeeded, but it took a toll. {npc_name} lost morale after the bloody battle."
+		],
+		"safe": [
+		  "The zombies were eliminated with no injuries. {npc_name} handled the situation perfectly.",
+		  "{npc_name} successfully cleared the area of zombies without any casualties.",
+		  "The mission was a complete success. All zombies were killed, and everyone returned safely."
+		]
+	  },
+	  "Recruit survivors": {
+		"fail": [
+		  "{npc_name} tried to recruit survivors but was attacked by raiders and killed.",
+		  "The attempt to recruit survivors ended in tragedy. {npc_name} was killed by hostile forces.",
+		  "The survivors turned out to be a trap. All NPCs assigned to the mission were killed."
+		],
+		"unsafe": [
+		  "{npc_name} managed to recruit {recruited_count} survivors, but the mission was dangerous. {npc_name} lost {hp_lost} HP.",
+		  "The recruitment was successful, but {npc_name} encountered resistance. {npc_name} lost morale.",
+		  "New survivors were recruited, but {npc_name} was injured during the mission. {npc_name} lost {hp_lost} HP."
+		],
+		"safe": [
+		  "The recruitment mission was a success. {recruited_count} survivors joined the group, and everyone returned safely.",
+		  "{npc_name} successfully recruited {recruited_count} survivors without any issues.",
+		  "The mission went off without a hitch. {npc_name} brought back {recruited_count} new survivors, and everyone is in good spirits."
+		]
+	  },
+	  "Reclaim": {
+		"fail": [
+		  "The attempt to reclaim the building failed. {npc_name} was trapped inside and killed by zombies.",
+		  "{npc_name} tried to reclaim the building, but it was too heavily infested. {npc_name} was killed.",
+		  "The mission to reclaim the building ended in disaster. All assigned NPCs were killed."
+		],
+		"unsafe": [
+		  "The building was reclaimed, but {npc_name} was injured while securing it. {npc_name} lost {hp_lost} HP.",
+		  "{npc_name} managed to reclaim the building, but the effort was exhausting. {npc_name} lost morale.",
+		  "The building is now under your control, but {npc_name} was bitten during the fight. {npc_name} lost {hp_lost} HP."
+		],
+		"safe": [
+		  "The building was successfully reclaimed, and everyone returned safely.",
+		  "{npc_name} reclaimed the building without any issues. The area is now secure.",
+		  "The mission was a success. The building is now under your control, and all NPCs are unharmed."
+		]
+	  }
 	}
-}
+  }
+  

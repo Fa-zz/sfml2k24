@@ -57,6 +57,7 @@ void GameScreen1::processInput() {
         highlightX_ = worldPos.x / 16;
         highlightY_ = worldPos.y / 16;
 
+        // IF NO INFOBOX IS OPEN.
         if (m_context->m_gameMaster->getInfoboxStackEmpty()) {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
@@ -92,8 +93,7 @@ void GameScreen1::processInput() {
                         defaultMapMode_ = false;
                         break;
                     case sf::Keyboard::Enter:
-                        reset();
-                        m_context->m_states->Add(std::make_unique<MainMenuState>(m_context), false);
+                        m_context->m_gameMaster->progressDay();
                         break;
                     // case sf::Keyboard::P:
                     //     m_context->m_window->setSize(sf::Vector2u(Data::res2x, Data::res2y));
@@ -112,6 +112,7 @@ void GameScreen1::processInput() {
                 currY_ = highlightY_;
                 currX_ = highlightX_;
             }
+        // IF INFOBOXES ARE OPEN
         } else {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {

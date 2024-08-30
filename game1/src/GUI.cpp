@@ -76,14 +76,26 @@ void GUI::initMainMenuElems() {
     // cout << mainMenuPlayButton_->getPosition().x << " " << mainMenuPlayButton_->getPosition().y << endl;
 }
 
-void GUI::initTopBar() {
+void GUI::initTopBar(int pop, int food, int mood, int day) {
+    if (topBar_ != nullptr) {
+        topBarText_.setString("Baltimore   (P)op:" + to_string(pop) + "   (F)d:" + to_string(food) + "   (M)ood:" + to_string(mood) + "   Day:" + to_string(day) + "\n\n\Maps:   (1)Default   (2)Fd   (3)Zs   (4)Survs");
+        topBarText_.setCharacterSize(charSize_);
+        topBarText_.setOrigin(
+            topBarText_.getGlobalBounds().width / 2.f, 
+            topBarText_.getGlobalBounds().height / 2.f
+        );
+        sf::Vector2f centerPosition = topBar_->getPosition() + (topBar_->getSize() / 2.f);
+        topBarText_.setPosition(centerPosition.x, centerPosition.y);
+        return;
+    }
+
     topBar_ = new sf::RectangleShape();
     topBar_->setFillColor(sf::Color(0,0,128));
     topBar_->setPosition(sf::Vector2f(0.f,0.f));
     auto topBarLiterals = Data::calculateLiterals(1440, 100);
     topBar_->setSize(sf::Vector2f(windowSize_.x * topBarLiterals.first, windowSize_.x * topBarLiterals.second));
     
-    topBarText_.setString("Baltimore   (P)op:" + to_string(personCount_) + "   (F)d:" + to_string(foodCount_) + "   (M)ood:" + to_string(moodCount_) + "   Day:" + to_string(dayCount_) + "\n\n\Maps:   (1)Default   (2)Fd   (3)Zs   (4)Survs");
+    topBarText_.setString("Baltimore   (P)op:" + to_string(pop) + "   (F)d:" + to_string(food) + "   (M)ood:" + to_string(mood) + "   Day:" + to_string(day) + "\n\n\Maps:   (1)Default   (2)Fd   (3)Zs   (4)Survs");
     topBarText_.setCharacterSize(charSize_);
     topBarText_.setOrigin(
         topBarText_.getGlobalBounds().width / 2.f, 
@@ -127,7 +139,7 @@ void GUI::initAll() {
     // initTopAndBottomWindow();
     initHighlight();
     initMainMenuElems();
-    initTopBar();
+    // initTopBar();
     // stateMachine_ = std::make_unique<Engine::StateMachine>();
 
 }
@@ -152,7 +164,8 @@ GUI::~GUI() {
     // }
     // guiMap_.clear();
     for (int i = 0; i < guiElems_.size(); i++) {
-        delete guiElems_[i];
+        if (guiElems_[i])
+            delete guiElems_[i];
     }
 }
 
@@ -190,12 +203,19 @@ void GUI::hoveringOverTopBar(sf::Vector2f mouseCords) {
     // }
 }
 void GUI::setDrawingTopBar(bool drawing) { drawTopBar_ = drawing; }
-void GUI::setPopNum(int personCount) { 
-    personCount_ = personCount;
-    if (guiMap_["topBar_"])
-        delete guiMap_["topBar_"];
-    initTopBar();
-}
+// void GUI::setPopNum(int personCount) { 
+//     personCount_ = personCount;
+//     if (guiMap_["topBar_"])
+//         delete guiMap_["topBar_"];
+//     initTopBar();
+// }
+// void GUI::deltaTopBarVals(int deltaPop, int deltaFood, int deltaMood, int deltaDay) {
+//     personCount_ += deltaPop;
+//     foodCount_ += deltaFood;
+//     moodCount_ += deltaMood;
+//     dayCount_ += deltaDay;
+//     initTopBar();
+// }
 // void GUI::passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp) {
 //     gui_context_->stateMachine_->GetCurrent()->handleInput(x, y, clicked, scrollDown, scrollUp);
 

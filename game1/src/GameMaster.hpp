@@ -21,6 +21,8 @@
 #include <cstdlib>
 #include <cctype>
 #include <iostream>
+#include "json.hpp"
+using json = nlohmann::json;
 using namespace std;
 
 struct GMContext {
@@ -74,11 +76,17 @@ public:
 	void passInput(float x, float y, bool clicked, bool scrollDown, bool scrollUp);
 	Terrain& getGroundTileAtPos(int y, int x); // Y AND X
 	sf::Vector2u getStartingLoc();
+
+	void progressDay();
+	string missionResult(Terrain* activeTile, string*& resultTier);
+	void updateTopBarVals(vector<int> killedPeople, int deltaFood, int deltaMood, int deltaDay);
+	void removeMission(int y, int x);
 	int getPopulationNum();
 	std::__1::__wrap_iter<Person *> IDtoPerson(int targetID);
     void setWindowSize(sf::Vector2u windowSize);
 	bool getCancel();
 private:
+	int food_ = Data::startingFoodNum, mood_ = Data::startingMoodNum, day_ = 1;
 	std::shared_ptr<GMContext> gmcontext_;
 	sf::Texture groundTexture_;
 	vector<vector<Terrain*>> worldTiles_;
@@ -94,7 +102,7 @@ private:
 	string currMission_;
 	vector<int> currSelected_;
 	// vector<Mission> activeMissions_;
-	vector<pair<int, int>> activeTilesCoords;
+	vector<pair<int, int>> activeTilesCoords_; // Y AND X
 	// string linkData_;
 	vector<string> linkData_;
 	vector<string> maleNames_;
@@ -105,9 +113,10 @@ private:
 	// unordered_map<int, Person*> personMap_; 
 	const int DAYS_TO_TAKE_ = 3;
 	int danger_, dangerDecRate_, selectedID_, selectedIndex_;
-	string strDays_, strDanger_;
+	int currDanger_, currDays_;
 	bool cancel_ = false;
 	int lastID_ = 0;
+	json missionResults_;
 	int loadTerrainTextures();
 	int* getRandomStatsArray();
 	string getPeopleList();
